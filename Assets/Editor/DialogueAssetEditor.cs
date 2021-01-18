@@ -1,87 +1,90 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
+using UnityEditor.Callbacks;
 
-public class DialogueAssetEditor : NodeBasedEditor
+public class DialogueAssetEditor : GraphViewEditorWindow
 {
-	
-	[MenuItem("Window/Dialogue Asset Editor")]
-	private static void OpenWindow()
+	public DialogueGraphAsset graphAsset { get; set; }
+	private DialogueGraphView graphView;
+
+
+	[OnOpenAsset(1)]
+	private static bool OpenWindow(int instanceId, int line)
 	{
-		DialogueAssetEditor window = GetWindow<DialogueAssetEditor>();
-		window.titleContent = new GUIContent("Dialogue Asset Editor");
-	}
+		var obj = EditorUtility.InstanceIDToObject(instanceId);
 
-	protected override void OnEnable()
-	{
-		base.OnEnable();
-	}
-
-	protected override void OnGUI()
-	{
-		base.OnGUI();
-	}
-
-	protected override void ProcessContextMenu(Vector2 mousePosition)
-	{
-		GenericMenu genericMenu = new GenericMenu();
-
-		genericMenu.AddItem(new GUIContent("Add dialogue node"), false, () => OnClickAddNode(mousePosition));
-
-		genericMenu.ShowAsContext();
-	}
-
-	protected override void OnClickAddNode(Vector2 mousePosition)
-	{
-		if (nodes == null)
+		if (obj is DialogueGraphAsset)
 		{
-			nodes = new List<Node>();
+			DialogueAssetEditor window = GetWindow<DialogueAssetEditor>();
+			window.titleContent = new GUIContent("Dialogue Asset Editor");
+			window.graphAsset = obj as DialogueGraphAsset;
+			window.minSize = new Vector2(500f, 300f);
+
+			return true;
 		}
 
-		nodes.Add(new DialogueNode(
-				mousePosition,
-				200,
-				50,
-				nodeStyle,
-				selectedNodeStyle,
-				inPointStyle,
-				outPointStyle,
-				OnClickInPoint,
-				OnClickOutPoint,
-				OnClickRemoveNode,
-				OnClickSelectNode));
+		return false;
+	}
+
+	// called when the object is loaded
+	private void OnEnable()
+	{
+		// create graph view
+		graphView = new DialogueGraphView { name = "DialogueGraph" };
+		graphView.StretchToParentSize();
+		rootVisualElement.Add(graphView);
+
+		// create toolbar
+		var toolbar = new Toolbar();
+		toolbar.Add(new ToolbarButton(() => { }) { text = "Save" });
+		rootVisualElement.Add(toolbar);
+	}
+
+	// called when the object leaves scope
+	private void OnDisable()
+	{
+		if(graphView != null)
+		{
+			rootVisualElement.Remove(graphView);
+		}
+	}
+
+	// implement custom editor GUI code here
+	private void OnGUI()
+	{
+
+	}
+}
+
+public class DialogueGraphView : GraphView
+{
+	public DialogueGraphView()
+	{
+		styleSheets.Add(Resources.Load<StyleSheet>("DialogueGraphStyle"));
+
+		SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+
+		this.AddManipulator(new ContentDragger());
+		this.AddManipulator(new SelectionDragger());
+		this.AddManipulator(new RectangleSelector());
+		this.AddManipulator(new FreehandSelector());
+
+		var grid = new GridBackground { name = "GridBackground" };
+		Insert(0, grid);
 	}
 }
 
 public class DialogueNode : Node
 {
-
-
-	public DialogueNode(
-		Vector2 position,
-		float width,
-		float height,
-		GUIStyle nodeStyle,
-		GUIStyle selectedStyle,
-		GUIStyle inPointStyle,
-		GUIStyle outPointStyle,
-		Action<ConnectionPoint> OnClickInPoint,
-		Action<ConnectionPoint> OnClickOutPoint,
-		Action<Node> OnClickRemoveNode,
-		Action<Node> OnClickSelectNode)
-		: base(position, width, height, nodeStyle, selectedStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode, OnClickSelectNode)
+	public DialogueNode()
 	{
 
-	}
-
-	protected override void ProcessContextMenu()
-	{
-		GenericMenu genericMenu = new GenericMenu();
-
-		genericMenu.AddItem(new GUIContent("Remove dialogue node"), false, OnClickRemoveNode);
-
-		genericMenu.ShowAsContext();
 	}
 }

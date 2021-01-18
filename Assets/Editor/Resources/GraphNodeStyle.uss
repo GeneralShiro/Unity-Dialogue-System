@@ -1,0 +1,31 @@
+.graphNode #title {
+	background-color : rgba(29, 115, 57, 0.91);
+}
+
+.graphNode #contents {
+	background-color : rgba(63, 63, 63, 205);
+}
+
+.graphNode #settings {
+	margin-top : 8px;
+	margin-bottom : 8px;
+	margin-left : 16px;
+	margin-right : 4px;
+	padding-right : 4px;
+}
+
+.graphNode #settings Label {
+	min-width : 80px;
+}
+
+.graphNode #settings TextField {
+	margin : 0;
+}
+
+.graphNode #settings TextField.unity-base-field--no-label {
+	margin-top : 5px;
+}
+
+.graphNode.collapsed #settings {
+	display : none;
+}
