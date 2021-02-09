@@ -6,32 +6,30 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class GraphNode : Node
+namespace CustomGraphEditors
 {
-	public uint NodeGuid { get; set; }
-
-	public GraphNode()
+	public class GraphNode : Node
 	{
-		styleSheets.Add(Resources.Load<StyleSheet>("GraphNodeStyle"));
-		AddToClassList("graphNode");
-	}
+		public uint NodeGuid { get; set; }
 
-	protected void AddOutputPort(string name, System.Type dataType)
-	{
-		var outputPort = GetPortInstance(Direction.Output, dataType);
-		outputPort.portName = name;
-		outputContainer.Add(outputPort);
-	}
+		public GraphNode()
+		{
+			styleSheets.Add(Resources.Load<StyleSheet>("GraphNodeStyle"));
+			AddToClassList("graphNode");
+		}
 
-	protected void AddInputPort(string name, System.Type dataType)
-	{
-		var inputPort = GetPortInstance(Direction.Input, dataType);
-		inputPort.portName = name;
-		inputContainer.Add(inputPort);
-	}
+		protected void AddOutputPort(string name, System.Type dataType, Port.Capacity capacity = Port.Capacity.Single)
+		{
+			var outputPort = Port.Create<Edge>(Orientation.Horizontal, Direction.Output, capacity, dataType);
+			outputPort.portName = name;
+			outputContainer.Add(outputPort);
+		}
 
-	private Port GetPortInstance(Direction nodeDirection, System.Type dataType, Port.Capacity capacity = Port.Capacity.Single)
-	{
-		return InstantiatePort(Orientation.Horizontal, nodeDirection, capacity, dataType);
+		protected void AddInputPort(string name, System.Type dataType, Port.Capacity capacity = Port.Capacity.Single)
+		{
+			var inputPort = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, capacity, dataType);
+			inputPort.portName = name;
+			inputContainer.Add(inputPort);
+		}
 	}
 }

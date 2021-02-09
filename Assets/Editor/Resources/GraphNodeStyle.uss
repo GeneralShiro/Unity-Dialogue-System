@@ -1,31 +1,65 @@
-.graphNode #title {
-	background-color : rgba(29, 115, 57, 0.91);
+
+.dialogueGraphNode #title {
+	background-color : rgba(0, 102, 102, 1);
+}
+
+.advDialogueNode #title {
+	background-color : rgba(42, 96, 201, 1);
+}
+
+.cinematicDialogueNode #title {
+	background-color : rgba(132, 71, 161, 1);
+}
+
+.graphNode #title-label {
+	font-size : 14px;
+	-unity-text-align : middle-center;
+	align-content : center;
+	position : absolute;
+	top : 3px;
+	margin : 6px;
+}
+
+.dialogueGraphNode #title-label {
+	width : 165px;
+}
+
+.advDialogueNode #title-label {
+	width : 255px;
 }
 
 .graphNode #contents {
 	background-color : rgba(63, 63, 63, 205);
 }
 
-.graphNode #settings {
-	margin-top : 8px;
-	margin-bottom : 8px;
-	margin-left : 16px;
-	margin-right : 4px;
-	padding-right : 4px;
+.graphNode #node-border {
+	background-color : rgba(63, 63, 63, 205);
 }
 
-.graphNode #settings Label {
-	min-width : 80px;
+.graphNode #variable-container {
+	padding : 5px;
+	padding-bottom : 10px;
 }
 
-.graphNode #settings TextField {
-	margin : 0;
+.graphNode TextInput {
+	padding-top : 2px;
+	padding-bottom : 2px;
+	padding-right : 5px;
+	padding-left : 5px;
 }
 
-.graphNode #settings TextField.unity-base-field--no-label {
-	margin-top : 5px;
+.graphNode #dialogue-text-field {
+	flex-direction : column;
+	min-height : 50px;
+	width : 160px;
 }
 
-.graphNode.collapsed #settings {
-	display : none;
+.graphNode #dialogue-text-field TextInput {
+	overflow : visible;
+	white-space : normal;
+	-unity-text-align : upper-left;
+}
+
+.advDialogueNode #dialogue-text-field {
+	width : 249px;
 }
