@@ -27,19 +27,19 @@ namespace CustomGraphEditors
     }
 
     [System.Serializable]
+    public class NodeData
+    {
+        public uint nodeGuid;
+        public string nodeType;
+        public Vector2 nodePosition;
+    }
+
+    [System.Serializable]
     public class NodeLinkData
     {
         public uint inputNodeGuid;
         public uint outputNodeGuid;
         public string inputPortName;
         public string outputPortName;
-    }
-
-    [System.Serializable]
-    public class NodeData
-    {
-        public uint nodeGuid;
-        public string nodeType;
-        public Vector2 nodePosition;
     }
 }

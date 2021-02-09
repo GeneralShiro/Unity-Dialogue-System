@@ -44,11 +44,6 @@ namespace CustomGraphEditors.DialogueSystem
 			graphView.StretchToParentSize();
 			rootVisualElement.Add(graphView);
 			graphView.nodeCreationRequest += OnRequestNodeCreation;
-
-			// create toolbar
-			var toolbar = new Toolbar();
-			toolbar.Add(new ToolbarButton(() => { }) { text = "Save" });
-			rootVisualElement.Add(toolbar);
 		}
 
 		// called when the object leaves scope

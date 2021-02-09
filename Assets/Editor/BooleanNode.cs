@@ -24,7 +24,7 @@ namespace CustomGraphEditors
 			var opEnum = new EnumField(BooleanOperation.EQUAL_TO);
 			mainContainer.Insert(1, opEnum);
 
-			AddOutputPort("Output Bool", typeof(bool));
+			AddPort("Output Bool", typeof(bool), false);
 		}
 
 		// TODO: move this to a monobehaviour obj
@@ -74,8 +74,8 @@ namespace CustomGraphEditors
 		{
 			title = "Boolean Node (Float)";
 
-			AddInputPort("Float 1", typeof(float));
-			AddInputPort("Float 2", typeof(float));
+			AddPort("Float 1", typeof(float));
+			AddPort("Float 2", typeof(float));
 		}
 	}
 
@@ -85,8 +85,8 @@ namespace CustomGraphEditors
 		{
 			title = "Boolean Node (Int)";
 
-			AddInputPort("Int 1", typeof(int));
-			AddInputPort("Int 2", typeof(int));
+			AddPort("Int 1", typeof(int));
+			AddPort("Int 2", typeof(int));
 		}
 	}
 }

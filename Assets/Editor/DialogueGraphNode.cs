@@ -37,9 +37,15 @@ namespace CustomGraphEditors.DialogueSystem
 			var dialogueTextField = new TextField { name = "dialogue-text-field", multiline = true };
 			variableContainer.Add(dialogueTextField);
 
-			// add ports
-			AddInputPort("Prev Node", typeof(DialogueGraphNode), Port.Capacity.Multi);
-			AddOutputPort("Next Node", typeof(DialogueGraphNode), Port.Capacity.Multi);
+			// get rid of the collapse button
+			titleButtonContainer.RemoveFromHierarchy();
+
+			// add ports to title container for dialogue node progression
+			var prevDialogueNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, true, Port.Capacity.Multi, "prev-dialogue-node-input", 0);
+			prevDialogueNodePort.AddToClassList("dialogueProgressPort");
+
+			var nextDialogueNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
+			nextDialogueNodePort.AddToClassList("dialogueProgressPort");
 		}
 	}
 
