@@ -5,3 +5,10 @@
 	--thick-line-color : rgba(60, 60, 60, .5);
 	--grid-background-color : rgba(93, 93, 93, 1.0);
 }
+
+#NoAssetSelectLabel {
+	background-color : rgba(56,56,56,1);
+	font-size : 18px;
+	-unity-font-style : Bold;
+	-unity-text-align : middle-center;
+}

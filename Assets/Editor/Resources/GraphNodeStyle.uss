@@ -56,7 +56,7 @@
 .graphNode #dialogue-text-field {
 	flex-direction : column;
 	min-height : 50px;
-	width : 160px;
+	width : 201px;
 }
 
 .graphNode #dialogue-text-field TextInput {
@@ -67,4 +67,8 @@
 
 .advDialogueNode #dialogue-text-field {
 	width : 249px;
+}
+
+.cinematicDialogueNode #dialogue-text-field {
+	width : 230px;
 }

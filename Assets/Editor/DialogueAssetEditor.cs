@@ -7,186 +7,269 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using UnityEditor.Callbacks;
 
 namespace CustomGraphEditors.DialogueSystem
 {
-	public class DialogueAssetEditor : GraphViewEditorWindow, ISearchWindowProvider
-	{
-		public DialogueGraphAsset graphAsset { get; set; }
-		private DialogueGraphView graphView;
+    public class DialogueAssetEditor : GraphViewEditorWindow, ISearchWindowProvider
+    {
+        public DialogueGraphAsset graphAsset { get; set; }
+        private DialogueGraphView graphView;
+        private Label noAssetSelectedLabel;
 
 
-		[OnOpenAsset(1)]
-		private static bool OpenWindow(int instanceId, int line)
-		{
-			var obj = EditorUtility.InstanceIDToObject(instanceId);
+        [OnOpenAsset(1)]
+        private static bool OpenWindow(int instanceId, int line)
+        {
+            var obj = EditorUtility.InstanceIDToObject(instanceId);
 
-			if (obj is DialogueGraphAsset)
-			{
-				DialogueAssetEditor window = GetWindow<DialogueAssetEditor>();
-				window.titleContent = new GUIContent("Dialogue Asset Editor");
-				window.graphAsset = obj as DialogueGraphAsset;
-				window.minSize = new Vector2(500f, 300f);
+            if (obj is DialogueGraphAsset)
+            {
+                DialogueAssetEditor window = GetWindow<DialogueAssetEditor>();
+                window.titleContent = new GUIContent("Dialogue Asset Editor");
+                window.graphAsset = obj as DialogueGraphAsset;
+                window.minSize = new Vector2(500f, 300f);
 
-				return true;
-			}
+                return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		// called when the object is loaded
-		private void OnEnable()
-		{
-			// create graph view
-			graphView = new DialogueGraphView { name = "DialogueGraph" };
-			graphView.StretchToParentSize();
-			rootVisualElement.Add(graphView);
-			graphView.nodeCreationRequest += OnRequestNodeCreation;
-		}
+        [MenuItem("Custom Editors/Dialogue Editor")]
+        private static void OpenWindow()
+        {
+            GetWindow<DialogueAssetEditor>("Dialogue Asset Editor", true, typeof(SceneView));
+        }
 
-		// called when the object leaves scope
-		private void OnDisable()
-		{
+        // called when the object is loaded
+        private void OnEnable()
+        {
+			rootVisualElement.styleSheets.Add(Resources.Load<StyleSheet>("DialogueGraphStyle"));
 
-		}
+            // create graph view
+            graphView = new DialogueGraphView { name = "DialogueGraph" };
+            graphView.StretchToParentSize();
+            rootVisualElement.Add(graphView);
+            graphView.nodeCreationRequest += OnRequestNodeCreation;
 
-		// implement custom editor GUI code here
-		private void OnGUI()
-		{
+            // create warning message for user if they haven't selected a dialogue asset first
+            noAssetSelectedLabel = new Label("Select a Dialogue Asset to see its graph!");
+			noAssetSelectedLabel.name = "NoAssetSelectLabel";
+            noAssetSelectedLabel.StretchToParentSize();
+			rootVisualElement.Add(noAssetSelectedLabel);
+            noAssetSelectedLabel.visible = false;
 
-		}
+            Selection.selectionChanged += OnSelectionChange;
 
-		protected void OnRequestNodeCreation(NodeCreationContext context)
-		{
-			SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), this);
-		}
+			LoadGraphAsset();
+        }
 
-		public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
-		{
-			var tree = new List<SearchTreeEntry>();
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Create Node"), 0));
+        // called when the object leaves scope
+        private void OnDisable()
+        {
+            Selection.selectionChanged -= OnSelectionChange;
+        }
 
-			Texture2D icon = EditorGUIUtility.FindTexture("cs Script Icon");
+        private void OnLostFocus()
+        {
+            SaveGraphAsset();
+        }
 
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Dialogue", icon)) { level = 1 });
-			tree.Add(new SearchTreeEntry(new GUIContent("Basic Dialogue Node", icon)) { level = 2 });
-			tree.Add(new SearchTreeEntry(new GUIContent("Advanced Dialogue Node", icon)) { level = 2 });
-			tree.Add(new SearchTreeEntry(new GUIContent("Cinematic Dialogue Node", icon)) { level = 2 });
+        private void OnSelectionChange()
+        {
+            SaveGraphAsset();
 
-			tree.Add(new SearchTreeGroupEntry(new GUIContent("Boolean", icon)) { level = 1 });
-			tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Int)", icon)) { level = 2 });
-			tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Float)", icon)) { level = 2 });
+            DialogueGraphAsset[] selectedAssets = Selection.GetFiltered<DialogueGraphAsset>(SelectionMode.Assets);
 
-			return tree;
-		}
+            if (selectedAssets.Length != 1)
+            {
+                ClearGraph();
+                graphAsset = null;
+                return;
+            }
 
-		public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
-		{
-			switch (entry.name)
-			{
-				case "Basic Dialogue Node":
-				{
-					var node = new DialogueGraphNode();
-					graphView.AddElement(node);
+            graphAsset = selectedAssets[0];
+            LoadGraphAsset();
+        }
 
-					Vector2 pointInWindow = context.screenMousePosition - position.position;
-					Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
+        private void ClearGraph()
+        {
+            // hide the graph view so it can't be interacted with
+            graphView.visible = false;
+            noAssetSelectedLabel.visible = true;
 
-					node.SetPosition(new Rect(pointInGraph, Vector2.zero));
+            graphView.ClearGraphNodes();
+        }
 
-					node.Select(graphView, false);
+        public void SaveGraphAsset()
+        {
 
-					return true;
-				}
+        }
 
-				case "Advanced Dialogue Node":
-				{
-					var node = new AdvDialogueNode();
-					graphView.AddElement(node);
+        public bool LoadGraphAsset()
+        {
+            ClearGraph();
 
-					Vector2 pointInWindow = context.screenMousePosition - position.position;
-					Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
+            if (graphAsset == null)
+            {
+                return false;
+            }
 
-					node.SetPosition(new Rect(pointInGraph, Vector2.zero));
+            graphView.visible = true;
+            noAssetSelectedLabel.visible = false;
 
-					node.Select(graphView, false);
 
-					return true;
-				}
+            return true;
+        }
 
-				case "Cinematic Dialogue Node":
-				{
-					var node = new CinematicDialogueNode();
-					graphView.AddElement(node);
+        protected void OnRequestNodeCreation(NodeCreationContext context)
+        {
+            SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), this);
+        }
 
-					Vector2 pointInWindow = context.screenMousePosition - position.position;
-					Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
+        public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
+        {
+            var tree = new List<SearchTreeEntry>();
+            tree.Add(new SearchTreeGroupEntry(new GUIContent("Create Node"), 0));
 
-					node.SetPosition(new Rect(pointInGraph, Vector2.zero));
+            Texture2D icon = EditorGUIUtility.FindTexture("cs Script Icon");
 
-					node.Select(graphView, false);
+            tree.Add(new SearchTreeGroupEntry(new GUIContent("Dialogue", icon)) { level = 1 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Basic Dialogue Node", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Advanced Dialogue Node", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Cinematic Dialogue Node", icon)) { level = 2 });
 
-					return true;
-				}
+            tree.Add(new SearchTreeGroupEntry(new GUIContent("Boolean", icon)) { level = 1 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Int)", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Float)", icon)) { level = 2 });
 
-				case "Boolean Node (Int)":
-				{
-					var node = new IntBooleanNode();
-					graphView.AddElement(node);
+            return tree;
+        }
 
-					Vector2 pointInWindow = context.screenMousePosition - position.position;
-					Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
+        public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
+        {
+            switch (entry.name)
+            {
+                case "Basic Dialogue Node":
+                    {
+                        var node = new DialogueGraphNode();
+                        graphView.AddElement(node);
 
-					node.SetPosition(new Rect(pointInGraph, Vector2.zero));
+                        Vector2 pointInWindow = context.screenMousePosition - position.position;
+                        Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
 
-					node.Select(graphView, false);
+                        node.SetPosition(new Rect(pointInGraph, Vector2.zero));
 
-					return true;
-				}
+                        node.Select(graphView, false);
 
-				case "Boolean Node (Float)":
-				{
-					var node = new FloatBooleanNode();
-					graphView.AddElement(node);
+                        return true;
+                    }
 
-					Vector2 pointInWindow = context.screenMousePosition - position.position;
-					Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
+                case "Advanced Dialogue Node":
+                    {
+                        var node = new AdvDialogueNode();
+                        graphView.AddElement(node);
 
-					node.SetPosition(new Rect(pointInGraph, Vector2.zero));
+                        Vector2 pointInWindow = context.screenMousePosition - position.position;
+                        Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
 
-					node.Select(graphView, false);
+                        node.SetPosition(new Rect(pointInGraph, Vector2.zero));
 
-					return true;
-				}
-			}
+                        node.Select(graphView, false);
 
-			return false;
-		}
-	}
+                        return true;
+                    }
 
-	public class DialogueGraphView : GraphView
-	{
-		public DialogueGraphView()
-		{
-			styleSheets.Add(Resources.Load<StyleSheet>("DialogueGraphStyle"));
+                case "Cinematic Dialogue Node":
+                    {
+                        var node = new CinematicDialogueNode();
+                        graphView.AddElement(node);
 
-			SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+                        Vector2 pointInWindow = context.screenMousePosition - position.position;
+                        Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
 
-			this.AddManipulator(new ContentDragger());
-			this.AddManipulator(new SelectionDragger());
-			this.AddManipulator(new RectangleSelector());
-			this.AddManipulator(new FreehandSelector());
+                        node.SetPosition(new Rect(pointInGraph, Vector2.zero));
 
-			var grid = new GridBackground { name = "GridBackground" };
-			Insert(0, grid);
-		}
+                        node.Select(graphView, false);
 
-		// overriden to allow port connections
-		public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
-		{
-			return ports.ToList().Where(port => port.direction != startPort.direction && port.node != startPort.node).ToList();
-		}
-	}
+                        return true;
+                    }
+
+                case "Boolean Node (Int)":
+                    {
+                        var node = new IntBooleanNode();
+                        graphView.AddElement(node);
+
+                        Vector2 pointInWindow = context.screenMousePosition - position.position;
+                        Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
+
+                        node.SetPosition(new Rect(pointInGraph, Vector2.zero));
+
+                        node.Select(graphView, false);
+
+                        return true;
+                    }
+
+                case "Boolean Node (Float)":
+                    {
+                        var node = new FloatBooleanNode();
+                        graphView.AddElement(node);
+
+                        Vector2 pointInWindow = context.screenMousePosition - position.position;
+                        Vector2 pointInGraph = node.parent.WorldToLocal(pointInWindow);
+
+                        node.SetPosition(new Rect(pointInGraph, Vector2.zero));
+
+                        node.Select(graphView, false);
+
+                        return true;
+                    }
+            }
+
+            return false;
+        }
+    }
+
+    public class DialogueGraphView : GraphView
+    {
+        public DialogueGraphView()
+        {
+            
+
+            SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+
+            this.AddManipulator(new ContentDragger());
+            this.AddManipulator(new SelectionDragger());
+            this.AddManipulator(new RectangleSelector());
+            this.AddManipulator(new FreehandSelector());
+
+            var grid = new GridBackground { name = "GridBackground" };
+            Insert(0, grid);
+        }
+
+        // overriden to allow port connections
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+        {
+            return ports.ToList().Where(port => port.direction != startPort.direction && port.node != startPort.node).ToList();
+        }
+
+        public void ClearGraphNodes()
+        {
+            //	! don't use `Clear()`, as this will remove the GridBackground unnecessarily
+            //	remove all nodes
+            List<Node> allNodes = nodes.ToList();
+            foreach (Node n in allNodes)
+            {
+                RemoveElement(n);
+            }
+
+            //	remove all edges
+            List<Edge> allEdges = edges.ToList();
+            foreach (Edge e in allEdges)
+            {
+                RemoveElement(e);
+            }
+        }
+    }
 }
