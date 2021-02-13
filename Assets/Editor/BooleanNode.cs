@@ -18,11 +18,12 @@ namespace CustomGraphEditors
 			LESS_OR_EQUAL_TO,
 			GREATER_OR_EQUAL_TO
 		}
+		public EnumField operationEnumField {get; set;}
 
 		public BooleanNode()
 		{
-			var opEnum = new EnumField(BooleanOperation.EQUAL_TO);
-			mainContainer.Insert(1, opEnum);
+			operationEnumField = new EnumField(BooleanOperation.EQUAL_TO);
+			mainContainer.Insert(1, operationEnumField);
 
 			AddPort("Output Bool", typeof(bool), false);
 		}

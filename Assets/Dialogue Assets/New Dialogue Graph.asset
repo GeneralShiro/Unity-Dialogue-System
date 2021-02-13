@@ -10,7 +10,40 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
-  m_Name: New Dialogue Graph
+  m_Name: 
   m_EditorClassIdentifier: 
-  nodeLinkData: []
-  nodeData: []
+  nodeLinkData:
+  - _inputNodeGuid: 1
+    _outputNodeGuid: 0
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 2
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  booleanNodeData: []
+  dialogueNodeData:
+  - _nodeGuid: 0
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 211, y: 188}
+    _speakerName: Person 1
+    _dialogueText: Hello!
+  advDialogueNodeData:
+  - _nodeGuid: 1
+    _nodeType: AdvDialogueNode
+    _nodePosition: {x: 500, y: 159}
+    _speakerName: Person 2
+    _dialogueText: Oh, hello! How are you?
+    _cameraPos: {x: 0, y: 0, z: 0}
+    _cameraRot: {x: 0, y: 0, z: 0}
+  cinematicDialogueNodeData:
+  - _nodeGuid: 2
+    _nodeType: CinematicDialogueNode
+    _nodePosition: {x: 849, y: 190}
+    _speakerName: Person 1
+    _dialogueText: I'm doing alright.
+    _timelineAsset: {fileID: 0}

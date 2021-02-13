@@ -8,38 +8,47 @@ namespace CustomGraphEditors
     public abstract class GraphAsset : ScriptableObject
     {
         public List<NodeLinkData> nodeLinkData;
-        public List<NodeData> nodeData;
+        //public List<NodeData> nodeData;
+        public List<BooleanNodeData> booleanNodeData;
 
-        public uint GetNewGUID()
+        public virtual uint GetNewGUID()
         {
             uint ret = 0;
 
-            for (int i = 0; i < nodeData.Count; i++)
+            for (int i = 0; i < booleanNodeData.Count; i++)
             {
-                if (ret < nodeData[i].nodeGuid)
+                if (ret <= booleanNodeData[i]._nodeGuid)
                 {
-                    ret = nodeData[i].nodeGuid;
+                    ret = booleanNodeData[i]._nodeGuid + 1;
                 }
             }
 
-            return ++ret;
+            return ret;
         }
     }
 
     [System.Serializable]
     public class NodeData
     {
-        public uint nodeGuid;
-        public string nodeType;
-        public Vector2 nodePosition;
+        public uint _nodeGuid;
+        public string _nodeType;
+        public Vector2 _nodePosition;
     }
 
     [System.Serializable]
     public class NodeLinkData
     {
-        public uint inputNodeGuid;
-        public uint outputNodeGuid;
-        public string inputPortName;
-        public string outputPortName;
+        public uint _inputNodeGuid;
+        public uint _outputNodeGuid;
+        public string _inputPortName;
+        public string _inputElementName;
+        public string _outputPortName;
+        public string _outputElementName;
+    }
+
+     [System.Serializable]
+    public class BooleanNodeData : NodeData
+    {
+        public int _booleanOpEnumVal;
     }
 }
