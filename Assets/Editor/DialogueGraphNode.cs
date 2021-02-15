@@ -8,7 +8,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
 
-namespace CustomGraphEditors.DialogueSystem
+namespace CustomEditors.DialogueSystem
 {
     public class DialogueGraphNode : GraphNode
     {

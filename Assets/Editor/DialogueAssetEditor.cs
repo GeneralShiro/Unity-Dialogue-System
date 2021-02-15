@@ -5,12 +5,13 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.Timeline;
+using UnityEngine.UIElements;
+
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine.UIElements;
 using UnityEditor.Callbacks;
 
-namespace CustomGraphEditors.DialogueSystem
+namespace CustomEditors.DialogueSystem
 {
     public class DialogueAssetEditor : GraphViewEditorWindow, ISearchWindowProvider
     {
@@ -39,7 +40,7 @@ namespace CustomGraphEditors.DialogueSystem
             return false;
         }
 
-        [MenuItem("Custom Editors/Dialogue Editor")]
+        [MenuItem("Window/Custom Editors/Dialogue Editor")]
         private static void OpenWindow()
         {
             GetWindow<DialogueAssetEditor>("Dialogue Asset Editor", true, typeof(SceneView));
@@ -68,23 +69,12 @@ namespace CustomGraphEditors.DialogueSystem
 
             OnSelectionChange();
             Selection.selectionChanged += OnSelectionChange;
-
         }
 
         // called when the object leaves scope
         private void OnDisable()
         {
             Selection.selectionChanged -= OnSelectionChange;
-        }
-
-        private void OnGUI()
-        {
-
-        }
-
-        private void OnFocus()
-        {
-
         }
 
         private void OnLostFocus()
@@ -228,6 +218,21 @@ namespace CustomGraphEditors.DialogueSystem
                         assetData.booleanNodeData.Add(nodeData);
                     }
                 }
+                else if (node is GraphNode)
+                {
+                    if (node.name == "StartNode")
+                    {
+                        GraphNode castNode = node as GraphNode;
+                        NodeData nodeData = new NodeData();
+
+                        // graph node data
+                        nodeData._nodeGuid = castNode.NodeGuid;
+                        nodeData._nodePosition = castNode.GetPosition().position;
+                        nodeData._nodeType = "StartNode";
+
+                        assetData.graphNodeData.Add(nodeData);
+                    }
+                }
             }
 
             List<Edge> edges = graphView.edges.ToList();
@@ -284,6 +289,23 @@ namespace CustomGraphEditors.DialogueSystem
             noAssetSelectedLabel.visible = false;
 
             List<GraphNode> nodes = new List<GraphNode>();
+
+            foreach (NodeData data in graphAsset.graphNodeData)
+            {
+                switch (data._nodeType)
+                {
+                    case "StartNode":
+                        {
+                            // transfer standard GraphNode data, add to graph
+                            GraphNode node = graphView.CreateStartNode(data._nodeGuid);
+                            node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+
+                            nodes.Add(node);
+
+                            break;
+                        }
+                }
+            }
 
             // create boolean nodes
             foreach (BooleanNodeData data in graphAsset.booleanNodeData)
@@ -441,6 +463,11 @@ namespace CustomGraphEditors.DialogueSystem
                 }
             }
 
+            if (graphView.startNode == null)
+            {
+                graphView.startNode = graphView.CreateStartNode(graphAsset.GetNewGUID());
+            }
+
             isLoadingAsset = false;
 
             return true;
@@ -578,6 +605,8 @@ namespace CustomGraphEditors.DialogueSystem
 
     public class DialogueGraphView : GraphView
     {
+        public GraphNode startNode;
+
         public DialogueGraphView()
         {
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
@@ -589,6 +618,26 @@ namespace CustomGraphEditors.DialogueSystem
 
             var grid = new GridBackground { name = "GridBackground" };
             Insert(0, grid);
+        }
+
+        public GraphNode CreateStartNode(uint guid)
+        {
+            startNode = new GraphNode() { name = "StartNode" };
+            startNode.title = "START";
+            startNode.capabilities &= ~(Capabilities.Deletable | Capabilities.Copiable);
+            startNode.SetPosition(new Rect(new Vector2(15f, 200f), new Vector2(100f, 100f)));
+            startNode.NodeGuid = guid;
+
+            startNode.titleButtonContainer.RemoveFromHierarchy();
+            startNode.inputContainer.RemoveFromHierarchy();
+            startNode.outputContainer.RemoveFromHierarchy();
+
+            var nextDialogueNodePort = startNode.AddPort("", typeof(DialogueGraphNode), startNode.titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
+            nextDialogueNodePort.AddToClassList("dialogueProgressPort");
+
+            AddElement(startNode);
+
+            return startNode;
         }
 
         // overriden to allow port connections
@@ -606,6 +655,7 @@ namespace CustomGraphEditors.DialogueSystem
             {
                 RemoveElement(n);
             }
+            startNode = null;
 
             //	remove all edges
             List<Edge> allEdges = edges.ToList();

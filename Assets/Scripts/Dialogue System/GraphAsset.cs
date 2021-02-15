@@ -3,17 +3,25 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-namespace CustomGraphEditors
+namespace CustomEditors
 {
     public abstract class GraphAsset : ScriptableObject
     {
         public List<NodeLinkData> nodeLinkData;
-        //public List<NodeData> nodeData;
+        public List<NodeData> graphNodeData;
         public List<BooleanNodeData> booleanNodeData;
 
         public virtual uint GetNewGUID()
         {
             uint ret = 0;
+
+            for (int i = 0; i < graphNodeData.Count; i++)
+            {
+                if (ret <= graphNodeData[i]._nodeGuid)
+                {
+                    ret = graphNodeData[i]._nodeGuid + 1;
+                }
+            }
 
             for (int i = 0; i < booleanNodeData.Count; i++)
             {

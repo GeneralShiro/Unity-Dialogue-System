@@ -6,7 +6,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace CustomGraphEditors
+namespace CustomEditors
 {
     public class GraphNode : Node
     {
@@ -19,7 +19,7 @@ namespace CustomGraphEditors
         }
 
 
-        protected Port AddPort(string portName, System.Type dataType, bool isInputPort = true, Port.Capacity capacity = Port.Capacity.Single, string elementId = "", int insertIndex = -1)
+        public Port AddPort(string portName, System.Type dataType, bool isInputPort = true, Port.Capacity capacity = Port.Capacity.Single, string elementId = "", int insertIndex = -1)
         {
             return AddPort(
                 portName,
@@ -32,7 +32,7 @@ namespace CustomGraphEditors
                 );
         }
 
-        protected Port AddPort(string portName, System.Type dataType, VisualElement parent, bool isInputPort = true, Port.Capacity capacity = Port.Capacity.Single, string elementId = "", int insertIndex = -1)
+        public Port AddPort(string portName, System.Type dataType, VisualElement parent, bool isInputPort = true, Port.Capacity capacity = Port.Capacity.Single, string elementId = "", int insertIndex = -1)
         {
             Port port = Port.Create<Edge>(
                   Orientation.Horizontal,

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.UIElements;
 
-namespace CustomGraphEditors
+namespace CustomEditors
 {
 	public abstract class BooleanNode : GraphNode
 	{

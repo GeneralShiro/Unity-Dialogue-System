@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-namespace CustomGraphEditors.DialogueSystem
+namespace CustomEditors.DialogueSystem
 {
     [CreateAssetMenu(fileName = "New Dialogue Graph", menuName = "Custom Graph Asset/Dialogue Graph", order = 1)]
     public class DialogueGraphAsset : GraphAsset
@@ -16,6 +16,7 @@ namespace CustomGraphEditors.DialogueSystem
 
         public DialogueGraphAsset()
         {
+            graphNodeData = new List<NodeData>();
             nodeLinkData = new List<NodeLinkData>();
 
             booleanNodeData = new List<BooleanNodeData>();

@@ -25,17 +25,27 @@ MonoBehaviour:
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 0
+    _outputNodeGuid: 3
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  graphNodeData:
+  - _nodeGuid: 3
+    _nodeType: StartNode
+    _nodePosition: {x: -3, y: 162}
   booleanNodeData: []
   dialogueNodeData:
   - _nodeGuid: 0
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 211, y: 188}
+    _nodePosition: {x: 170, y: 147}
     _speakerName: Person 1
     _dialogueText: Hello!
   advDialogueNodeData:
   - _nodeGuid: 1
     _nodeType: AdvDialogueNode
-    _nodePosition: {x: 500, y: 159}
+    _nodePosition: {x: 473, y: 171}
     _speakerName: Person 2
     _dialogueText: Oh, hello! How are you?
     _cameraPos: {x: 0, y: 0, z: 0}
@@ -43,7 +53,7 @@ MonoBehaviour:
   cinematicDialogueNodeData:
   - _nodeGuid: 2
     _nodeType: CinematicDialogueNode
-    _nodePosition: {x: 849, y: 190}
+    _nodePosition: {x: 832, y: 142}
     _speakerName: Person 1
     _dialogueText: I'm doing alright.
     _timelineAsset: {fileID: 0}
