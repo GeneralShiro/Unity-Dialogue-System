@@ -44,13 +44,15 @@ namespace CustomEditors
             port.portName = portName;
             port.name = elementId;
 
-            if(insertIndex >= 0)
+            if (insertIndex >= 0)
             {
                 parent.Insert(insertIndex, port);
-            } else {
-                parent.Add(port);              
             }
-            
+            else
+            {
+                parent.Add(port);
+            }
+
             return port;
         }
     }

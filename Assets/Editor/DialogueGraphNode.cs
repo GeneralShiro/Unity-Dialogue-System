@@ -7,17 +7,33 @@ using UnityEditor.UIElements;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
+using CustomSystem.DialogueSystem;
 
 namespace CustomEditors.DialogueSystem
 {
     public class DialogueGraphNode : GraphNode
     {
+        public struct ChoicePort
+        {
+            public uint id;
+            public Port port;
+            public TextField choiceText;
+        }
+        public List<ChoicePort> choicePorts { get; protected set; }
+
+        public List<uint> conditionIds { get; protected set; }
+
         protected VisualElement variableContainer;
         public TextField speakerTextField { get; set; }
         public TextField dialogueTextField { get; set; }
         protected Port titleNextNodePort;
 
-        protected uint numOfChoices;
+        protected uint choicePortId;
+        protected uint conditionPortId;
+
+        public delegate void NodeChangeEventHandler();
+        public event NodeChangeEventHandler OnNodeChange;
+
 
         public DialogueGraphNode()
         {
@@ -57,7 +73,9 @@ namespace CustomEditors.DialogueSystem
             addInputPortsButton.text = "Add Condition";
             inputContainer.Add(addInputPortsButton);
 
-            numOfChoices = 0;
+            choicePortId = conditionPortId = 0;
+            choicePorts = new List<ChoicePort>();
+            conditionIds = new List<uint>();
 
             // add button to output container for dialogue choices to be added
             var addOutputPortsButton = new Button(OnAddOutputPortButtonClick);
@@ -66,6 +84,13 @@ namespace CustomEditors.DialogueSystem
         }
 
         protected void OnAddInputPortButtonClick()
+        {
+            AddConditionPort(conditionPortId);
+            conditionPortId++;
+            OnNodeChange?.Invoke();
+        }
+
+        protected void AddConditionPort(uint id)
         {
             // 1. create panel to parent the port and delete button; add to input container
             var conditionPortPanel = new VisualElement()
@@ -81,25 +106,45 @@ namespace CustomEditors.DialogueSystem
                 conditionPortPanel,
                 true,
                 Port.Capacity.Single,
-                "dialogue-condition-input-port"
+                "dialogue-condition-input-port-" + id.ToString()
                 );
             port.tooltip = "Connect a boolean value";
+            port.AddToClassList("dialogueConditionInputPort");
 
             // 3. add delete button
             var deleteButton = new Button(() =>
             {
                 inputContainer.Remove(conditionPortPanel);
+                conditionIds.Remove(id);
             });
             deleteButton.name = "dialogue-condition-delete-button";
             deleteButton.text = "X";
             conditionPortPanel.Add(deleteButton);
+
+            conditionIds.Add(id);
         }
 
         protected void OnAddOutputPortButtonClick()
         {
-            // TODO: add two choice panels if none are present, otherwise only add one. 
-            // Also show warning if title container output port is being used; if choice outputs are present, the title bar output port won't be used.
+            AddChoicePort(choicePortId);
+            choicePortId++;
+            titleNextNodePort.SetEnabled(false);
+            OnNodeChange?.Invoke();
 
+            // if only one choice is present, add another one
+            if (choicePorts.Count < 2)
+            {
+                OnAddOutputPortButtonClick();
+            }
+        }
+
+        protected void AddChoicePort(uint id)
+        {
+            AddChoicePort(id, "<type choice text here>");
+        }
+
+        protected void AddChoicePort(uint id, string text)
+        {
             // 1. create panel to parent the port and delete button; add to output container
             var choicePortPanel = new VisualElement()
             {
@@ -107,12 +152,14 @@ namespace CustomEditors.DialogueSystem
             };
             outputContainer.Add(choicePortPanel);
 
+            ChoicePort choicePort = new ChoicePort();
+
             // 2. add delete button
             var deleteButton = new Button(() =>
             {
+                choicePorts.Remove(choicePort);
                 outputContainer.Remove(choicePortPanel);
-                numOfChoices--;
-                titleNextNodePort.SetEnabled(numOfChoices == 0);
+                titleNextNodePort.SetEnabled(choicePorts.Count == 0);
             });
             deleteButton.name = "dialogue-choice-delete-button";
             deleteButton.text = "X";
@@ -122,9 +169,15 @@ namespace CustomEditors.DialogueSystem
             var choiceTextField = new TextField()
             {
                 multiline = true,
-                value = "<type choice text here>",
-                name = "dialogue-choice-text-field"
+                value = text,
+                name = "dialogue-choice-text-field-" + id.ToString()
             };
+            choiceTextField.AddToClassList("dialogueChoiceTextField");
+            choiceTextField.RegisterValueChangedCallback((evt) =>
+            {
+                OnNodeChange?.Invoke();
+            });
+            choicePort.choiceText = choiceTextField;
             choicePortPanel.Add(choiceTextField);
 
             // 4. add output port
@@ -134,18 +187,47 @@ namespace CustomEditors.DialogueSystem
                 choicePortPanel,
                 false,
                 Port.Capacity.Multi,
-                "dialogue-choice-output-port"
+                "dialogue-choice-output-port-" + id.ToString()
                 );
             port.tooltip = "Connect to a Dialogue Node";
+            port.AddToClassList("dialogueChoiceOutputPort");
+            choicePort.port = port;
+            
 
-            numOfChoices++;
-            titleNextNodePort.SetEnabled(false);
+            // 5. add the new ChoicePort struct to the list
+            choicePort.id = id;
+            choicePorts.Add(choicePort);
+        }
 
-            // if only one choice is present, add another one
-            if (numOfChoices < 2)
+        public void InitializeFromData(DialogueNodeData data)
+        {
+            // transfer basic dialogue data over to new node
+            speakerTextField.value = data._speakerName;
+            dialogueTextField.value = data._dialogueText;
+
+            // add condition ports
+            for (int i = 0; i < data._conditionPortIds.Count; i++)
             {
-                OnAddOutputPortButtonClick();
+                AddConditionPort(data._conditionPortIds[i]);
+                if (conditionPortId <= data._conditionPortIds[i])
+                {
+                    conditionPortId = data._conditionPortIds[i] + 1;
+                }
             }
+
+            // add choice ports
+            for (int i = 0; i < data._choicePorts.Count; i++)
+            {
+                AddChoicePort(data._choicePorts[i]._portId, data._choicePorts[i]._choiceText);
+                if (choicePortId <= data._choicePorts[i]._portId)
+                {
+                    choicePortId = data._choicePorts[i]._portId + 1;
+                }
+            }
+
+            // transfer standard GraphNode data, add to graph
+            NodeGuid = data._nodeGuid;
+            SetPosition(new Rect(data._nodePosition, new Vector2(1, 1)));
         }
     }
 
@@ -171,6 +253,41 @@ namespace CustomEditors.DialogueSystem
             cameraRotField = new Vector3Field();
             variableContainer.Add(cameraRotField);
         }
+
+        public void InitializeFromData(AdvDialogueNodeData data)
+        {
+            // transfer basic dialogue data over to new node
+            speakerTextField.value = data._speakerName;
+            dialogueTextField.value = data._dialogueText;
+
+            // transfer advanced dialogue data over to new node
+            cameraPosField.value = data._cameraPos;
+            cameraRotField.value = data._cameraRot;
+
+            // add condition ports
+            for (int i = 0; i < data._conditionPortIds.Count; i++)
+            {
+                AddConditionPort(data._conditionPortIds[i]);
+                if (conditionPortId <= data._conditionPortIds[i])
+                {
+                    conditionPortId = data._conditionPortIds[i] + 1;
+                }
+            }
+
+            // add choice ports
+            for (int i = 0; i < data._choicePorts.Count; i++)
+            {
+                AddChoicePort(data._choicePorts[i]._portId, data._choicePorts[i]._choiceText);
+                if (choicePortId <= data._choicePorts[i]._portId)
+                {
+                    choicePortId = data._choicePorts[i]._portId + 1;
+                }
+            }
+
+            // transfer standard GraphNode data, add to graph
+            NodeGuid = data._nodeGuid;
+            SetPosition(new Rect(data._nodePosition, new Vector2(1, 1)));
+        }
     }
 
     public class CinematicDialogueNode : DialogueGraphNode
@@ -192,6 +309,40 @@ namespace CustomEditors.DialogueSystem
                 allowSceneObjects = false
             };
             variableContainer.Add(timelineField);
+        }
+
+        public void InitializeFromData(CinematicDialogueNodeData data)
+        {
+            // transfer basic dialogue data over to new node
+            speakerTextField.value = data._speakerName;
+            dialogueTextField.value = data._dialogueText;
+
+            // transfer cinematic dialogue data over to new node
+            timelineField.value = data._timelineAsset;
+
+            // add condition ports
+            for (int i = 0; i < data._conditionPortIds.Count; i++)
+            {
+                AddConditionPort(data._conditionPortIds[i]);
+                if (conditionPortId <= data._conditionPortIds[i])
+                {
+                    conditionPortId = data._conditionPortIds[i] + 1;
+                }
+            }
+
+            // add choice ports
+            for (int i = 0; i < data._choicePorts.Count; i++)
+            {
+                AddChoicePort(data._choicePorts[i]._portId, data._choicePorts[i]._choiceText);
+                if (choicePortId <= data._choicePorts[i]._portId)
+                {
+                    choicePortId = data._choicePorts[i]._portId + 1;
+                }
+            }
+
+            // transfer standard GraphNode data, add to graph
+            NodeGuid = data._nodeGuid;
+            SetPosition(new Rect(data._nodePosition, new Vector2(1, 1)));
         }
     }
 }

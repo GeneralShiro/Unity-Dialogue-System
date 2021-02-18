@@ -75,28 +75,29 @@
 	justify-content : space-between;
 }
 
-.dialogueGraphNode #dialogue-condition-input-port {
+.dialogueConditionInputPort {
 	width : 90px;
 	align-self : center;
 }
 
-.dialogueGraphNode #dialogue-choice-output-port {
+.dialogueChoiceOutputPort {
 	width : 24px;
 	align-self : center;
 }
 
-.dialogueGraphNode #dialogue-choice-output-port Label {
-		width : 0px;
+.dialogueChoiceOutputPort #type {
+	width : 0px;
 	margin-left : 0px;
 	margin-right : 0px;
+	position : absolute;
 }
 
-.dialogueGraphNode #dialogue-choice-text-field {
+.dialogueChoiceTextField {
 	width : 150px;
 	flex-direction : column;
 }
 
-.dialogueGraphNode #dialogue-choice-text-field TextInput {
+.dialogueChoiceTextField TextInput {
 	overflow : visible;
 	white-space : normal;
 	-unity-text-align : upper-left;

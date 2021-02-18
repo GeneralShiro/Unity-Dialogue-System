@@ -10,50 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
-  m_Name: 
+  m_Name: Dialogue Graph 1
   m_EditorClassIdentifier: 
-  nodeLinkData:
-  - _inputNodeGuid: 1
-    _outputNodeGuid: 0
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
-  - _inputNodeGuid: 2
-    _outputNodeGuid: 1
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
-  - _inputNodeGuid: 0
-    _outputNodeGuid: 3
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
+  nodeLinkData: []
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
-    _nodePosition: {x: 70, y: 119}
+    _nodePosition: {x: 249, y: 175}
   booleanNodeData: []
   dialogueNodeData:
-  - _nodeGuid: 0
+  - _nodeGuid: 5
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 257, y: 125}
-    _speakerName: Person 1
-    _dialogueText: Hello!
-  advDialogueNodeData:
-  - _nodeGuid: 1
-    _nodeType: AdvDialogueNode
-    _nodePosition: {x: 569, y: 116}
-    _speakerName: Person 2
-    _dialogueText: Oh, hello! How are you?
-    _cameraPos: {x: 0, y: 0, z: 0}
-    _cameraRot: {x: 0, y: 0, z: 0}
-  cinematicDialogueNodeData:
-  - _nodeGuid: 2
-    _nodeType: CinematicDialogueNode
-    _nodePosition: {x: 954, y: 112}
-    _speakerName: Person 1
-    _dialogueText: I'm doing alright.
-    _timelineAsset: {fileID: 0}
+    _nodePosition: {x: 903, y: 130}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: 
+    _dialogueText: 
+  - _nodeGuid: 4
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 415, y: 132}
+    _choicePorts:
+    - _portId: 1
+      _choiceText: 2
+    - _portId: 2
+      _choiceText: 1
+    _conditionPortIds: 0000000001000000
+    _speakerName: 
+    _dialogueText: 
+  advDialogueNodeData: []
+  cinematicDialogueNodeData: []

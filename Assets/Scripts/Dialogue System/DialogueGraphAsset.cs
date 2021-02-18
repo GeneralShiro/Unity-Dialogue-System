@@ -60,8 +60,23 @@ namespace CustomSystem.DialogueSystem
     [System.Serializable]
     public class DialogueNodeData : NodeData
     {
+        [System.Serializable]
+        public struct ChoicePortData
+        {
+            public uint _portId;
+            public string _choiceText;
+        }
+        public List<ChoicePortData> _choicePorts;
+        public List<uint> _conditionPortIds;
+
         public string _speakerName;
         public string _dialogueText;
+
+        public DialogueNodeData()
+        {
+            _choicePorts = new List<ChoicePortData>();
+            _conditionPortIds = new List<uint>();
+        }
     }
 
     [System.Serializable]
@@ -69,11 +84,21 @@ namespace CustomSystem.DialogueSystem
     {
         public Vector3 _cameraPos;
         public Vector3 _cameraRot;
+
+        public AdvDialogueNodeData()
+        {
+
+        }
     }
 
     [System.Serializable]
     public class CinematicDialogueNodeData : DialogueNodeData
     {
         public TimelineAsset _timelineAsset;
+
+        public CinematicDialogueNodeData()
+        {
+
+        }
     }
 }

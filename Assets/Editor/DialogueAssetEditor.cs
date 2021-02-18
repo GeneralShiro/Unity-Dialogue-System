@@ -82,7 +82,7 @@ namespace CustomEditors.DialogueSystem
 
         private void OnLostFocus()
         {
-            SaveGraphAsset("OnLostFocus");
+            SaveGraphAsset();
         }
 
         private void OnSelectionChange()
@@ -100,7 +100,6 @@ namespace CustomEditors.DialogueSystem
 
             if (!isLoadingAsset)
             {
-
                 LoadGraphAsset("OnSelectionChange");
             }
         }
@@ -114,12 +113,10 @@ namespace CustomEditors.DialogueSystem
             graphView.ClearGraphNodes();
         }
 
-        public void SaveGraphAsset(string saveFunc)
+        public void SaveGraphAsset()
         {
             if (graphAsset == null || isLoadingAsset)
                 return;
-
-            //Debug.Log("Saving asset from " + saveFunc);
 
             DialogueGraphAsset assetData = ScriptableObject.CreateInstance<DialogueGraphAsset>();
 
@@ -146,6 +143,21 @@ namespace CustomEditors.DialogueSystem
                         nodeData._speakerName = castNode.speakerTextField.value;
                         nodeData._dialogueText = castNode.dialogueTextField.value;
 
+                        // store IDs for condition input ports; needed to reconnect ports on load
+                        for (int j = 0; j < castNode.conditionIds.Count; j++)
+                        {
+                            nodeData._conditionPortIds.Add(castNode.conditionIds[j]);
+                        }
+
+                        // store IDs for choice output ports; needed to reconnect ports on load
+                        for (int j = 0; j < castNode.choicePorts.Count; j++)
+                        {
+                            DialogueNodeData.ChoicePortData choiceData = new DialogueNodeData.ChoicePortData();
+                            choiceData._portId = castNode.choicePorts[j].id;
+                            choiceData._choiceText = castNode.choicePorts[j].choiceText.value;
+                            nodeData._choicePorts.Add(choiceData);
+                        }
+
                         // advanced dialogue node data
                         nodeData._cameraPos = castNode.cameraPosField.value;
                         nodeData._cameraRot = castNode.cameraRotField.value;
@@ -166,6 +178,21 @@ namespace CustomEditors.DialogueSystem
                         nodeData._speakerName = castNode.speakerTextField.value;
                         nodeData._dialogueText = castNode.dialogueTextField.value;
 
+                        // store IDs for condition input ports; needed to reconnect ports on load
+                        for (int j = 0; j < castNode.conditionIds.Count; j++)
+                        {
+                            nodeData._conditionPortIds.Add(castNode.conditionIds[j]);
+                        }
+
+                        // store IDs for choice output ports; needed to reconnect ports on load
+                        for (int j = 0; j < castNode.choicePorts.Count; j++)
+                        {
+                            DialogueNodeData.ChoicePortData choiceData = new DialogueNodeData.ChoicePortData();
+                            choiceData._portId = castNode.choicePorts[j].id;
+                            choiceData._choiceText = castNode.choicePorts[j].choiceText.value;
+                            nodeData._choicePorts.Add(choiceData);
+                        }
+
                         // cinematic node data
                         nodeData._timelineAsset = castNode.timelineField.value as TimelineAsset;
 
@@ -184,6 +211,21 @@ namespace CustomEditors.DialogueSystem
                         // basic dialogue node data
                         nodeData._speakerName = castNode.speakerTextField.value;
                         nodeData._dialogueText = castNode.dialogueTextField.value;
+
+                        // store IDs for condition input ports; needed to reconnect ports on load
+                        for (int j = 0; j < castNode.conditionIds.Count; j++)
+                        {
+                            nodeData._conditionPortIds.Add(castNode.conditionIds[j]);
+                        }
+
+                        // store IDs for choice output ports; needed to reconnect ports on load
+                        for (int j = 0; j < castNode.choicePorts.Count; j++)
+                        {
+                            DialogueNodeData.ChoicePortData choiceData = new DialogueNodeData.ChoicePortData();
+                            choiceData._portId = castNode.choicePorts[j].id;
+                            choiceData._choiceText = castNode.choicePorts[j].choiceText.value;
+                            nodeData._choicePorts.Add(choiceData);
+                        }
 
                         assetData.dialogueNodeData.Add(nodeData);
                     }
@@ -272,7 +314,7 @@ namespace CustomEditors.DialogueSystem
         private void SaveDelayedGraphAsset()
         {
             EditorApplication.update -= SaveDelayedGraphAsset;
-            SaveGraphAsset("SaveDelayedGraphAsset");
+            SaveGraphAsset();
         }
 
         public bool LoadGraphAsset(string loadFunc)
@@ -355,16 +397,8 @@ namespace CustomEditors.DialogueSystem
             foreach (DialogueNodeData data in graphAsset.dialogueNodeData)
             {
                 DialogueGraphNode node = new DialogueGraphNode();
-
-                // transfer basic dialogue data over to new node
-                node.speakerTextField.value = data._speakerName;
-                node.dialogueTextField.value = data._dialogueText;
-
-                // transfer standard GraphNode data, add to graph
-                node.NodeGuid = data._nodeGuid;
-                node.SetPosition(new Rect(data._nodePosition, new Vector2(1, 1)));
+                node.InitializeFromData(data);
                 graphView.AddElement(node);
-
                 nodes.Add(node);
             }
 
@@ -372,20 +406,8 @@ namespace CustomEditors.DialogueSystem
             foreach (AdvDialogueNodeData data in graphAsset.advDialogueNodeData)
             {
                 AdvDialogueNode node = new AdvDialogueNode();
-
-                // transfer basic dialogue data over to new node
-                node.speakerTextField.value = data._speakerName;
-                node.dialogueTextField.value = data._dialogueText;
-
-                // transfer advanced dialogue data over to new node
-                node.cameraPosField.value = data._cameraPos;
-                node.cameraRotField.value = data._cameraRot;
-
-                // transfer standard GraphNode data, add to graph
-                node.NodeGuid = data._nodeGuid;
-                node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                node.InitializeFromData(data);
                 graphView.AddElement(node);
-
                 nodes.Add(node);
             }
 
@@ -393,19 +415,8 @@ namespace CustomEditors.DialogueSystem
             foreach (CinematicDialogueNodeData data in graphAsset.cinematicDialogueNodeData)
             {
                 CinematicDialogueNode node = new CinematicDialogueNode();
-
-                // transfer basic dialogue data over to new node
-                node.speakerTextField.value = data._speakerName;
-                node.dialogueTextField.value = data._dialogueText;
-
-                // transfer cinematic dialogue data over to new node
-                node.timelineField.value = data._timelineAsset;
-
-                // transfer standard GraphNode data, add to graph
-                node.NodeGuid = data._nodeGuid;
-                node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                node.InitializeFromData(data);
                 graphView.AddElement(node);
-
                 nodes.Add(node);
             }
 
@@ -509,6 +520,7 @@ namespace CustomEditors.DialogueSystem
                         var node = new DialogueGraphNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
+                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(SaveGraphAsset);
 
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
@@ -521,6 +533,7 @@ namespace CustomEditors.DialogueSystem
                         var node = new AdvDialogueNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
+                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(SaveGraphAsset);
 
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
@@ -533,6 +546,7 @@ namespace CustomEditors.DialogueSystem
                         var node = new CinematicDialogueNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
+                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(SaveGraphAsset);
 
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
@@ -548,7 +562,7 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset("operationEnumField change"));
+                        node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset());
 
                         return true;
                     }
@@ -561,7 +575,7 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset("operationEnumField change"));
+                        node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset());
 
                         return true;
                     }
@@ -585,23 +599,23 @@ namespace CustomEditors.DialogueSystem
         {
             if (node is DialogueGraphNode)
             {
-                node.speakerTextField.RegisterValueChangedCallback(val => SaveGraphAsset("speakerTextField change"));
-                node.dialogueTextField.RegisterValueChangedCallback(val => SaveGraphAsset("dialogueTextField change"));
+                node.speakerTextField.RegisterValueChangedCallback(val => SaveGraphAsset());
+                node.dialogueTextField.RegisterValueChangedCallback(val => SaveGraphAsset());
             }
 
             if (node is AdvDialogueNode)
             {
                 AdvDialogueNode advNode = node as AdvDialogueNode;
 
-                advNode.cameraPosField.RegisterValueChangedCallback(val => SaveGraphAsset("cameraPosField change"));
-                advNode.cameraRotField.RegisterValueChangedCallback(val => SaveGraphAsset("cameraRotField change"));
+                advNode.cameraPosField.RegisterValueChangedCallback(val => SaveGraphAsset());
+                advNode.cameraRotField.RegisterValueChangedCallback(val => SaveGraphAsset());
             }
 
             if (node is CinematicDialogueNode)
             {
                 CinematicDialogueNode advNode = node as CinematicDialogueNode;
 
-                advNode.timelineField.RegisterValueChangedCallback(val => SaveGraphAsset("timelineField change"));
+                advNode.timelineField.RegisterValueChangedCallback(val => SaveGraphAsset());
             }
         }
     }
