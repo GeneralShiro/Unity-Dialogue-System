@@ -11,6 +11,9 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.Callbacks;
 
+using CustomSystem;
+using CustomSystem.DialogueSystem;
+
 namespace CustomEditors.DialogueSystem
 {
     public class DialogueAssetEditor : GraphViewEditorWindow, ISearchWindowProvider

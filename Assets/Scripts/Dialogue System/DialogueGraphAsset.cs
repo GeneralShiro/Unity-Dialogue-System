@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-namespace CustomEditors.DialogueSystem
+namespace CustomSystem.DialogueSystem
 {
     [CreateAssetMenu(fileName = "New Dialogue Graph", menuName = "Custom Graph Asset/Dialogue Graph", order = 1)]
     public class DialogueGraphAsset : GraphAsset

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-namespace CustomEditors
+namespace CustomSystem
 {
     public abstract class GraphAsset : ScriptableObject
     {

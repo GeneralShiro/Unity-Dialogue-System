@@ -65,6 +65,63 @@
 	-unity-text-align : upper-left;
 }
 
+.dialogueGraphNode #dialogue-condition-panel {
+	flex-direction : row;
+	justify-content : space-between;
+}
+
+.dialogueGraphNode #dialogue-choice-panel {
+	flex-direction : row;
+	justify-content : space-between;
+}
+
+.dialogueGraphNode #dialogue-condition-input-port {
+	width : 90px;
+	align-self : center;
+}
+
+.dialogueGraphNode #dialogue-choice-output-port {
+	width : 24px;
+	align-self : center;
+}
+
+.dialogueGraphNode #dialogue-choice-output-port Label {
+		width : 0px;
+	margin-left : 0px;
+	margin-right : 0px;
+}
+
+.dialogueGraphNode #dialogue-choice-text-field {
+	width : 150px;
+	flex-direction : column;
+}
+
+.dialogueGraphNode #dialogue-choice-text-field TextInput {
+	overflow : visible;
+	white-space : normal;
+	-unity-text-align : upper-left;
+}
+
+.dialogueGraphNode #dialogue-condition-delete-button {
+	height : 20px;
+	width : 20px;
+	border-bottom-left-radius : 10px;
+	border-bottom-right-radius : 10px;
+	border-top-left-radius : 10px;
+	border-top-right-radius : 10px;
+	align-self : center;
+}
+
+.dialogueGraphNode #dialogue-choice-delete-button {
+	height : 20px;
+	width : 20px;
+	border-bottom-left-radius : 10px;
+	border-bottom-right-radius : 10px;
+	border-top-left-radius : 10px;
+	border-top-right-radius : 10px;
+	align-self : center;
+}
+
 .advDialogueNode #dialogue-text-field {
 	width : 249px;
 }

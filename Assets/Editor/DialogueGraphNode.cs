@@ -15,6 +15,9 @@ namespace CustomEditors.DialogueSystem
         protected VisualElement variableContainer;
         public TextField speakerTextField { get; set; }
         public TextField dialogueTextField { get; set; }
+        protected Port titleNextNodePort;
+
+        protected uint numOfChoices;
 
         public DialogueGraphNode()
         {
@@ -46,8 +49,103 @@ namespace CustomEditors.DialogueSystem
             var prevDialogueNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, true, Port.Capacity.Multi, "prev-dialogue-node-input", 0);
             prevDialogueNodePort.AddToClassList("dialogueProgressPort");
 
-            var nextDialogueNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
-            nextDialogueNodePort.AddToClassList("dialogueProgressPort");
+            titleNextNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
+            titleNextNodePort.AddToClassList("dialogueProgressPort");
+
+            // add button to input container to allow the addition of ports
+            var addInputPortsButton = new Button(OnAddInputPortButtonClick);
+            addInputPortsButton.text = "Add Condition";
+            inputContainer.Add(addInputPortsButton);
+
+            numOfChoices = 0;
+
+            // add button to output container for dialogue choices to be added
+            var addOutputPortsButton = new Button(OnAddOutputPortButtonClick);
+            addOutputPortsButton.text = "Add Choice";
+            outputContainer.Add(addOutputPortsButton);
+        }
+
+        protected void OnAddInputPortButtonClick()
+        {
+            // 1. create panel to parent the port and delete button; add to input container
+            var conditionPortPanel = new VisualElement()
+            {
+                name = "dialogue-condition-panel"
+            };
+            inputContainer.Add(conditionPortPanel);
+
+            // 2. add input port
+            Port port = AddPort(
+                "Boolean",
+                typeof(bool),
+                conditionPortPanel,
+                true,
+                Port.Capacity.Single,
+                "dialogue-condition-input-port"
+                );
+            port.tooltip = "Connect a boolean value";
+
+            // 3. add delete button
+            var deleteButton = new Button(() =>
+            {
+                inputContainer.Remove(conditionPortPanel);
+            });
+            deleteButton.name = "dialogue-condition-delete-button";
+            deleteButton.text = "X";
+            conditionPortPanel.Add(deleteButton);
+        }
+
+        protected void OnAddOutputPortButtonClick()
+        {
+            // TODO: add two choice panels if none are present, otherwise only add one. 
+            // Also show warning if title container output port is being used; if choice outputs are present, the title bar output port won't be used.
+
+            // 1. create panel to parent the port and delete button; add to output container
+            var choicePortPanel = new VisualElement()
+            {
+                name = "dialogue-choice-panel"
+            };
+            outputContainer.Add(choicePortPanel);
+
+            // 2. add delete button
+            var deleteButton = new Button(() =>
+            {
+                outputContainer.Remove(choicePortPanel);
+                numOfChoices--;
+                titleNextNodePort.SetEnabled(numOfChoices == 0);
+            });
+            deleteButton.name = "dialogue-choice-delete-button";
+            deleteButton.text = "X";
+            choicePortPanel.Add(deleteButton);
+
+            // 3. add text field for choice text
+            var choiceTextField = new TextField()
+            {
+                multiline = true,
+                value = "<type choice text here>",
+                name = "dialogue-choice-text-field"
+            };
+            choicePortPanel.Add(choiceTextField);
+
+            // 4. add output port
+            Port port = AddPort(
+                "",
+                typeof(DialogueGraphNode),
+                choicePortPanel,
+                false,
+                Port.Capacity.Multi,
+                "dialogue-choice-output-port"
+                );
+            port.tooltip = "Connect to a Dialogue Node";
+
+            numOfChoices++;
+            titleNextNodePort.SetEnabled(false);
+
+            // if only one choice is present, add another one
+            if (numOfChoices < 2)
+            {
+                OnAddOutputPortButtonClick();
+            }
         }
     }
 
