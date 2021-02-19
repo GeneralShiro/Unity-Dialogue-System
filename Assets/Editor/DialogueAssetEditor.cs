@@ -118,6 +118,9 @@ namespace CustomEditors.DialogueSystem
             if (graphAsset == null || isLoadingAsset)
                 return;
 
+            // get rid of edges with missing nodes before saving
+            graphView.ClearDanglingEdges();
+
             DialogueGraphAsset assetData = ScriptableObject.CreateInstance<DialogueGraphAsset>();
 
             List<Node> nodes = graphView.nodes.ToList();
@@ -286,19 +289,23 @@ namespace CustomEditors.DialogueSystem
             for (int i = 0; i < edges.Count; i++)
             {
                 Edge edge = edges[i];
-                NodeLinkData edgeData = new NodeLinkData();
 
-                GraphNode castNode = edge.output.node as GraphNode;
-                edgeData._outputNodeGuid = castNode.NodeGuid;
-                edgeData._outputPortName = edge.output.portName;
-                edgeData._outputElementName = edge.output.name;
+                if (edge.output.node != null && edge.input.node != null)
+                {
+                    NodeLinkData edgeData = new NodeLinkData();
 
-                castNode = edge.input.node as GraphNode;
-                edgeData._inputNodeGuid = castNode.NodeGuid;
-                edgeData._inputPortName = edge.input.portName;
-                edgeData._inputElementName = edge.input.name;
+                    GraphNode castNode = edge.output.node as GraphNode;
+                    edgeData._outputNodeGuid = castNode.NodeGuid;
+                    edgeData._outputPortName = edge.output.portName;
+                    edgeData._outputElementName = edge.output.name;
 
-                assetData.nodeLinkData.Add(edgeData);
+                    castNode = edge.input.node as GraphNode;
+                    edgeData._inputNodeGuid = castNode.NodeGuid;
+                    edgeData._inputPortName = edge.input.portName;
+                    edgeData._inputElementName = edge.input.name;
+
+                    assetData.nodeLinkData.Add(edgeData);
+                }
             }
 
             EditorUtility.CopySerialized(assetData, graphAsset);
@@ -436,11 +443,37 @@ namespace CustomEditors.DialogueSystem
                     if (data._inputNodeGuid == node.NodeGuid || data._outputNodeGuid == node.NodeGuid)
                     {
                         // we can have ports in the title container, output container or input container, so get all of their child elements to search through
-                        List<VisualElement> allElements = node.titleContainer.Children()
-                                                            .Concat(node.outputContainer.Children())
-                                                            .Concat(node.inputContainer.Children())
-                                                            .ToList();
+                        List<VisualElement> allElements = node.titleContainer.Children().ToList();
 
+                        // find condition ports
+                        List<VisualElement> inputContainerChildren = node.inputContainer.Children().ToList();
+                        foreach (VisualElement ve in inputContainerChildren)
+                        {
+                            List<VisualElement> children = ve.Children().ToList();
+                            foreach (VisualElement childVe in children)
+                            {
+                                if (childVe is Port)
+                                {
+                                    allElements.Add(childVe);
+                                }
+                            }
+                        }
+
+                        // find choice ports
+                        List<VisualElement> outputContainerChildren = node.outputContainer.Children().ToList();
+                        foreach (VisualElement ve in outputContainerChildren)
+                        {
+                            List<VisualElement> children = ve.Children().ToList();
+                            foreach (VisualElement childVe in children)
+                            {
+                                if (childVe is Port)
+                                {
+                                    allElements.Add(childVe);
+                                }
+                            }
+                        }
+
+                        // check all ports in the collection of elements
                         foreach (VisualElement element in allElements)
                         {
                             if (element is Port)
@@ -679,6 +712,23 @@ namespace CustomEditors.DialogueSystem
             foreach (Edge e in allEdges)
             {
                 RemoveElement(e);
+            }
+        }
+
+        public void ClearDanglingEdges()
+        {
+            List<Edge> edgesList = this.edges.ToList();
+
+            for (int i = edgesList.Count - 1; i >= 0; i--)
+            {
+                Edge e = edgesList[i];
+                if (e.output.node == null || e.input.node == null)
+                {
+                    e.output.Disconnect(e);
+                    e.input.Disconnect(e);
+
+                    RemoveElement(e);
+                }
             }
         }
     }

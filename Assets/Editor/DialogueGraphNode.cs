@@ -33,6 +33,7 @@ namespace CustomEditors.DialogueSystem
 
         public delegate void NodeChangeEventHandler();
         public event NodeChangeEventHandler OnNodeChange;
+        protected bool changed;
 
 
         public DialogueGraphNode()
@@ -49,14 +50,23 @@ namespace CustomEditors.DialogueSystem
             // field for speaker
             var speakerFieldLabel = new Label("Speaker Name");
             variableContainer.Add(speakerFieldLabel);
-            speakerTextField = new TextField { multiline = false };
+            speakerTextField = new TextField
+            {
+                name = "dialogue-speaker-field",
+                multiline = false
+            };
             variableContainer.Add(speakerTextField);
 
             // field for dialogue window text
             var dialogueFieldLabel = new Label("Dialogue Text");
             variableContainer.Add(dialogueFieldLabel);
-            dialogueTextField = new TextField { name = "dialogue-text-field", multiline = true };
+            dialogueTextField = new TextField
+            {
+                name = "dialogue-text-field",
+                multiline = true
+            };
             variableContainer.Add(dialogueTextField);
+
 
             // get rid of the collapse button
             titleButtonContainer.RemoveFromHierarchy();
@@ -114,8 +124,10 @@ namespace CustomEditors.DialogueSystem
             // 3. add delete button
             var deleteButton = new Button(() =>
             {
-                inputContainer.Remove(conditionPortPanel);
+                port.DisconnectAll();
                 conditionIds.Remove(id);
+                inputContainer.Remove(conditionPortPanel);
+                OnNodeChange?.Invoke();
             });
             deleteButton.name = "dialogue-condition-delete-button";
             deleteButton.text = "X";
@@ -157,9 +169,11 @@ namespace CustomEditors.DialogueSystem
             // 2. add delete button
             var deleteButton = new Button(() =>
             {
+                choicePort.port.DisconnectAll();
                 choicePorts.Remove(choicePort);
-                outputContainer.Remove(choicePortPanel);
                 titleNextNodePort.SetEnabled(choicePorts.Count == 0);
+                outputContainer.Remove(choicePortPanel);
+                OnNodeChange?.Invoke();
             });
             deleteButton.name = "dialogue-choice-delete-button";
             deleteButton.text = "X";
@@ -192,7 +206,7 @@ namespace CustomEditors.DialogueSystem
             port.tooltip = "Connect to a Dialogue Node";
             port.AddToClassList("dialogueChoiceOutputPort");
             choicePort.port = port;
-            
+
 
             // 5. add the new ChoicePort struct to the list
             choicePort.id = id;

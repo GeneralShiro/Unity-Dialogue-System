@@ -18,24 +18,6 @@ MonoBehaviour:
     _nodeType: StartNode
     _nodePosition: {x: 249, y: 175}
   booleanNodeData: []
-  dialogueNodeData:
-  - _nodeGuid: 5
-    _nodeType: DialogueGraphNode
-    _nodePosition: {x: 903, y: 130}
-    _choicePorts: []
-    _conditionPortIds: 
-    _speakerName: 
-    _dialogueText: 
-  - _nodeGuid: 4
-    _nodeType: DialogueGraphNode
-    _nodePosition: {x: 415, y: 132}
-    _choicePorts:
-    - _portId: 1
-      _choiceText: 2
-    - _portId: 2
-      _choiceText: 1
-    _conditionPortIds: 0000000001000000
-    _speakerName: 
-    _dialogueText: 
+  dialogueNodeData: []
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

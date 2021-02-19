@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 
 using UnityEditor.Experimental.GraphView;
@@ -55,5 +56,26 @@ namespace CustomEditors
 
             return port;
         }
+
+
+/*
+        public static IEnumerable<VisualElement> GetAllVisualElements(VisualElement element)
+        {
+            //Debug.Log(element.name);
+
+            IEnumerable<VisualElement> allElements = element.Children();
+
+            if (element.childCount > 0)
+            {
+                IEnumerator<VisualElement> child = element.Children().GetEnumerator();
+
+                while (child.MoveNext())
+                {
+                    allElements.Concat(GetAllVisualElements(child.Current));
+                } 
+            }
+
+            return allElements;
+        }*/
     }
 }
