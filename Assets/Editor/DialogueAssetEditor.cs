@@ -35,7 +35,7 @@ namespace CustomEditors.DialogueSystem
                 window.titleContent = new GUIContent("Dialogue Asset Editor");
                 window.graphAsset = obj as DialogueGraphAsset;
                 window.minSize = new Vector2(500f, 300f);
-                window.LoadGraphAsset("OpenWindow");
+                window.LoadGraphAsset();
 
                 return true;
             }
@@ -100,7 +100,7 @@ namespace CustomEditors.DialogueSystem
 
             if (!isLoadingAsset)
             {
-                LoadGraphAsset("OnSelectionChange");
+                LoadGraphAsset();
             }
         }
 
@@ -324,7 +324,7 @@ namespace CustomEditors.DialogueSystem
             SaveGraphAsset();
         }
 
-        public bool LoadGraphAsset(string loadFunc)
+        public bool LoadGraphAsset()
         {
             ClearGraph();
 
@@ -332,8 +332,6 @@ namespace CustomEditors.DialogueSystem
             {
                 return false;
             }
-
-            //Debug.Log("Loading asset from " + loadFunc);
 
             isLoadingAsset = true;
 
@@ -684,6 +682,7 @@ namespace CustomEditors.DialogueSystem
 
             var nextDialogueNodePort = startNode.AddPort("", typeof(DialogueGraphNode), startNode.titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
             nextDialogueNodePort.AddToClassList("dialogueProgressPort");
+            nextDialogueNodePort.tooltip = "Connect to the first dialogue node";
 
             AddElement(startNode);
 

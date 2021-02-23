@@ -12,12 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
   m_Name: Dialogue Graph 1
   m_EditorClassIdentifier: 
-  nodeLinkData: []
+  nodeLinkData:
+  - _inputNodeGuid: 4
+    _outputNodeGuid: 3
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 5
+    _outputNodeGuid: 4
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: dialogue-choice-output-port-0
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
     _nodePosition: {x: 249, y: 175}
   booleanNodeData: []
-  dialogueNodeData: []
+  dialogueNodeData:
+  - _nodeGuid: 4
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 440, y: 142}
+    _choicePorts:
+    - _portId: 0
+      _choiceText: 
+    - _portId: 1
+      _choiceText: <type choice text here>
+    _conditionPortIds: 00000000
+    _speakerName: 
+    _dialogueText: 
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

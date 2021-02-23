@@ -74,9 +74,11 @@ namespace CustomEditors.DialogueSystem
             // add ports to title container for dialogue node progression
             var prevDialogueNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, true, Port.Capacity.Multi, "prev-dialogue-node-input", 0);
             prevDialogueNodePort.AddToClassList("dialogueProgressPort");
+            prevDialogueNodePort.tooltip = "Connect previous dialogue node here";
 
             titleNextNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
             titleNextNodePort.AddToClassList("dialogueProgressPort");
+            titleNextNodePort.tooltip = "Connect to next dialogue node (if not using dialogue choices)";
 
             // add button to input container to allow the addition of ports
             var addInputPortsButton = new Button(OnAddInputPortButtonClick);
@@ -131,6 +133,7 @@ namespace CustomEditors.DialogueSystem
             });
             deleteButton.name = "dialogue-condition-delete-button";
             deleteButton.text = "X";
+            deleteButton.tooltip = "Delete";
             conditionPortPanel.Add(deleteButton);
 
             conditionIds.Add(id);
@@ -177,6 +180,7 @@ namespace CustomEditors.DialogueSystem
             });
             deleteButton.name = "dialogue-choice-delete-button";
             deleteButton.text = "X";
+            deleteButton.tooltip = "Delete";
             choicePortPanel.Add(deleteButton);
 
             // 3. add text field for choice text
