@@ -24,26 +24,70 @@ MonoBehaviour:
     _inputPortName: 
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
-    _outputElementName: next-dialogue-node-input
+    _outputElementName: dialogue-choice-output-port-0
+  - _inputNodeGuid: 6
+    _outputNodeGuid: 4
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: dialogue-choice-output-port-1
+  - _inputNodeGuid: 4
+    _outputNodeGuid: 6
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: dialogue-choice-output-port-0
+  - _inputNodeGuid: 7
+    _outputNodeGuid: 6
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: dialogue-choice-output-port-1
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
     _nodePosition: {x: 249, y: 175}
   booleanNodeData: []
   dialogueNodeData:
-  - _nodeGuid: 5
-    _nodeType: DialogueGraphNode
-    _nodePosition: {x: 757, y: 166}
-    _choicePorts: []
-    _conditionPortIds: 
-    _speakerName: Speaker 2
-    _dialogueText: This is dialogue text 2
   - _nodeGuid: 4
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 414, y: 170}
-    _choicePorts: []
+    _nodePosition: {x: 454, y: 170}
+    _choicePorts:
+    - _portId: 0
+      _choiceText: This is dialogue choice 1.
+    - _portId: 1
+      _choiceText: This is dialogue choice 2.
+    - _portId: 2
+      _choiceText: This is choice #3.
+    - _portId: 3
+      _choiceText: This is choice #4.
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: This is dialogue text 1.
+  - _nodeGuid: 5
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 963, y: 140}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: You chose choice #1! Nice!
+  - _nodeGuid: 6
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 962, y: 343}
+    _choicePorts:
+    - _portId: 0
+      _choiceText: Oops, let's go back.
+    - _portId: 1
+      _choiceText: Just end it.
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: You chose choice #2! You fool!
+  - _nodeGuid: 7
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 1436, y: 358}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 2
+    _dialogueText: I'm leaving, see ya.
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

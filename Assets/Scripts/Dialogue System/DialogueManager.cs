@@ -19,17 +19,11 @@ namespace CustomSystem.DialogueSystem
 
         public Camera _camera;
         public PlayableDirector _timelineDirector;
+        public DialogueUI _dialogueUI;
 
         public DialogueGraphAsset _testAsset;
         private DialogueTree _dialogueTree;
         private bool _isRunningDialogue;
-
-        [Header("Dialogue UI")]
-        public GameObject _dialoguePanel;
-        public TextMeshProUGUI _speakerNameText;
-        public TextMeshProUGUI _dialogueText;
-        public GameObject _dialogueContinueIcon;
-        public GameObject _dialogueEndIcon;
 
 
         private void OnEnable()
@@ -37,7 +31,6 @@ namespace CustomSystem.DialogueSystem
             if (dialogueManager == null)
             {
                 dialogueManager = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -67,7 +60,8 @@ namespace CustomSystem.DialogueSystem
         // Update is called once per frame
         void Update()
         {
-            if(Keyboard.current.spaceKey.IsPressed() && !_isRunningDialogue){
+            if (Keyboard.current.spaceKey.IsPressed() && !_isRunningDialogue)
+            {
                 OpenDialoguePanel();
             }
         }
@@ -80,7 +74,7 @@ namespace CustomSystem.DialogueSystem
         public void OpenDialoguePanel()
         {
             SetCurrentDialogue(_dialogueTree.startNode);
-            _dialoguePanel.SetActive(true);
+            _dialogueUI.SetDialoguePanelVisibility(true);
             _isRunningDialogue = true;
         }
 
@@ -93,33 +87,54 @@ namespace CustomSystem.DialogueSystem
 
             _dialogueTree.currentNode = node;
 
-            _speakerNameText.text = node.speakerName;
-            _dialogueText.text = node.dialogueText;
-
-            _dialogueContinueIcon.SetActive(node.childNodes.Count >= 1);
-            _dialogueEndIcon.SetActive(node.childNodes.Count < 1);
+            _dialogueUI.SetDialogueText(node);
         }
 
-        public void ContinueDialogue()
+        public void ContinueDialogue(uint choiceId = 0)
         {
             if (_dialogueTree.currentNode.choices.Count > 0 || _dialogueTree.currentNode.childNodes.Count > 0)
             {
                 //  TODO: handle moving to nodes via choices
                 if (_dialogueTree.currentNode.choices.Count > 0)
                 {
+                    DialogueNode.DialogueChoice choice = _dialogueTree.currentNode.choices[choiceId];
 
+                    if (choice.childNodes.Count > 0)
+                    {
+                        //  TODO: handle moving to multiple nodes based on conditions
+                        SetCurrentDialogue(choice.childNodes[0]);
+                    }
+                    else
+                    {
+                        _dialogueUI.SetDialoguePanelVisibility(false);
+                        _isRunningDialogue = false;
+                    }
                 }
                 else
                 {
                     //  TODO: handle moving to multiple nodes based on conditions
-
                     SetCurrentDialogue(_dialogueTree.currentNode.childNodes[0]);
                 }
             }
             else    // end dialogue
             {
-                _dialoguePanel.SetActive(false);
+                _dialogueUI.SetDialoguePanelVisibility(false);
                 _isRunningDialogue = false;
+            }
+        }
+
+        public static bool IsRunningDialogue
+        {
+            get
+            {
+                bool ret = false;
+
+                if (dialogueManager != null)
+                {
+                    ret = dialogueManager._isRunningDialogue;
+                }
+
+                return ret;
             }
         }
     }

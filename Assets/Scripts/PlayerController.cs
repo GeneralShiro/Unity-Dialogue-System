@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+using CustomSystem.DialogueSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,18 +14,21 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdatePosition();
-        UpdateRotation();
+        if (IsReceivingInput)
+        {
+            UpdatePosition();
+            UpdateRotation();
+        }
     }
 
     private void UpdatePosition()
-	{
+    {
         Vector3 movement = new Vector3();
 
         if (Keyboard.current.wKey.isPressed)
@@ -49,7 +55,15 @@ public class PlayerController : MonoBehaviour
     }
 
     private void UpdateRotation()
-	{
-        gameObject.transform.Rotate(new Vector3(0f, Mouse.current.delta.x.ReadValue()*_rotationSpeed, 0f), Space.Self);
-	}
+    {
+        gameObject.transform.Rotate(new Vector3(0f, Mouse.current.delta.x.ReadValue() * _rotationSpeed, 0f), Space.Self);
+    }
+
+    public bool IsReceivingInput
+    {
+        get
+        {
+            return !DialogueManager.IsRunningDialogue;
+        }
+    }
 }
