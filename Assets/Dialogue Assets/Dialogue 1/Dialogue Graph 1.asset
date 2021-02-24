@@ -24,23 +24,26 @@ MonoBehaviour:
     _inputPortName: 
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
-    _outputElementName: dialogue-choice-output-port-0
+    _outputElementName: next-dialogue-node-input
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
     _nodePosition: {x: 249, y: 175}
   booleanNodeData: []
   dialogueNodeData:
+  - _nodeGuid: 5
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 757, y: 166}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 2
+    _dialogueText: This is dialogue text 2
   - _nodeGuid: 4
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 440, y: 142}
-    _choicePorts:
-    - _portId: 0
-      _choiceText: 
-    - _portId: 1
-      _choiceText: <type choice text here>
-    _conditionPortIds: 00000000
-    _speakerName: 
-    _dialogueText: 
+    _nodePosition: {x: 414, y: 170}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: This is dialogue text 1.
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

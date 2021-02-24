@@ -10,6 +10,7 @@ namespace CustomSystem.DialogueSystem
     {
         public Dictionary<uint, DialogueNode> nodes { get; protected set; }
         public DialogueNode startNode { get; protected set; }
+        public DialogueNode currentNode;
 
         public DialogueTree()
         {
