@@ -84,6 +84,7 @@ namespace CustomSystem.DialogueSystem
     {
         public Vector3 _cameraPos;
         public Vector3 _cameraRot;
+        public float _lerpTime;
 
         public AdvDialogueNodeData()
         {

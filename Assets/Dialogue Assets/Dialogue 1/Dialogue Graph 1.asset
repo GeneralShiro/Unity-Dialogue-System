@@ -43,6 +43,18 @@ MonoBehaviour:
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: dialogue-choice-output-port-1
+  - _inputNodeGuid: 8
+    _outputNodeGuid: 4
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: dialogue-choice-output-port-2
+  - _inputNodeGuid: 9
+    _outputNodeGuid: 8
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
@@ -59,8 +71,6 @@ MonoBehaviour:
       _choiceText: This is dialogue choice 2.
     - _portId: 2
       _choiceText: This is choice #3.
-    - _portId: 3
-      _choiceText: This is choice #4.
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: This is dialogue text 1.
@@ -89,5 +99,25 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 2
     _dialogueText: I'm leaving, see ya.
-  advDialogueNodeData: []
+  advDialogueNodeData:
+  - _nodeGuid: 8
+    _nodeType: AdvDialogueNode
+    _nodePosition: {x: 986, y: 638}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: This is -advanced- dialogue!
+    _cameraPos: {x: -9.383185, y: 6.842808, z: 13.31388}
+    _cameraRot: {x: 21.178, y: 145.932, z: 0}
+    _lerpTime: 1
+  - _nodeGuid: 9
+    _nodeType: AdvDialogueNode
+    _nodePosition: {x: 1351, y: 639}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 2
+    _dialogueText: Nice~ Wish it was easier to set up though.
+    _cameraPos: {x: 6.507501, y: 3.042581, z: 5.137024}
+    _cameraRot: {x: 19.459, y: -134.828, z: 0}
+    _lerpTime: 0
   cinematicDialogueNodeData: []

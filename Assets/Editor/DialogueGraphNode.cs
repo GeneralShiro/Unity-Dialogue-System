@@ -253,6 +253,7 @@ namespace CustomEditors.DialogueSystem
     {
         public Vector3Field cameraPosField { get; set; }
         public Vector3Field cameraRotField { get; set; }
+        public FloatField lerpTimeField { get; set; }
 
         public AdvDialogueNode()
         {
@@ -270,6 +271,11 @@ namespace CustomEditors.DialogueSystem
             variableContainer.Add(cameraRotLabel);
             cameraRotField = new Vector3Field();
             variableContainer.Add(cameraRotField);
+
+            // field for lerp time
+            lerpTimeField = new FloatField("Lerp Time (in seconds)");
+            lerpTimeField.tooltip = "Determines how long the camera should take to move to the new position and rotation.";
+            variableContainer.Add(lerpTimeField);
         }
 
         public void InitializeFromData(AdvDialogueNodeData data)
@@ -281,6 +287,7 @@ namespace CustomEditors.DialogueSystem
             // transfer advanced dialogue data over to new node
             cameraPosField.value = data._cameraPos;
             cameraRotField.value = data._cameraRot;
+            lerpTimeField.value = data._lerpTime;
 
             // add condition ports
             for (int i = 0; i < data._conditionPortIds.Count; i++)

@@ -164,6 +164,7 @@ namespace CustomEditors.DialogueSystem
                         // advanced dialogue node data
                         nodeData._cameraPos = castNode.cameraPosField.value;
                         nodeData._cameraRot = castNode.cameraRotField.value;
+                        nodeData._lerpTime = castNode.lerpTimeField.value;
 
                         assetData.advDialogueNodeData.Add(nodeData);
                     }

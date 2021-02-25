@@ -156,6 +156,7 @@ namespace CustomSystem.DialogueSystem
     {
         public Vector3 cameraWorldPos { get; protected set; }
         public Vector3 cameraWorldRot { get; protected set; }
+        public float lerpTime { get; protected set; }
 
         public AdvDialogueNode() { }
 
@@ -169,6 +170,7 @@ namespace CustomSystem.DialogueSystem
 
             cameraWorldPos = data._cameraPos;
             cameraWorldRot = data._cameraRot;
+            lerpTime = data._lerpTime;
 
             choices = new Dictionary<uint, DialogueChoice>();
             List<DialogueNodeData.ChoicePortData> choiceData = data._choicePorts;

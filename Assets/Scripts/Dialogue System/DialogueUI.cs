@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using TMPro;
 
 namespace CustomSystem.DialogueSystem
@@ -11,6 +12,9 @@ namespace CustomSystem.DialogueSystem
     {
         public GameObject _dialoguePanel;
         public TextMeshProUGUI _speakerNameText;
+        [Range(0.5f, 5.0f)]
+        public float _textSpeed = 1.0f;
+        public bool _isTextInstant;
 
         [Header("UI When No Choices Are Present")]
         public GameObject _dialogueNoChoicesPanel;
@@ -25,6 +29,41 @@ namespace CustomSystem.DialogueSystem
         public GameObject _dialogueChoicePrefab;
         public List<DialogueChoiceUI> _choices;
 
+        private bool _isFinalNode;
+        private bool _hasChoices;
+        private bool _isWritingText;
+        private float _elapsedWritingTime;
+        private string _dialogueString;
+        private int _currentTextIndex;
+
+        private void Update()
+        {
+            if (_isWritingText)
+            {
+                if (_elapsedWritingTime >= CharWritingTime)
+                {
+                    if (_currentTextIndex < _dialogueString.Length - 1)
+                    {
+                        TextDisplay.text = _dialogueString.Substring(0, _currentTextIndex + 1);
+                        _currentTextIndex++;
+                        _elapsedWritingTime = 0f;
+                    }
+                    else
+                    {
+                        EndDialogueWriting();
+                    }
+                }
+                else
+                {
+                    _elapsedWritingTime += Time.deltaTime;
+                }
+            }
+
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                OnDialogueClick();
+            }
+        }
 
         public void SetDialogueText(DialogueNode node)
         {
@@ -34,18 +73,16 @@ namespace CustomSystem.DialogueSystem
             }
 
             _speakerNameText.text = node.speakerName;
-            bool hasChoices = (node.choices.Count != 0);
+            _hasChoices = (node.choices.Count != 0);
+            TextDisplay.text = "";
 
-            if (!hasChoices)
+            if (!_hasChoices)
             {
-                _dialogueNoChoicesText.text = node.dialogueText;
-
-                _dialogueContinueIcon.SetActive(node.childNodes.Count >= 1);
-                _dialogueEndIcon.SetActive(node.childNodes.Count < 1);
+                _isFinalNode = (node.childNodes.Count < 1);
             }
             else
             {
-                _dialogueWithChoicesText.text = node.dialogueText;
+                _choicesScrollRect.gameObject.SetActive(false);
 
                 if (_choices == null)
                 {
@@ -73,18 +110,57 @@ namespace CustomSystem.DialogueSystem
                 }
             }
 
-            _dialogueNoChoicesPanel.SetActive(!hasChoices);
-            _dialogueWithChoicesPanel.SetActive(hasChoices);
+            _dialogueString = node.dialogueText;
+            _currentTextIndex = 0;
+            _elapsedWritingTime = 0f;
+            _isWritingText = true;
+
+            _dialogueNoChoicesPanel.SetActive(!_hasChoices);
+            _dialogueWithChoicesPanel.SetActive(_hasChoices);
         }
 
-        public void OnDialoguePanelClick()
+        public void OnDialogueClick()
         {
-            DialogueManager.dialogueManager.ContinueDialogue();
+            if (_isWritingText)
+            {
+                EndDialogueWriting();
+            }
+            else if (!_hasChoices)
+            {
+                DialogueManager.dialogueManager.ContinueDialogue();
+            }
         }
 
         public void SetDialoguePanelVisibility(bool isVisible)
         {
             _dialoguePanel.SetActive(isVisible);
+        }
+
+        public void EndDialogueWriting()
+        {
+            TextDisplay.text = _dialogueString;
+
+            if (_hasChoices)
+            {
+                _choicesScrollRect.gameObject.SetActive(true);
+            }
+            else
+            {
+                _dialogueContinueIcon.SetActive(!_isFinalNode);
+                _dialogueEndIcon.SetActive(_isFinalNode);
+            }
+
+            _isWritingText = false;
+        }
+
+        private float CharWritingTime
+        {
+            get { return _isTextInstant ? 0f : _textSpeed * 0.025f; }
+        }
+
+        public TextMeshProUGUI TextDisplay
+        {
+            get { return _hasChoices ? _dialogueWithChoicesText : _dialogueNoChoicesText; }
         }
     }
 }

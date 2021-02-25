@@ -17,13 +17,21 @@ namespace CustomSystem.DialogueSystem
     {
         public static DialogueManager dialogueManager { get; protected set; }
 
-        public Camera _camera;
+        public Camera _dialogueCamera;
         public PlayableDirector _timelineDirector;
         public DialogueUI _dialogueUI;
 
         public DialogueGraphAsset _testAsset;
+        private Camera _prevCamera;
         private DialogueTree _dialogueTree;
         private bool _isRunningDialogue;
+        private bool _isLerpingCamera;
+        private float _cameraElapsedLerpTime;
+        private float _cameraTotalLerpTime;
+        private Vector3 _cameraOriginalPos;
+        private Vector3 _cameraTargetPos;
+        private Quaternion _cameraOriginalRot;
+        private Quaternion _cameraTargetRot;
 
 
         private void OnEnable()
@@ -44,9 +52,9 @@ namespace CustomSystem.DialogueSystem
             {
                 TryGetComponent<PlayableDirector>(out _timelineDirector);
             }
-            if (_camera == null)
+            if (_dialogueCamera == null)
             {
-                TryGetComponent<Camera>(out _camera);
+                TryGetComponent<Camera>(out _dialogueCamera);
             }
         }
 
@@ -54,15 +62,39 @@ namespace CustomSystem.DialogueSystem
         void Start()
         {
             LoadAsset(_testAsset);      // use this for testing; remove later
-            _isRunningDialogue = false;
+            _isRunningDialogue = _isLerpingCamera = false;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (Keyboard.current.spaceKey.IsPressed() && !_isRunningDialogue)
+            if (!_isRunningDialogue)
             {
-                OpenDialoguePanel();
+                if (Keyboard.current.spaceKey.IsPressed())
+                {
+                    StartDialogue();
+                }
+            }
+            else
+            {
+                if (_isLerpingCamera)
+                {
+                    if (_cameraElapsedLerpTime < _cameraTotalLerpTime)
+                    {
+                        float lerpTime = _cameraElapsedLerpTime / _cameraTotalLerpTime;
+
+                        _dialogueCamera.transform.position = SmoothStepVector3(_cameraOriginalPos, _cameraTargetPos, lerpTime);
+                        _dialogueCamera.transform.rotation = Quaternion.Slerp(_cameraOriginalRot, _cameraTargetRot, lerpTime);
+                    }
+                    else
+                    {
+                        _dialogueCamera.transform.position = _cameraTargetPos;
+                        _dialogueCamera.transform.rotation = _cameraTargetRot;
+                        _isLerpingCamera = false;
+                    }
+
+                    _cameraElapsedLerpTime += Time.deltaTime;
+                }
             }
         }
 
@@ -71,10 +103,18 @@ namespace CustomSystem.DialogueSystem
             _dialogueTree = new DialogueTree(asset);
         }
 
-        public void OpenDialoguePanel()
+        public void StartDialogue()
         {
             SetCurrentDialogue(_dialogueTree.startNode);
+
             _dialogueUI.SetDialoguePanelVisibility(true);
+
+            _prevCamera = Camera.main;
+            _dialogueCamera.transform.position = _prevCamera.transform.position;
+            _dialogueCamera.transform.rotation = _prevCamera.transform.rotation;
+            _prevCamera.enabled = false;
+            _dialogueCamera.enabled = true;
+
             _isRunningDialogue = true;
         }
 
@@ -85,9 +125,31 @@ namespace CustomSystem.DialogueSystem
                 return;
             }
 
+            // before moving on from the previous node, snap the camera to it's intended position/rotation first (if it was lerping)
+            if (_dialogueTree.currentNode is AdvDialogueNode && _isLerpingCamera)
+            {
+                _isLerpingCamera = false;
+                _dialogueCamera.transform.SetPositionAndRotation(_cameraTargetPos, _cameraTargetRot);
+            }
+            
             _dialogueTree.currentNode = node;
 
             _dialogueUI.SetDialogueText(node);
+
+            if (node is AdvDialogueNode)
+            {
+                AdvDialogueNode castNode = node as AdvDialogueNode;
+
+                _cameraOriginalPos = _dialogueCamera.transform.position;
+                _cameraOriginalRot = _dialogueCamera.transform.rotation;
+
+                _cameraTargetPos = castNode.cameraWorldPos;
+                _cameraTargetRot = Quaternion.Euler(castNode.cameraWorldRot);
+
+                _cameraTotalLerpTime = castNode.lerpTime;
+                _cameraElapsedLerpTime = 0f;
+                _isLerpingCamera = true;
+            }
         }
 
         public void ContinueDialogue(uint choiceId = 0)
@@ -106,8 +168,7 @@ namespace CustomSystem.DialogueSystem
                     }
                     else
                     {
-                        _dialogueUI.SetDialoguePanelVisibility(false);
-                        _isRunningDialogue = false;
+                        EndDialogue();
                     }
                 }
                 else
@@ -118,9 +179,19 @@ namespace CustomSystem.DialogueSystem
             }
             else    // end dialogue
             {
-                _dialogueUI.SetDialoguePanelVisibility(false);
-                _isRunningDialogue = false;
+                EndDialogue();
             }
+        }
+
+        public void EndDialogue()
+        {
+            _dialogueUI.SetDialoguePanelVisibility(false);
+
+            _dialogueCamera.enabled = false;
+            _prevCamera.enabled = true;
+            _dialogueCamera.transform.position = Vector3.zero;
+
+            _isRunningDialogue = false;
         }
 
         public static bool IsRunningDialogue
@@ -136,6 +207,15 @@ namespace CustomSystem.DialogueSystem
 
                 return ret;
             }
+        }
+
+        public Vector3 SmoothStepVector3(Vector3 start, Vector3 end, float time)
+        {
+            return new Vector3(
+                Mathf.SmoothStep(start.x, end.x, time),
+                Mathf.SmoothStep(start.y, end.y, time),
+                Mathf.SmoothStep(start.z, end.z, time)
+            );
         }
     }
 }
