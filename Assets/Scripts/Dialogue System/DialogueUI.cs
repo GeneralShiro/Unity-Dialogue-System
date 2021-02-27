@@ -19,12 +19,14 @@ namespace CustomSystem.DialogueSystem
         [Header("UI When No Choices Are Present")]
         public GameObject _dialogueNoChoicesPanel;
         public TextMeshProUGUI _dialogueNoChoicesText;
+        public TextMeshProUGUI _dialogueNoChoicesTextSizer;
         public GameObject _dialogueContinueIcon;
         public GameObject _dialogueEndIcon;
 
         [Header("UI When Choices Are Present")]
         public GameObject _dialogueWithChoicesPanel;
         public TextMeshProUGUI _dialogueWithChoicesText;
+        public TextMeshProUGUI _dialogueWithChoicesTextSizer;
         public ScrollRect _choicesScrollRect;
         public GameObject _dialogueChoicePrefab;
         public List<DialogueChoiceUI> _choices;
@@ -38,6 +40,11 @@ namespace CustomSystem.DialogueSystem
 
         private void Update()
         {
+            if (DialogueManager.IsRunningDialogue)
+            {
+                ResizeDialogueTextRect();
+            }
+
             if (_isWritingText)
             {
                 if (_elapsedWritingTime >= CharWritingTime)
@@ -45,6 +52,7 @@ namespace CustomSystem.DialogueSystem
                     if (_currentTextIndex < _dialogueString.Length - 1)
                     {
                         TextDisplay.text = _dialogueString.Substring(0, _currentTextIndex + 1);
+
                         _currentTextIndex++;
                         _elapsedWritingTime = 0f;
                     }
@@ -75,6 +83,8 @@ namespace CustomSystem.DialogueSystem
             _speakerNameText.text = node.speakerName;
             _hasChoices = (node.choices.Count != 0);
             TextDisplay.text = "";
+
+            TextSizer.text = node.dialogueText;
 
             if (!_hasChoices)
             {
@@ -109,6 +119,9 @@ namespace CustomSystem.DialogueSystem
                     _choices.Add(choiceUI);
                 }
             }
+
+            _dialogueContinueIcon.SetActive(false);
+            _dialogueEndIcon.SetActive(false);
 
             _dialogueString = node.dialogueText;
             _currentTextIndex = 0;
@@ -153,14 +166,27 @@ namespace CustomSystem.DialogueSystem
             _isWritingText = false;
         }
 
+        private void ResizeDialogueTextRect()
+        {
+            TextDisplay.rectTransform.anchorMax = TextSizer.rectTransform.anchorMax;
+            TextDisplay.rectTransform.anchorMin = TextSizer.rectTransform.anchorMin;
+            TextDisplay.rectTransform.anchoredPosition = TextSizer.rectTransform.anchoredPosition;
+            TextDisplay.rectTransform.sizeDelta = TextSizer.rectTransform.sizeDelta;
+        }
+
         private float CharWritingTime
         {
-            get { return _isTextInstant ? 0f : _textSpeed * 0.025f; }
+            get { return _isTextInstant ? 0f : 0.025f / _textSpeed; }
         }
 
         public TextMeshProUGUI TextDisplay
         {
             get { return _hasChoices ? _dialogueWithChoicesText : _dialogueNoChoicesText; }
+        }
+
+        public TextMeshProUGUI TextSizer
+        {
+            get { return _hasChoices ? _dialogueWithChoicesTextSizer : _dialogueNoChoicesTextSizer; }
         }
     }
 }

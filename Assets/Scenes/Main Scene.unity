@@ -711,17 +711,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3035313855148252453, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
   m_PrefabInstance: {fileID: 3035313856031407184}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1724299992 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3035313855523980936, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
-  m_PrefabInstance: {fileID: 3035313856031407184}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1953240535 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3035313855837153671, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
@@ -775,7 +764,7 @@ PrefabInstance:
     - target: {fileID: 1094477618213227321, guid: ffb7054548562bc428d5e93dbffb4077, type: 3}
       propertyPath: _dialogueText
       value: 
-      objectReference: {fileID: 1724299992}
+      objectReference: {fileID: 0}
     - target: {fileID: 1094477618213227321, guid: ffb7054548562bc428d5e93dbffb4077, type: 3}
       propertyPath: _dialogueContinueIcon
       value: 
@@ -853,6 +842,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 164545742}
     m_Modifications:
+    - target: {fileID: 123608712048102425, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -259.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 851954901531456826, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 851954901531456826, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 851954901531456826, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 450
+      objectReference: {fileID: 0}
+    - target: {fileID: 851954901531456826, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -20.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 851954901531456826, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 217.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 851954901531456826, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40.22
+      objectReference: {fileID: 0}
     - target: {fileID: 3035313855148252452, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
       propertyPath: m_Name
       value: Panel Dialogue
@@ -944,6 +961,30 @@ PrefabInstance:
     - target: {fileID: 3035313855148252453, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7512146715518858117, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7512146715518858117, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7512146715518858117, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 450
+      objectReference: {fileID: 0}
+    - target: {fileID: 7512146715518858117, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -20.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7512146715518858117, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 900
+      objectReference: {fileID: 0}
+    - target: {fileID: 7512146715518858117, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40.22
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}

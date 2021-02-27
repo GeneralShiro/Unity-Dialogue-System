@@ -156,7 +156,6 @@ namespace CustomSystem.DialogueSystem
         {
             if (_dialogueTree.currentNode.choices.Count > 0 || _dialogueTree.currentNode.childNodes.Count > 0)
             {
-                //  TODO: handle moving to nodes via choices
                 if (_dialogueTree.currentNode.choices.Count > 0)
                 {
                     DialogueNode.DialogueChoice choice = _dialogueTree.currentNode.choices[choiceId];
