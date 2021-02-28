@@ -31,6 +31,7 @@ namespace CustomSystem.DialogueSystem
         public GameObject _dialogueChoicePrefab;
         public List<DialogueChoiceUI> _choices;
 
+        private Animator _animator;
         private bool _isFinalNode;
         private bool _hasChoices;
         private bool _isWritingText;
@@ -45,7 +46,7 @@ namespace CustomSystem.DialogueSystem
                 ResizeDialogueTextRect();
             }
 
-            if (_isWritingText)
+            if (_isWritingText && UIAnimator.GetCurrentAnimatorStateInfo(0).IsName("Panel Visible"))
             {
                 if (_elapsedWritingTime >= CharWritingTime)
                 {
@@ -146,7 +147,11 @@ namespace CustomSystem.DialogueSystem
 
         public void SetDialoguePanelVisibility(bool isVisible)
         {
-            _dialoguePanel.SetActive(isVisible);
+            //_dialoguePanel.SetActive(isVisible);
+            UIAnimator.SetBool("IsDialoguePanelVisible", isVisible);
+
+            _dialogueContinueIcon.SetActive(false);
+            _dialogueEndIcon.SetActive(false);
         }
 
         public void EndDialogueWriting()
@@ -187,6 +192,19 @@ namespace CustomSystem.DialogueSystem
         public TextMeshProUGUI TextSizer
         {
             get { return _hasChoices ? _dialogueWithChoicesTextSizer : _dialogueNoChoicesTextSizer; }
+        }
+
+        private Animator UIAnimator
+        {
+            get
+            {
+                if (_animator == null)
+                {
+                    _animator = GetComponent<Animator>();
+                }
+
+                return _animator;
+            }
         }
     }
 }
