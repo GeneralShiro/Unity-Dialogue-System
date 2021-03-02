@@ -12,7 +12,7 @@ namespace CustomSystem.DialogueSystem
     {
         public GameObject _dialoguePanel;
         public TextMeshProUGUI _speakerNameText;
-        [Range(0.5f, 5.0f)]
+        [Range(0.1f, 3.0f)]
         public float _textSpeed = 1.0f;
         public bool _isTextInstant;
 
@@ -120,7 +120,8 @@ namespace CustomSystem.DialogueSystem
                     _choices.Add(choiceUI);
                 }
             }
-
+            
+            UIAnimator.SetBool("IsContinueEndIconVisible", false);
             _dialogueContinueIcon.SetActive(false);
             _dialogueEndIcon.SetActive(false);
 
@@ -150,6 +151,7 @@ namespace CustomSystem.DialogueSystem
             //_dialoguePanel.SetActive(isVisible);
             UIAnimator.SetBool("IsDialoguePanelVisible", isVisible);
 
+            UIAnimator.SetBool("IsContinueEndIconVisible", false);
             _dialogueContinueIcon.SetActive(false);
             _dialogueEndIcon.SetActive(false);
         }
@@ -164,6 +166,7 @@ namespace CustomSystem.DialogueSystem
             }
             else
             {
+                UIAnimator.SetBool("IsContinueEndIconVisible", true);
                 _dialogueContinueIcon.SetActive(!_isFinalNode);
                 _dialogueEndIcon.SetActive(_isFinalNode);
             }

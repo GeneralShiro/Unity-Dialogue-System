@@ -5,19 +5,19 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Timeline;
 using UnityEngine.Playables;
+using Cinemachine;
 using TMPro;
 
 namespace CustomSystem.DialogueSystem
 {
-    [RequireComponent(
-        typeof(Camera),
-        typeof(PlayableDirector)
-        )]
+    [RequireComponent(typeof(PlayableDirector))]
     public class DialogueManager : MonoBehaviour
     {
         public static DialogueManager dialogueManager { get; protected set; }
 
-        public Camera _dialogueCamera;
+        public CinemachineBrain _cmBrain;
+        public CinemachineVirtualCamera _dialogueCamera1;
+        public CinemachineVirtualCamera _dialogueCamera2;
         public PlayableDirector _timelineDirector;
         public DialogueUI _dialogueUI;
 
@@ -25,13 +25,7 @@ namespace CustomSystem.DialogueSystem
         private Camera _prevCamera;
         private DialogueTree _dialogueTree;
         private bool _isRunningDialogue;
-        private bool _isLerpingCamera;
-        private float _cameraElapsedLerpTime;
-        private float _cameraTotalLerpTime;
-        private Vector3 _cameraOriginalPos;
-        private Vector3 _cameraTargetPos;
-        private Quaternion _cameraOriginalRot;
-        private Quaternion _cameraTargetRot;
+        private bool _enableCam2NextFrame;
 
 
         private void OnEnable()
@@ -52,17 +46,13 @@ namespace CustomSystem.DialogueSystem
             {
                 TryGetComponent<PlayableDirector>(out _timelineDirector);
             }
-            if (_dialogueCamera == null)
-            {
-                TryGetComponent<Camera>(out _dialogueCamera);
-            }
         }
 
         // Start is called before the first frame update
         void Start()
         {
             LoadAsset(_testAsset);      // use this for testing; remove later
-            _isRunningDialogue = _isLerpingCamera = false;
+            _isRunningDialogue = _enableCam2NextFrame = false;
         }
 
         // Update is called once per frame
@@ -77,23 +67,11 @@ namespace CustomSystem.DialogueSystem
             }
             else
             {
-                if (_isLerpingCamera)
+                if (_enableCam2NextFrame && !_dialogueCamera2.enabled)
                 {
-                    if (_cameraElapsedLerpTime < _cameraTotalLerpTime)
-                    {
-                        float lerpTime = _cameraElapsedLerpTime / _cameraTotalLerpTime;
-
-                        _dialogueCamera.transform.position = SmoothStepVector3(_cameraOriginalPos, _cameraTargetPos, lerpTime);
-                        _dialogueCamera.transform.rotation = Quaternion.Slerp(_cameraOriginalRot, _cameraTargetRot, lerpTime);
-                    }
-                    else
-                    {
-                        _dialogueCamera.transform.position = _cameraTargetPos;
-                        _dialogueCamera.transform.rotation = _cameraTargetRot;
-                        _isLerpingCamera = false;
-                    }
-
-                    _cameraElapsedLerpTime += Time.deltaTime;
+                    //  turn on the second camera so the cinemachine brain can start transitioning from camera 1 to camera 2
+                    _dialogueCamera2.enabled = true;
+                    _enableCam2NextFrame = false;
                 }
             }
         }
@@ -109,11 +87,9 @@ namespace CustomSystem.DialogueSystem
 
             _dialogueUI.SetDialoguePanelVisibility(true);
 
-            _prevCamera = Camera.main;
-            _dialogueCamera.transform.position = _prevCamera.transform.position;
-            _dialogueCamera.transform.rotation = _prevCamera.transform.rotation;
-            _prevCamera.enabled = false;
-            _dialogueCamera.enabled = true;
+            _dialogueCamera1.transform.position = Camera.main.transform.position;
+            _dialogueCamera1.transform.rotation = Camera.main.transform.rotation;
+            _dialogueCamera1.enabled = true;
 
             _isRunningDialogue = true;
         }
@@ -126,29 +102,39 @@ namespace CustomSystem.DialogueSystem
             }
 
             // before moving on from the previous node, snap the camera to it's intended position/rotation first (if it was lerping)
-            if (_dialogueTree.currentNode is AdvDialogueNode && _isLerpingCamera)
+            if (_dialogueTree.currentNode is AdvDialogueNode)
             {
-                _isLerpingCamera = false;
-                _dialogueCamera.transform.SetPositionAndRotation(_cameraTargetPos, _cameraTargetRot);
-            }
-            
-            _dialogueTree.currentNode = node;
+                _enableCam2NextFrame = false;
 
+                // reset cinemachine brain to 'snap' to second camera
+                _cmBrain.enabled = false;
+                _dialogueCamera1.enabled = _dialogueCamera2.enabled = false;
+
+                // shift first virtual camera over to the final camera position (which is where the second virtual camera was)
+                _dialogueCamera1.transform.position = _dialogueCamera2.transform.position;
+                _dialogueCamera1.transform.rotation = _dialogueCamera2.transform.rotation;
+
+                // turn the first virtual camera back, and turn the brain on too so it snaps the camera to the first virtual camera
+                _cmBrain.enabled = true;
+                _dialogueCamera1.enabled = true;
+            }
+
+            _dialogueTree.currentNode = node;
             _dialogueUI.SetDialogueText(node);
 
             if (node is AdvDialogueNode)
             {
                 AdvDialogueNode castNode = node as AdvDialogueNode;
 
-                _cameraOriginalPos = _dialogueCamera.transform.position;
-                _cameraOriginalRot = _dialogueCamera.transform.rotation;
+                // position & rotate camera 2 to the final camera position
+                _dialogueCamera2.transform.position = castNode.cameraWorldPos;
+                _dialogueCamera2.transform.rotation = Quaternion.Euler(castNode.cameraWorldRot);
 
-                _cameraTargetPos = castNode.cameraWorldPos;
-                _cameraTargetRot = Quaternion.Euler(castNode.cameraWorldRot);
+                // set the lerp time for the blend between camera 1 and camera 2
+                _cmBrain.m_CustomBlends.m_CustomBlends[0].m_Blend.m_Time = castNode.lerpTime;
 
-                _cameraTotalLerpTime = castNode.lerpTime;
-                _cameraElapsedLerpTime = 0f;
-                _isLerpingCamera = true;
+                // flag camera 2 to turn in the next Update frame
+                _enableCam2NextFrame = true;
             }
         }
 
@@ -186,9 +172,7 @@ namespace CustomSystem.DialogueSystem
         {
             _dialogueUI.SetDialoguePanelVisibility(false);
 
-            _dialogueCamera.enabled = false;
-            _prevCamera.enabled = true;
-            _dialogueCamera.transform.position = Vector3.zero;
+            _dialogueCamera1.enabled = _dialogueCamera2.enabled = false;
 
             _isRunningDialogue = false;
         }
@@ -206,15 +190,6 @@ namespace CustomSystem.DialogueSystem
 
                 return ret;
             }
-        }
-
-        public Vector3 SmoothStepVector3(Vector3 start, Vector3 end, float time)
-        {
-            return new Vector3(
-                Mathf.SmoothStep(start.x, end.x, time),
-                Mathf.SmoothStep(start.y, end.y, time),
-                Mathf.SmoothStep(start.z, end.z, time)
-            );
         }
     }
 }

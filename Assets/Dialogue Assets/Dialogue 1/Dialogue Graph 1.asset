@@ -55,6 +55,12 @@ MonoBehaviour:
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 10
+    _outputNodeGuid: 4
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: dialogue-choice-output-port-3
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
@@ -70,20 +76,22 @@ MonoBehaviour:
     - _portId: 1
       _choiceText: This is dialogue choice 2.
     - _portId: 2
-      _choiceText: This is choice #3.
+      _choiceText: Show the adv. dialogues.
+    - _portId: 3
+      _choiceText: Show the cinematics.
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: This is dialogue text 1.
   - _nodeGuid: 5
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 963, y: 140}
+    _nodePosition: {x: 995, y: -98}
     _choicePorts: []
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: You chose choice #1! Nice!
   - _nodeGuid: 6
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 962, y: 343}
+    _nodePosition: {x: 971, y: 130}
     _choicePorts:
     - _portId: 0
       _choiceText: Oops, let's go back.
@@ -94,15 +102,15 @@ MonoBehaviour:
     _dialogueText: You chose choice #2! You fool!
   - _nodeGuid: 7
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 1436, y: 358}
+    _nodePosition: {x: 1468, y: 16}
     _choicePorts: []
     _conditionPortIds: 
-    _speakerName: Speaker 2
+    _speakerName: You
     _dialogueText: I'm leaving, see ya.
   advDialogueNodeData:
   - _nodeGuid: 8
     _nodeType: AdvDialogueNode
-    _nodePosition: {x: 986, y: 638}
+    _nodePosition: {x: 973, y: 405}
     _choicePorts: []
     _conditionPortIds: 
     _speakerName: Speaker 1
@@ -112,12 +120,20 @@ MonoBehaviour:
     _lerpTime: 1
   - _nodeGuid: 9
     _nodeType: AdvDialogueNode
-    _nodePosition: {x: 1351, y: 639}
+    _nodePosition: {x: 1299, y: 406}
     _choicePorts: []
     _conditionPortIds: 
     _speakerName: Speaker 2
     _dialogueText: Nice~ Wish it was easier to set up though.
     _cameraPos: {x: 6.507501, y: 3.042581, z: 5.137024}
     _cameraRot: {x: 19.459, y: -134.828, z: 0}
-    _lerpTime: 0
-  cinematicDialogueNodeData: []
+    _lerpTime: 2
+  cinematicDialogueNodeData:
+  - _nodeGuid: 10
+    _nodeType: CinematicDialogueNode
+    _nodePosition: {x: 975, y: 724}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: This is a cinematic dialogue node.
+    _timelineAsset: {fileID: 11400000, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
