@@ -13,7 +13,7 @@ namespace CustomSystem.DialogueSystem
 
         public void OnChoiceClick()
         {
-            DialogueManager.dialogueManager.ContinueDialogue(_choiceId);
+            DialogueManager.GetCurrentManager().ContinueDialogue(_choiceId);
         }
 
         public string ChoiceText

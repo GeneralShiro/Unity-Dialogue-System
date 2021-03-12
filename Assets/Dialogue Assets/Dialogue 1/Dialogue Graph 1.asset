@@ -102,10 +102,10 @@ MonoBehaviour:
     _dialogueText: You chose choice #2! You fool!
   - _nodeGuid: 7
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 1468, y: 16}
+    _nodePosition: {x: 1354, y: 156}
     _choicePorts: []
     _conditionPortIds: 
-    _speakerName: You
+    _speakerName: Speaker 2
     _dialogueText: I'm leaving, see ya.
   advDialogueNodeData:
   - _nodeGuid: 8

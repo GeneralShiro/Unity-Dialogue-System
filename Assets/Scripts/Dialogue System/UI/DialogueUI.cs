@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -37,7 +37,7 @@ namespace CustomSystem.DialogueSystem
         private bool _isWritingText;
         private float _elapsedWritingTime;
         private string _dialogueString;
-        private int _currentTextIndex;
+
 
         private void Update()
         {
@@ -48,19 +48,13 @@ namespace CustomSystem.DialogueSystem
 
             if (_isWritingText && UIAnimator.GetCurrentAnimatorStateInfo(0).IsName("Panel Visible"))
             {
-                if (_elapsedWritingTime >= CharWritingTime)
-                {
-                    if (_currentTextIndex < _dialogueString.Length - 1)
-                    {
-                        TextDisplay.text = _dialogueString.Substring(0, _currentTextIndex + 1);
+                string currWrittenText = "";
+                bool isFinished = GetCurrentWrittenDialogue(_elapsedWritingTime, out currWrittenText);
+                TextDisplay.text = currWrittenText;
 
-                        _currentTextIndex++;
-                        _elapsedWritingTime = 0f;
-                    }
-                    else
-                    {
-                        EndDialogueWriting();
-                    }
+                if (isFinished)
+                {
+                    EndDialogueWriting();
                 }
                 else
                 {
@@ -120,18 +114,35 @@ namespace CustomSystem.DialogueSystem
                     _choices.Add(choiceUI);
                 }
             }
-            
+
             UIAnimator.SetBool("IsContinueEndIconVisible", false);
             _dialogueContinueIcon.SetActive(false);
             _dialogueEndIcon.SetActive(false);
 
             _dialogueString = node.dialogueText;
-            _currentTextIndex = 0;
             _elapsedWritingTime = 0f;
             _isWritingText = true;
 
             _dialogueNoChoicesPanel.SetActive(!_hasChoices);
             _dialogueWithChoicesPanel.SetActive(_hasChoices);
+        }
+
+        /// <summary>
+        /// Intended for use with Cinematic Dialogue Nodes; sets dialogue text without DialogueNode to pull data from.
+        /// </summary>
+        public bool SetDialogueText(string speaker, string dialogueText, float elapsedWritingTime)
+        {
+            _speakerNameText.text = speaker;
+            _dialogueString = dialogueText;
+            TextSizer.text = dialogueText;
+
+            string text;
+            bool isCompleted = GetCurrentWrittenDialogue(elapsedWritingTime, out text);
+            TextDisplay.text = text;
+
+            ResizeDialogueTextRect();
+
+            return isCompleted;
         }
 
         public void OnDialogueClick()
@@ -142,16 +153,15 @@ namespace CustomSystem.DialogueSystem
             }
             else if (!_hasChoices)
             {
-                DialogueManager.dialogueManager.ContinueDialogue();
+                DialogueManager.GetCurrentManager().ContinueDialogue();
             }
         }
 
         public void SetDialoguePanelVisibility(bool isVisible)
         {
-            //_dialoguePanel.SetActive(isVisible);
             UIAnimator.SetBool("IsDialoguePanelVisible", isVisible);
-
             UIAnimator.SetBool("IsContinueEndIconVisible", false);
+
             _dialogueContinueIcon.SetActive(false);
             _dialogueEndIcon.SetActive(false);
         }
@@ -182,7 +192,50 @@ namespace CustomSystem.DialogueSystem
             TextDisplay.rectTransform.sizeDelta = TextSizer.rectTransform.sizeDelta;
         }
 
-        private float CharWritingTime
+        /// <summary>
+        /// Gets the substring of the current dialogue text based on how much time has passed. 
+        /// Returns a boolean for whether or not the dialogue text is completely written.
+        /// </summary>
+        public bool GetCurrentWrittenDialogue(float elapsedWritingTime, out string outText)
+        {
+            if (_dialogueString == null)
+            {
+                outText = "";
+                return false;
+            }
+
+            int lastIndex = _dialogueString.Length;
+
+            if (!_isTextInstant)
+            {
+                float stringProgress = elapsedWritingTime / CharWritingInterval;
+                lastIndex = (int)stringProgress;
+
+                if (lastIndex > _dialogueString.Length)
+                {
+                    lastIndex = _dialogueString.Length;
+                }
+            }
+
+            outText = _dialogueString.Substring(0, lastIndex);
+
+            return (lastIndex == _dialogueString.Length - 1);
+        }
+
+        public float DialogueLineDuration
+        {
+            get
+            {
+                if (_dialogueString != null)
+                {
+                    return (_dialogueString.Length * CharWritingInterval);
+                }
+
+                return 0f;
+            }
+        }
+
+        private float CharWritingInterval
         {
             get { return _isTextInstant ? 0f : 0.025f / _textSpeed; }
         }

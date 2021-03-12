@@ -13,7 +13,7 @@ namespace CustomSystem.DialogueSystem
     [RequireComponent(typeof(PlayableDirector))]
     public class DialogueManager : MonoBehaviour
     {
-        public static DialogueManager dialogueManager { get; protected set; }
+        protected static DialogueManager dialogueManager { get; set; }
 
         public CinemachineBrain _cmBrain;
         public CinemachineVirtualCamera _dialogueCamera1;
@@ -67,7 +67,7 @@ namespace CustomSystem.DialogueSystem
             }
             else
             {
-                if (_enableCam2NextFrame && !_dialogueCamera2.enabled)
+                if (_enableCam2NextFrame && !_dialogueCamera2.enabled && CurrentNode is AdvDialogueNode)
                 {
                     //  turn on the second camera so the cinemachine brain can start transitioning from camera 1 to camera 2
                     _dialogueCamera2.enabled = true;
@@ -102,7 +102,7 @@ namespace CustomSystem.DialogueSystem
             }
 
             // before moving on from the previous node, snap the camera to it's intended position/rotation first (if it was lerping)
-            if (_dialogueTree.currentNode is AdvDialogueNode)
+            if (CurrentNode is AdvDialogueNode)
             {
                 _enableCam2NextFrame = false;
 
@@ -118,33 +118,47 @@ namespace CustomSystem.DialogueSystem
                 _cmBrain.enabled = true;
                 _dialogueCamera1.enabled = true;
             }
-
-            _dialogueTree.currentNode = node;
-            _dialogueUI.SetDialogueText(node);
-
-            if (node is AdvDialogueNode)
+            else if (CurrentNode is CinematicDialogueNode)
             {
-                AdvDialogueNode castNode = node as AdvDialogueNode;
+                _timelineDirector.Stop();
+            }
 
-                // position & rotate camera 2 to the final camera position
-                _dialogueCamera2.transform.position = castNode.cameraWorldPos;
-                _dialogueCamera2.transform.rotation = Quaternion.Euler(castNode.cameraWorldRot);
+            CurrentNode = node;
 
-                // set the lerp time for the blend between camera 1 and camera 2
-                _cmBrain.m_CustomBlends.m_CustomBlends[0].m_Blend.m_Time = castNode.lerpTime;
+            if (node is CinematicDialogueNode)
+            {
+                CinematicDialogueNode castNode = node as CinematicDialogueNode;
+                _timelineDirector.playableAsset = castNode.timelineAsset;
+                _timelineDirector.Play();
+            }
+            else
+            {
+                _dialogueUI.SetDialogueText(node);
 
-                // flag camera 2 to turn in the next Update frame
-                _enableCam2NextFrame = true;
+                if (node is AdvDialogueNode)
+                {
+                    AdvDialogueNode castNode = node as AdvDialogueNode;
+
+                    // position & rotate camera 2 to the final camera position
+                    _dialogueCamera2.transform.position = castNode.cameraWorldPos;
+                    _dialogueCamera2.transform.rotation = Quaternion.Euler(castNode.cameraWorldRot);
+
+                    // set the lerp time for the blend between camera 1 and camera 2
+                    _cmBrain.m_CustomBlends.m_CustomBlends[0].m_Blend.m_Time = castNode.lerpTime;
+
+                    // flag camera 2 to turn in the next Update frame
+                    _enableCam2NextFrame = true;
+                }
             }
         }
 
         public void ContinueDialogue(uint choiceId = 0)
         {
-            if (_dialogueTree.currentNode.choices.Count > 0 || _dialogueTree.currentNode.childNodes.Count > 0)
+            if (CurrentNode.choices.Count > 0 || CurrentNode.childNodes.Count > 0)
             {
-                if (_dialogueTree.currentNode.choices.Count > 0)
+                if (CurrentNode.choices.Count > 0)
                 {
-                    DialogueNode.DialogueChoice choice = _dialogueTree.currentNode.choices[choiceId];
+                    DialogueNode.DialogueChoice choice = CurrentNode.choices[choiceId];
 
                     if (choice.childNodes.Count > 0)
                     {
@@ -159,7 +173,7 @@ namespace CustomSystem.DialogueSystem
                 else
                 {
                     //  TODO: handle moving to multiple nodes based on conditions
-                    SetCurrentDialogue(_dialogueTree.currentNode.childNodes[0]);
+                    SetCurrentDialogue(CurrentNode.childNodes[0]);
                 }
             }
             else    // end dialogue
@@ -177,6 +191,16 @@ namespace CustomSystem.DialogueSystem
             _isRunningDialogue = false;
         }
 
+        public static DialogueManager GetCurrentManager()
+        {
+            if (dialogueManager == null)
+            {
+                dialogueManager = FindObjectOfType<DialogueManager>();
+            }
+
+            return dialogueManager;
+        }
+
         public static bool IsRunningDialogue
         {
             get
@@ -190,6 +214,12 @@ namespace CustomSystem.DialogueSystem
 
                 return ret;
             }
+        }
+
+        private DialogueNode CurrentNode
+        {
+            get { return _dialogueTree.currentNode; }
+            set { _dialogueTree.currentNode = value; }
         }
     }
 }
