@@ -52,7 +52,10 @@ namespace CustomSystem.DialogueSystem
         void Start()
         {
             LoadAsset(_testAsset);      // use this for testing; remove later
+
             _isRunningDialogue = _enableCam2NextFrame = false;
+
+            _timelineDirector.stopped += (director) => { ContinueDialogue(); };
         }
 
         // Update is called once per frame
@@ -118,7 +121,7 @@ namespace CustomSystem.DialogueSystem
                 _cmBrain.enabled = true;
                 _dialogueCamera1.enabled = true;
             }
-            else if (CurrentNode is CinematicDialogueNode)
+            else if (CurrentNode is CinematicDialogueNode && _timelineDirector.state == PlayState.Playing)
             {
                 _timelineDirector.Stop();
             }
@@ -184,11 +187,18 @@ namespace CustomSystem.DialogueSystem
 
         public void EndDialogue()
         {
+            _timelineDirector.Stop();
             _dialogueUI.SetDialoguePanelVisibility(false);
-
             _dialogueCamera1.enabled = _dialogueCamera2.enabled = false;
-
             _isRunningDialogue = false;
+        }
+
+        public void ContinueCinematicDialogue()
+        {
+            if (_timelineDirector.state == PlayState.Paused)
+            {
+                _timelineDirector.Resume();
+            }
         }
 
         public static DialogueManager GetCurrentManager()
@@ -216,10 +226,10 @@ namespace CustomSystem.DialogueSystem
             }
         }
 
-        private DialogueNode CurrentNode
+        public DialogueNode CurrentNode
         {
             get { return _dialogueTree.currentNode; }
-            set { _dialogueTree.currentNode = value; }
+            protected set { _dialogueTree.currentNode = value; }
         }
     }
 }

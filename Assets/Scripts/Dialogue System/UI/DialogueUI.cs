@@ -130,14 +130,18 @@ namespace CustomSystem.DialogueSystem
         /// <summary>
         /// Intended for use with Cinematic Dialogue Nodes; sets dialogue text without DialogueNode to pull data from.
         /// </summary>
-        public bool SetDialogueText(string speaker, string dialogueText, float elapsedWritingTime)
+        public bool SetDialogueText(string speaker, string dialogueText, float elapsedWritingTime, float overrideSpeed = -1f)
         {
             _speakerNameText.text = speaker;
             _dialogueString = dialogueText;
             TextSizer.text = dialogueText;
 
+            _hasChoices = false;
+            _dialogueNoChoicesPanel.SetActive(true);
+            _dialogueWithChoicesPanel.SetActive(false);
+
             string text;
-            bool isCompleted = GetCurrentWrittenDialogue(elapsedWritingTime, out text);
+            bool isCompleted = GetCurrentWrittenDialogue(elapsedWritingTime, out text, overrideSpeed);
             TextDisplay.text = text;
 
             ResizeDialogueTextRect();
@@ -147,13 +151,20 @@ namespace CustomSystem.DialogueSystem
 
         public void OnDialogueClick()
         {
-            if (_isWritingText)
+            if (DialogueManager.GetCurrentManager().CurrentNode is CinematicDialogueNode)
             {
-                EndDialogueWriting();
+                DialogueManager.GetCurrentManager().ContinueCinematicDialogue();
             }
-            else if (!_hasChoices)
+            else
             {
-                DialogueManager.GetCurrentManager().ContinueDialogue();
+                if (_isWritingText)
+                {
+                    EndDialogueWriting();
+                }
+                else if (!_hasChoices)
+                {
+                    DialogueManager.GetCurrentManager().ContinueDialogue();
+                }
             }
         }
 
@@ -196,7 +207,7 @@ namespace CustomSystem.DialogueSystem
         /// Gets the substring of the current dialogue text based on how much time has passed. 
         /// Returns a boolean for whether or not the dialogue text is completely written.
         /// </summary>
-        public bool GetCurrentWrittenDialogue(float elapsedWritingTime, out string outText)
+        public bool GetCurrentWrittenDialogue(float elapsedWritingTime, out string outText, float overrideSpeed = -1f)
         {
             if (_dialogueString == null)
             {
@@ -208,7 +219,8 @@ namespace CustomSystem.DialogueSystem
 
             if (!_isTextInstant)
             {
-                float stringProgress = elapsedWritingTime / CharWritingInterval;
+                float speed = (overrideSpeed > 0f) ? (0.025f / overrideSpeed) : CharWritingInterval;
+                float stringProgress = elapsedWritingTime / speed;
                 lastIndex = (int)stringProgress;
 
                 if (lastIndex > _dialogueString.Length)
@@ -219,7 +231,7 @@ namespace CustomSystem.DialogueSystem
 
             outText = _dialogueString.Substring(0, lastIndex);
 
-            return (lastIndex == _dialogueString.Length - 1);
+            return (lastIndex == _dialogueString.Length);
         }
 
         public float DialogueLineDuration

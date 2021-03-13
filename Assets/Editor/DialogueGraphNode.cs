@@ -49,6 +49,7 @@ namespace CustomEditors.DialogueSystem
 
             // field for speaker
             var speakerFieldLabel = new Label("Speaker Name");
+            speakerFieldLabel.name = "dialogue-speaker-field-label";
             variableContainer.Add(speakerFieldLabel);
             speakerTextField = new TextField
             {
@@ -59,6 +60,7 @@ namespace CustomEditors.DialogueSystem
 
             // field for dialogue window text
             var dialogueFieldLabel = new Label("Dialogue Text");
+            dialogueFieldLabel.name = "dialogue-text-field-label";
             variableContainer.Add(dialogueFieldLabel);
             dialogueTextField = new TextField
             {
@@ -324,6 +326,9 @@ namespace CustomEditors.DialogueSystem
             title = "Cinematic Dialogue Node";
             AddToClassList("cinematicDialogueNode");
 
+            // we don't need the speaker and dialogue text fields; remove them and their labels
+            variableContainer.Clear();
+
             // field for timeline asset to play animated scene
             var timelineFieldLabel = new Label("Animated Timeline Asset");
             variableContainer.Add(timelineFieldLabel);
@@ -334,6 +339,8 @@ namespace CustomEditors.DialogueSystem
                 allowSceneObjects = false
             };
             variableContainer.Add(timelineField);
+            
+            outputContainer.visible = false;
         }
 
         public void InitializeFromData(CinematicDialogueNodeData data)

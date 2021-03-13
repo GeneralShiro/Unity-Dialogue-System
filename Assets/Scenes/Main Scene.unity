@@ -167,6 +167,11 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 3.56
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &49646215 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1601986934, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
+  m_PrefabInstance: {fileID: 3035313856031407184}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &164545738
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,15 +947,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7479896752909805050, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -13.410004
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7479896752909805050, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 333.21
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7479896752909805050, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 26.82
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7512146715518858117, guid: 51f3b71109268fc49a159c40c866a57b, type: 3}
       propertyPath: m_AnchorMin.y
@@ -1018,15 +1023,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6619965970612661367, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6619965970612661367, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
-      propertyPath: m_SceneBindings.Array.data[0].key
+      propertyPath: m_SceneBindings.Array.data[1].value
       value: 
-      objectReference: {fileID: 5805093155640889939, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
+      objectReference: {fileID: 963194229}
     - target: {fileID: 6619965970612661367, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
-      propertyPath: m_WrapMode
-      value: 0
+      propertyPath: m_SceneBindings.Array.data[3].key
+      value: 
+      objectReference: {fileID: 4264057383956115531, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
+    - target: {fileID: 6619965970612661367, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
+      propertyPath: m_SceneBindings.Array.data[3].value
+      value: 
+      objectReference: {fileID: 49646215}
+    - target: {fileID: 6619965970612661367, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
+      propertyPath: m_PlayableAsset
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8619637100891857149, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
       propertyPath: m_LocalPosition.x

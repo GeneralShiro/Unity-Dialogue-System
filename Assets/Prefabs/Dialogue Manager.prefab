@@ -24,14 +24,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 286457953}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.09037084, y: 0, z: 0, w: 0.9959082}
+  m_LocalPosition: {x: -1.35, y: 2.12, z: -7.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 942601210}
   m_Father: {fileID: 1310867484}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 10.37, y: 0, z: 0}
 --- !u!114 &286457955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,6 +410,7 @@ GameObject:
   - component: {fileID: 8619637100891857149}
   - component: {fileID: 2253077666651224598}
   - component: {fileID: 6619965970612661367}
+  - component: {fileID: 336269461}
   m_Layer: 0
   m_Name: Dialogue Manager
   m_TagString: Untagged
@@ -464,6 +465,33 @@ PlayableDirector:
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
-  m_SceneBindings: []
+  m_SceneBindings:
+  - key: {fileID: 5805093155640889939, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 744351574995019656, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 1334050264231473105, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
+    value: {fileID: 336269461}
   m_ExposedReferences:
-    m_References: []
+    m_References:
+    - 87815b881da611442b60f38075097d92: {fileID: 286457955}
+    - 14dd04c29dc214946b0436fd615a3bbc: {fileID: 286457955}
+--- !u!95 &336269461
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3305120091624986749}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

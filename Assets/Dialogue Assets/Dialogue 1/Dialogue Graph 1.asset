@@ -134,6 +134,6 @@ MonoBehaviour:
     _nodePosition: {x: 975, y: 724}
     _choicePorts: []
     _conditionPortIds: 
-    _speakerName: Speaker 1
-    _dialogueText: This is a cinematic dialogue node.
+    _speakerName: 
+    _dialogueText: 
     _timelineAsset: {fileID: 11400000, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
