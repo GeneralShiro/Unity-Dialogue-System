@@ -7,9 +7,9 @@ using UnityEditor.UIElements;
 
 namespace CustomEditors
 {
-	public abstract class BooleanNode : GraphNode
+	public abstract class BooleanComparisonNode : GraphNode
 	{
-		public enum BooleanOperation
+		public enum ComparisonOperator
 		{
 			EQUAL_TO,
 			NOT_EQUAL_TO,
@@ -20,9 +20,9 @@ namespace CustomEditors
 		}
 		public EnumField operationEnumField {get; set;}
 
-		public BooleanNode()
+		public BooleanComparisonNode()
 		{
-			operationEnumField = new EnumField(BooleanOperation.EQUAL_TO);
+			operationEnumField = new EnumField(ComparisonOperator.EQUAL_TO);
 			mainContainer.Insert(1, operationEnumField);
 
 			AddPort("Output Bool", typeof(bool), false);
@@ -69,22 +69,22 @@ namespace CustomEditors
 		}
 	}
 
-	public class FloatBooleanNode : BooleanNode
+	public class FloatComparisonNode : BooleanComparisonNode
 	{
-		public FloatBooleanNode() : base()
+		public FloatComparisonNode() : base()
 		{
-			title = "Boolean Node (Float)";
+			title = "Comparison Node (Float)";
 
 			AddPort("Float 1", typeof(float));
 			AddPort("Float 2", typeof(float));
 		}
 	}
 
-	public class IntBooleanNode : BooleanNode
+	public class IntComparisonNode : BooleanComparisonNode
 	{
-		public IntBooleanNode() : base()
+		public IntComparisonNode() : base()
 		{
-			title = "Boolean Node (Int)";
+			title = "Comparison Node (Int)";
 
 			AddPort("Int 1", typeof(int));
 			AddPort("Int 2", typeof(int));

@@ -234,11 +234,11 @@ namespace CustomEditors.DialogueSystem
                         assetData.dialogueNodeData.Add(nodeData);
                     }
                 }
-                else if (node is BooleanNode)
+                else if (node is BooleanComparisonNode)
                 {
-                    if (node is IntBooleanNode)
+                    if (node is IntComparisonNode)
                     {
-                        IntBooleanNode castNode = node as IntBooleanNode;
+                        IntComparisonNode castNode = node as IntComparisonNode;
                         BooleanNodeData nodeData = new BooleanNodeData();
 
                         // graph node data
@@ -251,9 +251,9 @@ namespace CustomEditors.DialogueSystem
 
                         assetData.booleanNodeData.Add(nodeData);
                     }
-                    else if (node is FloatBooleanNode)
+                    else if (node is FloatComparisonNode)
                     {
-                        FloatBooleanNode castNode = node as FloatBooleanNode;
+                        FloatComparisonNode castNode = node as FloatComparisonNode;
                         BooleanNodeData nodeData = new BooleanNodeData();
 
                         // graph node data
@@ -365,10 +365,10 @@ namespace CustomEditors.DialogueSystem
                 {
                     case "FloatBooleanNode":
                         {
-                            FloatBooleanNode node = new FloatBooleanNode();
+                            FloatComparisonNode node = new FloatComparisonNode();
 
                             // transfer boolean node data over to new node
-                            node.operationEnumField.value = (BooleanNode.BooleanOperation)data._booleanOpEnumVal;
+                            node.operationEnumField.value = (BooleanComparisonNode.ComparisonOperator)data._booleanOpEnumVal;
 
                             // transfer standard GraphNode data, add to graph
                             node.NodeGuid = data._nodeGuid;
@@ -382,10 +382,10 @@ namespace CustomEditors.DialogueSystem
 
                     case "IntBooleanNode":
                         {
-                            IntBooleanNode node = new IntBooleanNode();
+                            IntComparisonNode node = new IntComparisonNode();
 
                             // transfer boolean node data over to new node
-                            node.operationEnumField.value = (BooleanNode.BooleanOperation)data._booleanOpEnumVal;
+                            node.operationEnumField.value = (BooleanComparisonNode.ComparisonOperator)data._booleanOpEnumVal;
 
                             // transfer standard GraphNode data, add to graph
                             node.NodeGuid = data._nodeGuid;
@@ -537,6 +537,9 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeEntry(new GUIContent("Cinematic Dialogue Node", icon)) { level = 2 });
 
             tree.Add(new SearchTreeGroupEntry(new GUIContent("Boolean", icon)) { level = 1 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Logic NOT Node", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Logic AND Node", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Logic OR Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Int)", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Float)", icon)) { level = 2 });
 
@@ -586,9 +589,42 @@ namespace CustomEditors.DialogueSystem
                         return true;
                     }
 
+                case "Logic NOT Node":
+                    {
+                        var node = new BooleanNOTNode();
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
+
+                        return true;
+                    }
+
+                case "Logic AND Node":
+                    {
+                        var node = new BooleanLogicNode(BooleanLogicNode.LogicOperator.AND);
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
+
+                        return true;
+                    }
+
+                case "Logic OR Node":
+                    {
+                        var node = new BooleanLogicNode(BooleanLogicNode.LogicOperator.OR);
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
+
+                        return true;
+                    }
+
                 case "Boolean Node (Int)":
                     {
-                        var node = new IntBooleanNode();
+                        var node = new IntComparisonNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
 
@@ -601,7 +637,7 @@ namespace CustomEditors.DialogueSystem
 
                 case "Boolean Node (Float)":
                     {
-                        var node = new FloatBooleanNode();
+                        var node = new FloatComparisonNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
 

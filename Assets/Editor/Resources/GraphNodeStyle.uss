@@ -143,3 +143,18 @@
 .cinematicDialogueNode #dialogue-text-field {
 	width : 230px;
 }
+
+.boolLogicNode #boolean-input-panel {
+	flex-direction : row;
+	justify-content : space-between;
+}
+
+.boolLogicNode #boolean-input-port-delete-button {
+	height : 20px;
+	width : 20px;
+	border-bottom-left-radius : 10px;
+	border-bottom-right-radius : 10px;
+	border-top-left-radius : 10px;
+	border-top-right-radius : 10px;
+	align-self : center;
+}
