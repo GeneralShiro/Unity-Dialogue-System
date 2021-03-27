@@ -9,7 +9,8 @@ namespace CustomSystem
     {
         public List<NodeLinkData> nodeLinkData;
         public List<NodeData> graphNodeData;
-        public List<BooleanNodeData> booleanNodeData;
+        public List<BooleanComparisonNodeData> booleanComparisonNodeData;
+        public List<BooleanLogicNodeData> booleanLogicNodeData;
 
         public virtual uint GetNewGUID()
         {
@@ -23,11 +24,11 @@ namespace CustomSystem
                 }
             }
 
-            for (int i = 0; i < booleanNodeData.Count; i++)
+            for (int i = 0; i < booleanComparisonNodeData.Count; i++)
             {
-                if (ret <= booleanNodeData[i]._nodeGuid)
+                if (ret <= booleanComparisonNodeData[i]._nodeGuid)
                 {
-                    ret = booleanNodeData[i]._nodeGuid + 1;
+                    ret = booleanComparisonNodeData[i]._nodeGuid + 1;
                 }
             }
 
@@ -54,9 +55,21 @@ namespace CustomSystem
         public string _outputElementName;
     }
 
-     [System.Serializable]
-    public class BooleanNodeData : NodeData
+    [System.Serializable]
+    public class BooleanComparisonNodeData : NodeData
     {
-        public int _booleanOpEnumVal;
+        public int _comparisonEnumVal;
+    }
+
+    [System.Serializable]
+    public class BooleanLogicNodeData : NodeData
+    {
+        public int _logicEnumVal;
+        public List<uint> _additionalInputPortIds;
+
+        public BooleanLogicNodeData()
+        {
+            _additionalInputPortIds = new List<uint>(); 
+        }
     }
 }

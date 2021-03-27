@@ -19,7 +19,9 @@ namespace CustomSystem.DialogueSystem
             graphNodeData = new List<NodeData>();
             nodeLinkData = new List<NodeLinkData>();
 
-            booleanNodeData = new List<BooleanNodeData>();
+            booleanLogicNodeData = new List<BooleanLogicNodeData>();
+            booleanComparisonNodeData = new List<BooleanComparisonNodeData>();
+            
             dialogueNodeData = new List<DialogueNodeData>();
             advDialogueNodeData = new List<AdvDialogueNodeData>();
             cinematicDialogueNodeData = new List<CinematicDialogueNodeData>();

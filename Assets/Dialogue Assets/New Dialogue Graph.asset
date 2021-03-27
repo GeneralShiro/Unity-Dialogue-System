@@ -17,7 +17,8 @@ MonoBehaviour:
   - _nodeGuid: 0
     _nodeType: StartNode
     _nodePosition: {x: 15, y: 200}
-  booleanNodeData: []
+  booleanComparisonNodeData: []
+  booleanLogicNodeData: []
   dialogueNodeData: []
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

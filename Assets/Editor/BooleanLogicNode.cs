@@ -16,8 +16,7 @@ namespace CustomEditors
             OR
         }
         public EnumField operationEnumField { get; set; }
-        public List<uint> inputPortIds { get; protected set; }
-        protected uint nextInputPortId;
+        public List<uint> additionalInputPortIds { get; protected set; }
 
 
         public BooleanLogicNode() : this(LogicOperator.AND) { }
@@ -38,8 +37,7 @@ namespace CustomEditors
             addInputPortsButton.text = "Add Input";
             inputContainer.Add(addInputPortsButton);
 
-            nextInputPortId = 2;
-            inputPortIds = new List<uint>();
+            additionalInputPortIds = new List<uint>();
 
             // create default input ports
             Port inputPort1 = AddPort("Boolean", typeof(bool));
@@ -51,11 +49,16 @@ namespace CustomEditors
 
         protected void OnAddInputPortButtonClick()
         {
+            uint nextInputPortId = 2;
+            while (additionalInputPortIds.Contains(nextInputPortId))
+            {
+                nextInputPortId++;
+            }
+
             AddInputPort(nextInputPortId);
-            nextInputPortId++;
         }
 
-        protected void AddInputPort(uint id)
+        public void AddInputPort(uint id)
         {
             // 1. create panel to parent the port and delete button; add to input container
             var boolInputPortPanel = new VisualElement()
@@ -81,7 +84,7 @@ namespace CustomEditors
             var deleteButton = new Button(() =>
             {
                 port.DisconnectAll();
-                inputPortIds.Remove(id);
+                additionalInputPortIds.Remove(id);
                 inputContainer.Remove(boolInputPortPanel);
             });
             deleteButton.name = "boolean-input-port-delete-button";
@@ -89,7 +92,7 @@ namespace CustomEditors
             deleteButton.tooltip = "Delete";
             boolInputPortPanel.Add(deleteButton);
 
-            inputPortIds.Add(id);
+            additionalInputPortIds.Add(id);
         }
     }
 

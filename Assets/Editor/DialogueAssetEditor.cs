@@ -239,7 +239,7 @@ namespace CustomEditors.DialogueSystem
                     if (node is IntComparisonNode)
                     {
                         IntComparisonNode castNode = node as IntComparisonNode;
-                        BooleanNodeData nodeData = new BooleanNodeData();
+                        BooleanComparisonNodeData nodeData = new BooleanComparisonNodeData();
 
                         // graph node data
                         nodeData._nodeGuid = castNode.NodeGuid;
@@ -247,14 +247,14 @@ namespace CustomEditors.DialogueSystem
                         nodeData._nodeType = "IntBooleanNode";
 
                         // boolean node data
-                        nodeData._booleanOpEnumVal = Convert.ToInt32(castNode.operationEnumField.value);
+                        nodeData._comparisonEnumVal = Convert.ToInt32(castNode.operationEnumField.value);
 
-                        assetData.booleanNodeData.Add(nodeData);
+                        assetData.booleanComparisonNodeData.Add(nodeData);
                     }
                     else if (node is FloatComparisonNode)
                     {
                         FloatComparisonNode castNode = node as FloatComparisonNode;
-                        BooleanNodeData nodeData = new BooleanNodeData();
+                        BooleanComparisonNodeData nodeData = new BooleanComparisonNodeData();
 
                         // graph node data
                         nodeData._nodeGuid = castNode.NodeGuid;
@@ -262,10 +262,42 @@ namespace CustomEditors.DialogueSystem
                         nodeData._nodeType = "FloatBooleanNode";
 
                         // boolean node data
-                        nodeData._booleanOpEnumVal = Convert.ToInt32(castNode.operationEnumField.value);
+                        nodeData._comparisonEnumVal = Convert.ToInt32(castNode.operationEnumField.value);
 
-                        assetData.booleanNodeData.Add(nodeData);
+                        assetData.booleanComparisonNodeData.Add(nodeData);
                     }
+                }
+                else if (node is BooleanLogicNode)
+                {
+                    BooleanLogicNode castNode = node as BooleanLogicNode;
+                    BooleanLogicNodeData nodeData = new BooleanLogicNodeData();
+
+                    // graph node data
+                    nodeData._nodeGuid = castNode.NodeGuid;
+                    nodeData._nodePosition = castNode.GetPosition().position;
+                    nodeData._nodeType = "BooleanLogicNode";
+
+                    // boolean logic node data
+                    nodeData._logicEnumVal = Convert.ToInt32(castNode.operationEnumField.value);
+
+                    for (int j = 0; j < castNode.additionalInputPortIds.Count; j++)
+                    {
+                        nodeData._additionalInputPortIds.Add(castNode.additionalInputPortIds[j]);
+                    }
+
+                    assetData.booleanLogicNodeData.Add(nodeData);
+                }
+                else if (node is BooleanNOTNode)
+                {
+                    BooleanNOTNode castNode = node as BooleanNOTNode;
+                    NodeData nodeData = new NodeData();
+
+                    // graph node data
+                    nodeData._nodeGuid = castNode.NodeGuid;
+                    nodeData._nodePosition = castNode.GetPosition().position;
+                    nodeData._nodeType = "BooleanNOTNode";
+
+                    assetData.graphNodeData.Add(nodeData);
                 }
                 else if (node is GraphNode)
                 {
@@ -355,11 +387,25 @@ namespace CustomEditors.DialogueSystem
 
                             break;
                         }
+
+                    case "BooleanNOTNode":
+                        {
+                            BooleanNOTNode node = new BooleanNOTNode();
+
+                            // transfer standard GraphNode data, add to graph
+                            node.NodeGuid = data._nodeGuid;
+                            node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                            graphView.AddElement(node);
+
+                            nodes.Add(node);
+
+                            break;
+                        }
                 }
             }
 
-            // create boolean nodes
-            foreach (BooleanNodeData data in graphAsset.booleanNodeData)
+            // create boolean comparison nodes
+            foreach (BooleanComparisonNodeData data in graphAsset.booleanComparisonNodeData)
             {
                 switch (data._nodeType)
                 {
@@ -368,7 +414,7 @@ namespace CustomEditors.DialogueSystem
                             FloatComparisonNode node = new FloatComparisonNode();
 
                             // transfer boolean node data over to new node
-                            node.operationEnumField.value = (BooleanComparisonNode.ComparisonOperator)data._booleanOpEnumVal;
+                            node.operationEnumField.value = (BooleanComparisonNode.ComparisonOperator)data._comparisonEnumVal;
 
                             // transfer standard GraphNode data, add to graph
                             node.NodeGuid = data._nodeGuid;
@@ -385,7 +431,7 @@ namespace CustomEditors.DialogueSystem
                             IntComparisonNode node = new IntComparisonNode();
 
                             // transfer boolean node data over to new node
-                            node.operationEnumField.value = (BooleanComparisonNode.ComparisonOperator)data._booleanOpEnumVal;
+                            node.operationEnumField.value = (BooleanComparisonNode.ComparisonOperator)data._comparisonEnumVal;
 
                             // transfer standard GraphNode data, add to graph
                             node.NodeGuid = data._nodeGuid;
@@ -397,6 +443,28 @@ namespace CustomEditors.DialogueSystem
                             break;
                         }
                 }
+            }
+
+            // create boolean logic nodes
+            foreach (BooleanLogicNodeData data in graphAsset.booleanLogicNodeData)
+            {
+                BooleanLogicNode node = new BooleanLogicNode();
+
+                // transfer boolean logic node data to new node
+                node.operationEnumField.value = (BooleanLogicNode.LogicOperator)data._logicEnumVal;
+
+                // add additional input ports
+                for (int i = 0; i < data._additionalInputPortIds.Count; i++)
+                {
+                    node.AddInputPort(data._additionalInputPortIds[i]);
+                }
+
+                // transfer standard GraphNode data, add to graph
+                node.NodeGuid = data._nodeGuid;
+                node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                graphView.AddElement(node);
+
+                nodes.Add(node);
             }
 
             // create basic dialogue nodes
