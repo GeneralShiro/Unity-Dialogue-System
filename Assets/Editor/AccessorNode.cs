@@ -13,46 +13,45 @@ namespace CustomEditors
     /// <summary>
     /// Base class for getting/setting a variable from a serialized ScriptableObject asset.
     /// </summary>
-    public class AccessorNode : GraphNode
+    public abstract class AccessorNode : GraphNode
     {
         public ObjectField _objectField;
         public PopupField<string> _popupField;
-
-        private List<string> _testList;
+        public SerializedPropertyType _targetPropertyType;
+        public List<string> _popupList;
 
 
         public AccessorNode()
         {
+            styleSheets.Add(Resources.Load<StyleSheet>("AccessorNodeStyle"));
+            AddToClassList("accessorNode");
+
+            _targetPropertyType = SerializedPropertyType.Generic;
+
             _objectField = new ObjectField()
             {
                 objectType = typeof(ScriptableObject),
                 allowSceneObjects = false
             };
-            _objectField.RegisterValueChangedCallback(x =>
-            {
-                BindObjectToPopup();
-            });
-            mainContainer.Add(_objectField);
+            inputContainer.Add(_objectField);
 
-            _testList = new List<string>();
-            SetPopupList();
-            _popupField = new PopupField<string>(_testList, 0);
-            mainContainer.Add(_popupField);
+            _popupList = new List<string>();
+            _popupList.Add("");
+
+            _popupField = new PopupField<string>(_popupList, 0);
+            inputContainer.Add(_popupField);
+            
+            // get rid of the collapse button
+            titleButtonContainer.RemoveFromHierarchy();
         }
 
-        public void BindObjectToPopup()
+        public void SetPopupList(SerializedPropertyType desiredType)
         {
-            Debug.Log("reached");
-            SetPopupList();
-        }
-
-        private void SetPopupList()
-        {
-            _testList.Clear();
+            _popupList.Clear();
 
             if (_objectField.value == null)
             {
-                _testList.Add("None");
+                _popupList.Add("None");
             }
             else
             {
@@ -64,19 +63,51 @@ namespace CustomEditors
                 {
                     while (property.NextVisible(false))
                     {
-                        if (property.propertyType == SerializedPropertyType.Integer)
+                        if (desiredType == property.propertyType)
                         {
-                            _testList.Add(property.name);
+                            _popupList.Add(property.name);
                         }
                     }
                 }
 
-                if (_testList.Count == 0)
+                if (_popupList.Count == 0)
                 {
-                    _testList.Add("None");
+                    _popupList.Add("None");
                 }
 
             }
+        }
+    }
+
+    public class IntGetterNode : AccessorNode
+    {
+        public IntGetterNode()
+        {
+            title = "Get (Int)";
+            _targetPropertyType = SerializedPropertyType.Integer;
+            
+            _objectField.RegisterValueChangedCallback(x =>
+            {
+                SetPopupList(_targetPropertyType);
+            });
+
+            SetPopupList(_targetPropertyType);
+        }
+    }
+
+    public class FloatGetterNode : AccessorNode
+    {
+        public FloatGetterNode()
+        {
+            title = "Get (Float)";
+            _targetPropertyType = SerializedPropertyType.Float;
+            
+            _objectField.RegisterValueChangedCallback(x =>
+            {
+                SetPopupList(_targetPropertyType);
+            });
+
+            SetPopupList(_targetPropertyType);
         }
     }
 }
