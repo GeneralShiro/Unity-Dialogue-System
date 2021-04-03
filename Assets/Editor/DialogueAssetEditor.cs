@@ -611,6 +611,8 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Int)", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Float)", icon)) { level = 2 });
 
+            tree.Add(new SearchTreeEntry(new GUIContent("Accessor", icon)) { level = 1 });
+
             return tree;
         }
 
@@ -712,6 +714,18 @@ namespace CustomEditors.DialogueSystem
                         PositionNewNodeElementAtClick(node, context);
 
                         node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset());
+
+                        return true;
+                    }
+                case "Accessor":
+                    {
+                        var node = new AccessorNode();
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
+
+                        //node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset());
 
                         return true;
                     }

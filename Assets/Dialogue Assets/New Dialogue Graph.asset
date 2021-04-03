@@ -16,7 +16,7 @@ MonoBehaviour:
   graphNodeData:
   - _nodeGuid: 0
     _nodeType: StartNode
-    _nodePosition: {x: 15, y: 200}
+    _nodePosition: {x: 0, y: 0}
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   dialogueNodeData: []

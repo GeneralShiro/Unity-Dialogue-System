@@ -65,23 +65,9 @@ MonoBehaviour:
   - _nodeGuid: 3
     _nodeType: StartNode
     _nodePosition: {x: 249, y: 175}
-  booleanNodeData: []
+  booleanComparisonNodeData: []
+  booleanLogicNodeData: []
   dialogueNodeData:
-  - _nodeGuid: 4
-    _nodeType: DialogueGraphNode
-    _nodePosition: {x: 454, y: 170}
-    _choicePorts:
-    - _portId: 0
-      _choiceText: This is dialogue choice 1.
-    - _portId: 1
-      _choiceText: This is dialogue choice 2.
-    - _portId: 2
-      _choiceText: Show the adv. dialogues.
-    - _portId: 3
-      _choiceText: Show the cinematics.
-    _conditionPortIds: 
-    _speakerName: Speaker 1
-    _dialogueText: This is dialogue text 1.
   - _nodeGuid: 5
     _nodeType: DialogueGraphNode
     _nodePosition: {x: 995, y: -98}
@@ -107,6 +93,21 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 2
     _dialogueText: I'm leaving, see ya.
+  - _nodeGuid: 4
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 437, y: 173}
+    _choicePorts:
+    - _portId: 0
+      _choiceText: This is dialogue choice 1.
+    - _portId: 1
+      _choiceText: This is dialogue choice 2.
+    - _portId: 2
+      _choiceText: Show the adv. dialogues.
+    - _portId: 3
+      _choiceText: Show the cinematics.
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: This is dialogue text 1.
   advDialogueNodeData:
   - _nodeGuid: 8
     _nodeType: AdvDialogueNode
