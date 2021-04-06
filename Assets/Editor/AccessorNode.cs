@@ -8,10 +8,12 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+using CustomSystem;
+
 namespace CustomEditors
 {
     /// <summary>
-    /// Base class for getting/setting a variable from a serialized ScriptableObject asset.
+    /// Base class for getting a variable from a serialized ScriptableObject asset.
     /// </summary>
     public abstract class AccessorNode : GraphNode
     {
@@ -40,9 +42,6 @@ namespace CustomEditors
 
             _popupField = new PopupField<string>(_popupList, 0);
             inputContainer.Add(_popupField);
-            
-            // get rid of the collapse button
-            titleButtonContainer.RemoveFromHierarchy();
         }
 
         public void SetPopupList(SerializedPropertyType desiredType)
@@ -77,6 +76,20 @@ namespace CustomEditors
 
             }
         }
+
+        public void InitializeFromData(AccessorNodeData data)
+        {
+            _objectField.value = data._scriptableObj;
+            SetPopupList(_targetPropertyType);
+
+            if (data._chosenPropertyString != "")
+            {
+                _popupField.value = data._chosenPropertyString;
+            }
+
+            NodeGuid = data._nodeGuid;
+            SetPosition(new Rect(data._nodePosition, Vector2.zero));
+        }
     }
 
     public class IntGetterNode : AccessorNode
@@ -85,7 +98,10 @@ namespace CustomEditors
         {
             title = "Get (Int)";
             _targetPropertyType = SerializedPropertyType.Integer;
-            
+
+            // add output port
+            AddPort("", typeof(int), false, Port.Capacity.Multi);
+
             _objectField.RegisterValueChangedCallback(x =>
             {
                 SetPopupList(_targetPropertyType);
@@ -101,7 +117,10 @@ namespace CustomEditors
         {
             title = "Get (Float)";
             _targetPropertyType = SerializedPropertyType.Float;
-            
+
+            // add output port
+            AddPort("", typeof(float), false, Port.Capacity.Multi);
+
             _objectField.RegisterValueChangedCallback(x =>
             {
                 SetPopupList(_targetPropertyType);

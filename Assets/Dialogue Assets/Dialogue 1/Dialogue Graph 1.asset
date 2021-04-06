@@ -67,6 +67,7 @@ MonoBehaviour:
     _nodePosition: {x: 249, y: 175}
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
+  accessorNodeData: []
   dialogueNodeData:
   - _nodeGuid: 5
     _nodeType: DialogueGraphNode

@@ -11,6 +11,7 @@ namespace CustomSystem
         public List<NodeData> graphNodeData;
         public List<BooleanComparisonNodeData> booleanComparisonNodeData;
         public List<BooleanLogicNodeData> booleanLogicNodeData;
+        public List<AccessorNodeData> accessorNodeData;
 
         public virtual uint GetNewGUID()
         {
@@ -69,7 +70,17 @@ namespace CustomSystem
 
         public BooleanLogicNodeData()
         {
-            _additionalInputPortIds = new List<uint>(); 
+            _additionalInputPortIds = new List<uint>();
         }
+    }
+
+    [System.Serializable]
+    public class AccessorNodeData : NodeData
+    {
+        public ScriptableObject _scriptableObj;
+        public string _chosenPropertyString;        // name of the property chosen from the scriptableobj
+        public int _typeEnumVal;                    // correlates to 'UnityEditor.SerializedPropertyType' enum value
+
+        public AccessorNodeData() { }
     }
 }

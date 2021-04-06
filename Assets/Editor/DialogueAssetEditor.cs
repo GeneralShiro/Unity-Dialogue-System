@@ -299,6 +299,23 @@ namespace CustomEditors.DialogueSystem
 
                     assetData.graphNodeData.Add(nodeData);
                 }
+                else if (node is AccessorNode)
+                {
+                    AccessorNode castNode = node as AccessorNode;
+                    AccessorNodeData nodeData = new AccessorNodeData();
+
+                    // graph node data
+                    nodeData._nodeGuid = castNode.NodeGuid;
+                    nodeData._nodePosition = castNode.GetPosition().position;
+                    nodeData._nodeType = "BooleanNOTNode";
+
+                    // accessor node data
+                    nodeData._scriptableObj = castNode._objectField.value as ScriptableObject;
+                    nodeData._typeEnumVal = (int)castNode._targetPropertyType;
+                    nodeData._chosenPropertyString = castNode._popupField.value;
+
+                    assetData.accessorNodeData.Add(nodeData);
+                }
                 else if (node is GraphNode)
                 {
                     if (node.name == "StartNode")
@@ -397,6 +414,36 @@ namespace CustomEditors.DialogueSystem
                             node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
                             graphView.AddElement(node);
 
+                            nodes.Add(node);
+
+                            break;
+                        }
+                }
+            }
+
+            // create accessor nodes
+            foreach (AccessorNodeData data in graphAsset.accessorNodeData)
+            {
+                SerializedPropertyType type = (SerializedPropertyType)data._typeEnumVal;
+
+                switch (type)
+                {
+                    case SerializedPropertyType.Integer:
+                        {
+                            IntGetterNode node = new IntGetterNode();
+                            node.InitializeFromData(data);
+
+                            graphView.AddElement(node);
+                            nodes.Add(node);
+
+                            break;
+                        }
+                    case SerializedPropertyType.Float:
+                        {
+                            FloatGetterNode node = new FloatGetterNode();
+                            node.InitializeFromData(data);
+                            
+                            graphView.AddElement(node);
                             nodes.Add(node);
 
                             break;
@@ -615,6 +662,9 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeEntry(new GUIContent("Get (Int)", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Get (Float)", icon)) { level = 2 });
 
+
+            tree.Add(new SearchTreeEntry(new GUIContent("Default", icon)) { level = 1 });
+
             return tree;
         }
 
@@ -733,6 +783,17 @@ namespace CustomEditors.DialogueSystem
                 case "Get (Float)":
                     {
                         var node = new FloatGetterNode();
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
+
+                        return true;
+                    }
+
+                case "Default":
+                    {
+                        var node = new GraphNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
 

@@ -17,6 +17,9 @@ namespace CustomEditors
         {
             styleSheets.Add(Resources.Load<StyleSheet>("GraphNodeStyle"));
             AddToClassList("graphNode");
+
+            // get rid of the default collapse button
+            titleButtonContainer.RemoveFromHierarchy();
         }
 
 

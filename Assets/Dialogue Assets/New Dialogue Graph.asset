@@ -19,6 +19,7 @@ MonoBehaviour:
     _nodePosition: {x: 0, y: 0}
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
+  accessorNodeData: []
   dialogueNodeData: []
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

@@ -69,10 +69,6 @@ namespace CustomEditors.DialogueSystem
             };
             variableContainer.Add(dialogueTextField);
 
-
-            // get rid of the collapse button
-            titleButtonContainer.RemoveFromHierarchy();
-
             // add ports to title container for dialogue node progression
             var prevDialogueNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, true, Port.Capacity.Multi, "prev-dialogue-node-input", 0);
             prevDialogueNodePort.AddToClassList("dialogueProgressPort");
