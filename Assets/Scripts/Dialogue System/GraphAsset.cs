@@ -15,7 +15,7 @@ namespace CustomSystem
 
         public virtual uint GetNewGUID()
         {
-            uint ret = 0;
+            uint ret = 1;
 
             for (int i = 0; i < graphNodeData.Count; i++)
             {

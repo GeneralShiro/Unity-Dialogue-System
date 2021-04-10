@@ -25,6 +25,7 @@ namespace CustomEditors
         public BooleanLogicNode(LogicOperator logicOp)
         {
             title = "Logic Node";
+            styleSheets.Add(Resources.Load<StyleSheet>("BoolNodeStyle"));
             AddToClassList("boolLogicNode");    // USS style
 
             operationEnumField = new EnumField(logicOp);

@@ -39,6 +39,7 @@ namespace CustomEditors.DialogueSystem
         public DialogueGraphNode()
         {
             title = "Basic Dialogue Node";
+            styleSheets.Add(Resources.Load<StyleSheet>("DialogueNodeStyle"));
             AddToClassList("dialogueGraphNode");    // USS style
 
             // create a container element to hold the variables; this allows for 

@@ -130,6 +130,17 @@ namespace CustomEditors.DialogueSystem
             {
                 Node node = nodes[i];
 
+                // make sure the node has a GUID if it's a GraphNode; if it's '0', the guid still needs to be set 
+                if (node is GraphNode)
+                {
+                    GraphNode castNode = node as GraphNode;
+
+                    if (castNode.NodeGuid == 0)
+                    {
+                        castNode.NodeGuid = graphAsset.GetNewGUID();
+                    }
+                }
+
                 if (node is DialogueGraphNode)
                 {
                     if (node is AdvDialogueNode)
@@ -365,6 +376,15 @@ namespace CustomEditors.DialogueSystem
         public GraphViewChange OnGraphViewChanged(GraphViewChange gvc)
         {
             EditorApplication.update += SaveDelayedGraphAsset;
+
+            if (gvc.edgesToCreate != null)
+            {
+                foreach (Edge e in gvc.edgesToCreate)
+                {
+                    e.AddManipulator(new EdgeRedirectManipulator());
+                }
+            }
+
             return gvc;
         }
 
@@ -442,7 +462,7 @@ namespace CustomEditors.DialogueSystem
                         {
                             FloatGetterNode node = new FloatGetterNode();
                             node.InitializeFromData(data);
-                            
+
                             graphView.AddElement(node);
                             nodes.Add(node);
 
@@ -872,6 +892,7 @@ namespace CustomEditors.DialogueSystem
             startNode.outputContainer.RemoveFromHierarchy();
 
             var nextDialogueNodePort = startNode.AddPort("", typeof(DialogueGraphNode), startNode.titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
+            startNode.styleSheets.Add(Resources.Load<StyleSheet>("DialogueNodeStyle"));
             nextDialogueNodePort.AddToClassList("dialogueProgressPort");
             nextDialogueNodePort.tooltip = "Connect to the first dialogue node";
 

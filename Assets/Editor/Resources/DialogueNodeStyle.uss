@@ -1,0 +1,112 @@
+.dialogueGraphNode #title {
+	background-color : rgba(0, 102, 102, 1);
+}
+
+.advDialogueNode #title {
+	background-color : rgba(42, 96, 201, 1);
+}
+
+.cinematicDialogueNode #title {
+	background-color : rgba(132, 71, 161, 1);
+}
+
+.dialogueProgressPort {
+	width : 50%;
+	align-items : center;
+	align-self : center;
+}
+
+.dialogueProgressPort #prev-dialogue-node-input {
+	justify-content: flex-start;
+}
+
+.dialogueProgressPort #next-dialogue-node-input {
+	justify-content: flex-end;
+}
+
+.dialogueGraphNode #dialogue-condition-panel {
+	flex-direction : row;
+	justify-content : space-between;
+}
+
+.dialogueGraphNode #dialogue-choice-panel {
+	flex-direction : row;
+	justify-content : space-between;
+}
+
+.dialogueGraphNode #dialogue-speaker-field {
+	width : 250px;
+	align-self : center;
+}
+
+.dialogueGraphNode #dialogue-speaker-field TextInput {
+	-unity-text-align : middle-center;
+}
+
+.dialogueGraphNode #dialogue-text-field {
+	flex-direction : column;
+	min-height : 50px;
+	width : 250px;
+	align-self : center;
+}
+
+.dialogueGraphNode #dialogue-text-field TextInput {
+	overflow : visible;
+	white-space : normal;
+	-unity-text-align : upper-left;
+}
+
+.dialogueConditionInputPort {
+	width : 90px;
+	align-self : center;
+}
+
+.dialogueChoiceOutputPort {
+	width : 33px;
+	align-self : center;
+}
+
+.dialogueChoiceOutputPort #type {
+	width : 0px;
+	margin-left : 0px;
+	margin-right : 0px;
+}
+
+.dialogueChoiceTextField {
+	width : 150px;
+	flex-direction : column;
+}
+
+.dialogueChoiceTextField TextInput {
+	overflow : visible;
+	white-space : normal;
+	-unity-text-align : upper-left;
+}
+
+.dialogueGraphNode #dialogue-condition-delete-button {
+	height : 20px;
+	width : 20px;
+	border-bottom-left-radius : 10px;
+	border-bottom-right-radius : 10px;
+	border-top-left-radius : 10px;
+	border-top-right-radius : 10px;
+	align-self : center;
+}
+
+.dialogueGraphNode #dialogue-choice-delete-button {
+	height : 20px;
+	width : 20px;
+	border-bottom-left-radius : 10px;
+	border-bottom-right-radius : 10px;
+	border-top-left-radius : 10px;
+	border-top-right-radius : 10px;
+	align-self : center;
+}
+
+.advDialogueNode #dialogue-text-field {
+	width : 249px;
+}
+
+.cinematicDialogueNode #dialogue-text-field {
+	width : 230px;
+}

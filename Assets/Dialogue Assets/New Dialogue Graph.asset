@@ -14,12 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeLinkData: []
   graphNodeData:
-  - _nodeGuid: 0
+  - _nodeGuid: 1
     _nodeType: StartNode
-    _nodePosition: {x: 0, y: 0}
+    _nodePosition: {x: 0, y: 101}
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   accessorNodeData: []
-  dialogueNodeData: []
+  dialogueNodeData:
+  - _nodeGuid: 2
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 219, y: 68}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: 
+    _dialogueText: 
+  - _nodeGuid: 3
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 668, y: 55}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: 
+    _dialogueText: 
   advDialogueNodeData: []
   cinematicDialogueNodeData: []
