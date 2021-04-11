@@ -141,6 +141,7 @@ namespace CustomEditors.DialogueSystem
                     }
                 }
 
+                // create data objects based on graph nodes
                 if (node is DialogueGraphNode)
                 {
                     if (node is AdvDialogueNode)
@@ -327,20 +328,39 @@ namespace CustomEditors.DialogueSystem
 
                     assetData.accessorNodeData.Add(nodeData);
                 }
+                else if (node is EdgeRedirector)
+                {
+                    EdgeRedirector castNode = node as EdgeRedirector;
+                    EdgeRedirectorData nodeData = new EdgeRedirectorData();
+
+                    // graph node data
+                    nodeData._nodeGuid = castNode.NodeGuid;
+                    nodeData._nodePosition = castNode.GetPosition().position;
+                    nodeData._nodeType = "EdgeRedirector";
+
+                    // edge redirector data
+                    nodeData._leftPortType = castNode._leftPort.portType;
+                    nodeData._rightPortType = castNode._rightPort.portType;
+                    nodeData._leftPortCapacityVal = Convert.ToInt32(castNode._leftPort.capacity);
+                    nodeData._rightPortCapacityVal = Convert.ToInt32(castNode._rightPort.capacity);
+
+                    assetData.edgeRedirectorData.Add(nodeData);
+                }
                 else if (node is GraphNode)
                 {
+                    GraphNode castNode = node as GraphNode;
+                    NodeData nodeData = new NodeData();
+
+                    // graph node data
+                    nodeData._nodeGuid = castNode.NodeGuid;
+                    nodeData._nodePosition = castNode.GetPosition().position;
+
                     if (node.name == "StartNode")
                     {
-                        GraphNode castNode = node as GraphNode;
-                        NodeData nodeData = new NodeData();
-
-                        // graph node data
-                        nodeData._nodeGuid = castNode.NodeGuid;
-                        nodeData._nodePosition = castNode.GetPosition().position;
                         nodeData._nodeType = "StartNode";
-
-                        assetData.graphNodeData.Add(nodeData);
                     }
+
+                    assetData.graphNodeData.Add(nodeData);
                 }
             }
 
@@ -439,6 +459,24 @@ namespace CustomEditors.DialogueSystem
                             break;
                         }
                 }
+            }
+
+            // create edge redirector nodes
+            foreach (EdgeRedirectorData data in graphAsset.edgeRedirectorData)
+            {
+                EdgeRedirector node = new EdgeRedirector(
+                    data._leftPortType,
+                    (Port.Capacity)data._leftPortCapacityVal,
+                    data._rightPortType,
+                    (Port.Capacity)data._rightPortCapacityVal
+                    );
+
+                // transfer standard GraphNode data, add to graph
+                node.NodeGuid = data._nodeGuid;
+                node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                graphView.AddElement(node);
+
+                nodes.Add(node);
             }
 
             // create accessor nodes
@@ -576,10 +614,10 @@ namespace CustomEditors.DialogueSystem
 
                     if (data._inputNodeGuid == node.NodeGuid || data._outputNodeGuid == node.NodeGuid)
                     {
-                        // we can have ports in the title container, output container or input container, so get all of their child elements to search through
+                        // we can have ports in the title container, output container, input container and top container, so get all of their child elements to search through
                         List<VisualElement> allElements = node.titleContainer.Children().ToList();
 
-                        // find condition ports
+                        // find input container ports
                         List<VisualElement> inputContainerChildren = node.inputContainer.Children().ToList();
                         foreach (VisualElement ve in inputContainerChildren)
                         {
@@ -593,9 +631,23 @@ namespace CustomEditors.DialogueSystem
                             }
                         }
 
-                        // find choice ports
+                        // find output container ports
                         List<VisualElement> outputContainerChildren = node.outputContainer.Children().ToList();
                         foreach (VisualElement ve in outputContainerChildren)
+                        {
+                            List<VisualElement> children = ve.Children().ToList();
+                            foreach (VisualElement childVe in children)
+                            {
+                                if (childVe is Port)
+                                {
+                                    allElements.Add(childVe);
+                                }
+                            }
+                        }
+
+                        // find top container ports
+                        List<VisualElement> topContainerChildren = node.topContainer.Children().ToList();
+                        foreach (VisualElement ve in topContainerChildren)
                         {
                             List<VisualElement> children = ve.Children().ToList();
                             foreach (VisualElement childVe in children)

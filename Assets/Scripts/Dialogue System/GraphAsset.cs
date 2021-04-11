@@ -12,6 +12,7 @@ namespace CustomSystem
         public List<BooleanComparisonNodeData> booleanComparisonNodeData;
         public List<BooleanLogicNodeData> booleanLogicNodeData;
         public List<AccessorNodeData> accessorNodeData;
+        public List<EdgeRedirectorData> edgeRedirectorData;
 
         public virtual uint GetNewGUID()
         {
@@ -30,6 +31,30 @@ namespace CustomSystem
                 if (ret <= booleanComparisonNodeData[i]._nodeGuid)
                 {
                     ret = booleanComparisonNodeData[i]._nodeGuid + 1;
+                }
+            }
+
+            for (int i = 0; i < booleanLogicNodeData.Count; i++)
+            {
+                if (ret <= booleanLogicNodeData[i]._nodeGuid)
+                {
+                    ret = booleanLogicNodeData[i]._nodeGuid + 1;
+                }
+            }
+
+            for (int i = 0; i < accessorNodeData.Count; i++)
+            {
+                if (ret <= accessorNodeData[i]._nodeGuid)
+                {
+                    ret = accessorNodeData[i]._nodeGuid + 1;
+                }
+            }
+
+            for (int i = 0; i < edgeRedirectorData.Count; i++)
+            {
+                if (ret <= edgeRedirectorData[i]._nodeGuid)
+                {
+                    ret = edgeRedirectorData[i]._nodeGuid + 1;
                 }
             }
 
@@ -80,7 +105,14 @@ namespace CustomSystem
         public ScriptableObject _scriptableObj;
         public string _chosenPropertyString;        // name of the property chosen from the scriptableobj
         public int _typeEnumVal;                    // correlates to 'UnityEditor.SerializedPropertyType' enum value
+    }
 
-        public AccessorNodeData() { }
+    [System.Serializable]
+    public class EdgeRedirectorData : NodeData
+    {
+        public System.Type _leftPortType;
+        public System.Type _rightPortType;
+        public int _leftPortCapacityVal;
+        public int _rightPortCapacityVal;
     }
 }

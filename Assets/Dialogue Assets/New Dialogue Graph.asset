@@ -12,7 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
   m_Name: New Dialogue Graph
   m_EditorClassIdentifier: 
-  nodeLinkData: []
+  nodeLinkData:
+  - _inputNodeGuid: 4
+    _outputNodeGuid: 2
+    _inputPortName: 
+    _inputElementName: leftPort
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 3
+    _outputNodeGuid: 4
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: rightPort
   graphNodeData:
   - _nodeGuid: 1
     _nodeType: StartNode
@@ -20,6 +32,12 @@ MonoBehaviour:
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   accessorNodeData: []
+  edgeRedirectorData:
+  - _nodeGuid: 4
+    _nodeType: EdgeRedirector
+    _nodePosition: {x: 579, y: 83}
+    _leftPortCapacityVal: 1
+    _rightPortCapacityVal: 1
   dialogueNodeData:
   - _nodeGuid: 2
     _nodeType: DialogueGraphNode
@@ -30,7 +48,7 @@ MonoBehaviour:
     _dialogueText: 
   - _nodeGuid: 3
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 668, y: 55}
+    _nodePosition: {x: 716, y: 84}
     _choicePorts: []
     _conditionPortIds: 
     _speakerName: 

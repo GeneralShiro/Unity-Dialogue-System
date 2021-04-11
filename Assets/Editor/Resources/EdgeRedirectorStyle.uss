@@ -1,0 +1,40 @@
+.edgeRedirector #contents {
+    background-color : rgba(0,0,0,0);
+}
+
+.edgeRedirector #customInput {
+    background-color : rgba(0,0,0,0);
+}
+
+.edgeRedirector #customOutput {
+    background-color : rgba(0,0,0,0);
+}
+
+.edgeRedirector #divider {
+    background-color : rgba(0,0,0,0);
+    border-bottom-color : rgba(0,0,0,0);
+    border-left-color : rgba(0,0,0,0);
+    border-right-color : rgba(0,0,0,0);
+    border-top-color : rgba(0,0,0,0);
+}
+
+.edgeRedirector #node-border {
+    background-color : rgba(0,0,0,0);
+    border-bottom-color : rgb(255,255,255);
+    border-left-color : rgb(255,255,255);
+    border-right-color : rgb(255,255,255);
+    border-top-color : rgb(255,255,255);
+    border-bottom-width : 2px;
+    border-left-width : 2px;
+    border-right-width : 2px;
+    border-top-width : 2px;
+    border-bottom-left-radius : 20px;
+    border-bottom-right-radius : 20px;
+    border-top-left-radius : 20px;
+    border-top-right-radius : 20px;
+}
+
+.edgeRedirector Port {
+    padding-left : 0px;
+    padding-right : 0px;
+}

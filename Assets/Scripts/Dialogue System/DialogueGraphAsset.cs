@@ -19,6 +19,8 @@ namespace CustomSystem.DialogueSystem
             graphNodeData = new List<NodeData>();
             nodeLinkData = new List<NodeLinkData>();
 
+            edgeRedirectorData = new List<EdgeRedirectorData>();
+
             booleanLogicNodeData = new List<BooleanLogicNodeData>();
             booleanComparisonNodeData = new List<BooleanComparisonNodeData>();
 
