@@ -25,6 +25,8 @@ namespace CustomSystem.DialogueSystem
             booleanComparisonNodeData = new List<BooleanComparisonNodeData>();
 
             accessorNodeData = new List<AccessorNodeData>();
+            intValNodeData = new List<IntValNodeData>();
+            floatValNodeData = new List<FloatValNodeData>();
             
             dialogueNodeData = new List<DialogueNodeData>();
             advDialogueNodeData = new List<AdvDialogueNodeData>();

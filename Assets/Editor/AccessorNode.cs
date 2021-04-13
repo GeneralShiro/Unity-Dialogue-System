@@ -100,7 +100,7 @@ namespace CustomEditors
             _targetPropertyType = SerializedPropertyType.Integer;
 
             // add output port
-            AddPort("", typeof(int), false, Port.Capacity.Multi);
+            AddPort("", typeof(int), false, Port.Capacity.Multi, "accessor-int-output");
 
             _objectField.RegisterValueChangedCallback(x =>
             {
@@ -119,7 +119,7 @@ namespace CustomEditors
             _targetPropertyType = SerializedPropertyType.Float;
 
             // add output port
-            AddPort("", typeof(float), false, Port.Capacity.Multi);
+            AddPort("", typeof(float), false, Port.Capacity.Multi, "accessor-float-output");
 
             _objectField.RegisterValueChangedCallback(x =>
             {

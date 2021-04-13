@@ -12,6 +12,8 @@ namespace CustomSystem
         public List<BooleanComparisonNodeData> booleanComparisonNodeData;
         public List<BooleanLogicNodeData> booleanLogicNodeData;
         public List<AccessorNodeData> accessorNodeData;
+        public List<IntValNodeData> intValNodeData;
+        public List<FloatValNodeData> floatValNodeData;
         public List<EdgeRedirectorData> edgeRedirectorData;
 
         public virtual uint GetNewGUID()
@@ -39,6 +41,22 @@ namespace CustomSystem
                 if (ret <= booleanLogicNodeData[i]._nodeGuid)
                 {
                     ret = booleanLogicNodeData[i]._nodeGuid + 1;
+                }
+            }
+
+            for (int i = 0; i < intValNodeData.Count; i++)
+            {
+                if (ret <= intValNodeData[i]._nodeGuid)
+                {
+                    ret = intValNodeData[i]._nodeGuid + 1;
+                }
+            }
+
+            for (int i = 0; i < floatValNodeData.Count; i++)
+            {
+                if (ret <= floatValNodeData[i]._nodeGuid)
+                {
+                    ret = floatValNodeData[i]._nodeGuid + 1;
                 }
             }
 
@@ -105,6 +123,18 @@ namespace CustomSystem
         public ScriptableObject _scriptableObj;
         public string _chosenPropertyString;        // name of the property chosen from the scriptableobj
         public int _typeEnumVal;                    // correlates to 'UnityEditor.SerializedPropertyType' enum value
+    }
+
+    [System.Serializable]
+    public class IntValNodeData : NodeData
+    {
+        public int _intVal;
+    }
+
+    [System.Serializable]
+    public class FloatValNodeData : NodeData
+    {
+        public float _floatVal;
     }
 
     [System.Serializable]

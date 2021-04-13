@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.UIElements;
 
+using UnityEditor.Experimental.GraphView;
+
+
 namespace CustomEditors
 {
 	public abstract class BooleanComparisonNode : GraphNode
@@ -25,7 +28,7 @@ namespace CustomEditors
 			operationEnumField = new EnumField(ComparisonOperator.EQUAL_TO);
 			mainContainer.Insert(1, operationEnumField);
 
-			AddPort("Output Bool", typeof(bool), false);
+			AddPort("Output Bool", typeof(bool), false, Port.Capacity.Multi);
 		}
 
 		// TODO: move this to a monobehaviour obj

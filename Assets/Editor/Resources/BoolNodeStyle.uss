@@ -12,3 +12,13 @@
 	border-top-right-radius : 10px;
 	align-self : center;
 }
+
+.boolLogicNode #title-label {
+	font-size : 14px;
+	-unity-text-align : middle-center;
+    -unity-font-style : bold;
+	align-content : center;
+	justify-content: center;
+	margin-left : auto;
+    margin-right : auto;
+}

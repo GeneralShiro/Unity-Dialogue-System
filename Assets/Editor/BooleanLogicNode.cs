@@ -32,7 +32,7 @@ namespace CustomEditors
             mainContainer.Insert(1, operationEnumField);
 
             // create output port
-            AddPort("Output", typeof(bool), false);
+            AddPort("Output", typeof(bool), false, Port.Capacity.Multi, "logic-output");
 
             // add button to input container to allow the addition of ports
             var addInputPortsButton = new Button(OnAddInputPortButtonClick);
@@ -102,11 +102,14 @@ namespace CustomEditors
     {
         public BooleanNOTNode()
         {
-            title = "Logic NOT Node";
+            title = "NOT";
             tooltip = "Inverses the value of the input boolean, sent as the output boolean.";
 
+            styleSheets.Add(Resources.Load<StyleSheet>("BoolNodeStyle"));
+            AddToClassList("boolLogicNode");    // USS style
+
             // create output port
-            AddPort("", typeof(bool), false);
+            AddPort("", typeof(bool), false, Port.Capacity.Multi, "logic-not-output");
 
             // create input port
             AddPort("", typeof(bool));

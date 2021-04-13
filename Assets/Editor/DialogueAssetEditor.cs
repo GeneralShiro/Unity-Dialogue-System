@@ -319,7 +319,7 @@ namespace CustomEditors.DialogueSystem
                     // graph node data
                     nodeData._nodeGuid = castNode.NodeGuid;
                     nodeData._nodePosition = castNode.GetPosition().position;
-                    nodeData._nodeType = "BooleanNOTNode";
+                    nodeData._nodeType = "AccessorNode";
 
                     // accessor node data
                     nodeData._scriptableObj = castNode._objectField.value as ScriptableObject;
@@ -327,6 +327,36 @@ namespace CustomEditors.DialogueSystem
                     nodeData._chosenPropertyString = castNode._popupField.value;
 
                     assetData.accessorNodeData.Add(nodeData);
+                }
+                else if (node is IntValueNode)
+                {
+                    IntValueNode castNode = node as IntValueNode;
+                    IntValNodeData nodeData = new IntValNodeData();
+
+                    // graph node data
+                    nodeData._nodeGuid = castNode.NodeGuid;
+                    nodeData._nodePosition = castNode.GetPosition().position;
+                    nodeData._nodeType = "IntValueNode";
+
+                    // int value node data
+                    nodeData._intVal = castNode._intField.value;
+
+                    assetData.intValNodeData.Add(nodeData);
+                }
+                else if (node is FloatValueNode)
+                {
+                    FloatValueNode castNode = node as FloatValueNode;
+                    FloatValNodeData nodeData = new FloatValNodeData();
+
+                    // graph node data
+                    nodeData._nodeGuid = castNode.NodeGuid;
+                    nodeData._nodePosition = castNode.GetPosition().position;
+                    nodeData._nodeType = "FloatValueNode";
+
+                    // float value node data
+                    nodeData._floatVal = castNode._floatField.value;
+
+                    assetData.floatValNodeData.Add(nodeData);
                 }
                 else if (node is EdgeRedirector)
                 {
@@ -507,6 +537,34 @@ namespace CustomEditors.DialogueSystem
                             break;
                         }
                 }
+            }
+
+            // create int value nodes
+            foreach (IntValNodeData data in graphAsset.intValNodeData)
+            {
+                IntValueNode node = new IntValueNode();
+                node._intField.value = data._intVal;
+
+                // transfer standard GraphNode data, add to graph
+                node.NodeGuid = data._nodeGuid;
+                node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                graphView.AddElement(node);
+
+                nodes.Add(node);
+            }
+
+            // create float value nodes
+            foreach (FloatValNodeData data in graphAsset.floatValNodeData)
+            {
+                FloatValueNode node = new FloatValueNode();
+                node._floatField.value = data._floatVal;
+
+                // transfer standard GraphNode data, add to graph
+                node.NodeGuid = data._nodeGuid;
+                node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                graphView.AddElement(node);
+                
+                nodes.Add(node);
             }
 
             // create boolean comparison nodes
@@ -727,15 +785,16 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeEntry(new GUIContent("Logic NOT Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Logic AND Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Logic OR Node", icon)) { level = 2 });
-            tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Int)", icon)) { level = 2 });
-            tree.Add(new SearchTreeEntry(new GUIContent("Boolean Node (Float)", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Compare (Int)", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Compare (Float)", icon)) { level = 2 });
 
             tree.Add(new SearchTreeGroupEntry(new GUIContent("Getters", icon)) { level = 1 });
             tree.Add(new SearchTreeEntry(new GUIContent("Get (Int)", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Get (Float)", icon)) { level = 2 });
 
-
-            tree.Add(new SearchTreeEntry(new GUIContent("Default", icon)) { level = 1 });
+            tree.Add(new SearchTreeGroupEntry(new GUIContent("Raw Values", icon)) { level = 1 });
+            tree.Add(new SearchTreeEntry(new GUIContent("New Int", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("New Float", icon)) { level = 2 });
 
             return tree;
         }
@@ -816,7 +875,7 @@ namespace CustomEditors.DialogueSystem
                         return true;
                     }
 
-                case "Boolean Node (Int)":
+                case "Compare (Int)":
                     {
                         var node = new IntComparisonNode();
                         graphView.AddElement(node);
@@ -829,7 +888,7 @@ namespace CustomEditors.DialogueSystem
                         return true;
                     }
 
-                case "Boolean Node (Float)":
+                case "Compare (Float)":
                     {
                         var node = new FloatComparisonNode();
                         graphView.AddElement(node);
@@ -862,10 +921,19 @@ namespace CustomEditors.DialogueSystem
 
                         return true;
                     }
-
-                case "Default":
+                case "New Int":
                     {
-                        var node = new GraphNode();
+                        var node = new IntValueNode();
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
+
+                        return true;
+                    }
+                case "New Float":
+                    {
+                        var node = new FloatValueNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
 
