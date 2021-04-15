@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
-  m_Name: New Dialogue Graph
+  m_Name: 
   m_EditorClassIdentifier: 
   nodeLinkData:
   - _inputNodeGuid: 2
@@ -31,18 +31,6 @@ MonoBehaviour:
     _inputElementName: dialogue-condition-input-port-0
     _outputPortName: Output Bool
     _outputElementName: 
-  - _inputNodeGuid: 6
-    _outputNodeGuid: 1
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
-  - _inputNodeGuid: 2
-    _outputNodeGuid: 1
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
   - _inputNodeGuid: 4
     _outputNodeGuid: 5
     _inputPortName: Int 1
@@ -55,6 +43,18 @@ MonoBehaviour:
     _inputElementName: 
     _outputPortName: 
     _outputElementName: value-int-output
+  - _inputNodeGuid: 6
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 2
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
   graphNodeData:
   - _nodeGuid: 1
     _nodeType: StartNode

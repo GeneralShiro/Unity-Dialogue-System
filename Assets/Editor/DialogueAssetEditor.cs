@@ -748,7 +748,11 @@ namespace CustomEditors.DialogueSystem
 
                     if (foundInput && foundOutput)
                     {
-                        graphView.AddElement(outputPort.ConnectTo(inputPort));
+                        Edge newEdge = outputPort.ConnectTo(inputPort);
+                        newEdge.AddManipulator(new EdgeRedirectManipulator());
+                        
+                        graphView.AddElement(newEdge);
+
                         break;
                     }
                 }
