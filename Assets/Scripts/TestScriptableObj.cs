@@ -7,6 +7,7 @@ public class TestScriptableObj : ScriptableObject
 {
     public int _testInt;
     public float _testFloat;
+    public bool _testBool;
 
     public TestScriptableObj()
     {

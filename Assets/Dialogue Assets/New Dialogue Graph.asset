@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
-  m_Name: 
+  m_Name: New Dialogue Graph
   m_EditorClassIdentifier: 
   nodeLinkData:
   - _inputNodeGuid: 2
@@ -43,25 +43,25 @@ MonoBehaviour:
     _inputElementName: 
     _outputPortName: 
     _outputElementName: value-int-output
-  - _inputNodeGuid: 6
-    _outputNodeGuid: 1
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
   - _inputNodeGuid: 2
     _outputNodeGuid: 1
     _inputPortName: 
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 6
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
   graphNodeData:
-  - _nodeGuid: 1
-    _nodeType: StartNode
-    _nodePosition: {x: 0, y: 101}
   - _nodeGuid: 3
     _nodeType: BooleanNOTNode
     _nodePosition: {x: 295, y: 317}
+  - _nodeGuid: 1
+    _nodeType: StartNode
+    _nodePosition: {x: 0, y: 101}
   booleanComparisonNodeData:
   - _nodeGuid: 4
     _nodeType: IntBooleanNode
@@ -71,14 +71,14 @@ MonoBehaviour:
   accessorNodeData:
   - _nodeGuid: 5
     _nodeType: AccessorNode
-    _nodePosition: {x: -226, y: 377}
+    _nodePosition: {x: -234, y: 361}
     _scriptableObj: {fileID: 11400000, guid: 18bb4d3295693ce4baddd551fc62e57a, type: 2}
     _chosenPropertyString: _testInt
     _typeEnumVal: 0
   intValNodeData:
   - _nodeGuid: 7
     _nodeType: IntValueNode
-    _nodePosition: {x: -86, y: 504}
+    _nodePosition: {x: -45, y: 467}
     _intVal: 1
   floatValNodeData: []
   edgeRedirectorData: []

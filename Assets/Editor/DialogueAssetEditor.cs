@@ -389,6 +389,10 @@ namespace CustomEditors.DialogueSystem
                     {
                         nodeData._nodeType = "StartNode";
                     }
+                    else if (node is DialogueBranchNode)
+                    {
+                        nodeData._nodeType = "DialogueBranch";
+                    }
 
                     assetData.graphNodeData.Add(nodeData);
                 }
@@ -488,6 +492,20 @@ namespace CustomEditors.DialogueSystem
 
                             break;
                         }
+
+                    case "DialogueBranch":
+                        {
+                            DialogueBranchNode node = new DialogueBranchNode();
+
+                            // transfer standard GraphNode data, add to graph
+                            node.NodeGuid = data._nodeGuid;
+                            node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
+                            graphView.AddElement(node);
+
+                            nodes.Add(node);
+
+                            break;
+                        }
                 }
             }
 
@@ -536,6 +554,16 @@ namespace CustomEditors.DialogueSystem
 
                             break;
                         }
+                    case SerializedPropertyType.Boolean:
+                        {
+                            BoolGetterNode node = new BoolGetterNode();
+                            node.InitializeFromData(data);
+
+                            graphView.AddElement(node);
+                            nodes.Add(node);
+
+                            break;
+                        }
                 }
             }
 
@@ -563,7 +591,7 @@ namespace CustomEditors.DialogueSystem
                 node.NodeGuid = data._nodeGuid;
                 node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
                 graphView.AddElement(node);
-                
+
                 nodes.Add(node);
             }
 
@@ -750,7 +778,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         Edge newEdge = outputPort.ConnectTo(inputPort);
                         newEdge.AddManipulator(new EdgeRedirectManipulator());
-                        
+
                         graphView.AddElement(newEdge);
 
                         break;
@@ -784,6 +812,7 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeEntry(new GUIContent("Basic Dialogue Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Advanced Dialogue Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Cinematic Dialogue Node", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Dialogue Branch", icon)) { level = 2 });
 
             tree.Add(new SearchTreeGroupEntry(new GUIContent("Boolean", icon)) { level = 1 });
             tree.Add(new SearchTreeEntry(new GUIContent("Logic NOT Node", icon)) { level = 2 });
@@ -795,6 +824,7 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeGroupEntry(new GUIContent("Getters", icon)) { level = 1 });
             tree.Add(new SearchTreeEntry(new GUIContent("Get (Int)", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Get (Float)", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Get (Bool)", icon)) { level = 2 });
 
             tree.Add(new SearchTreeGroupEntry(new GUIContent("Raw Values", icon)) { level = 1 });
             tree.Add(new SearchTreeEntry(new GUIContent("New Int", icon)) { level = 2 });
@@ -842,6 +872,17 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
+
+                        return true;
+                    }
+
+                case "Dialogue Branch":
+                    {
+                        var node = new DialogueBranchNode();
+                        node.NodeGuid = graphAsset.GetNewGUID();
+                        graphView.AddElement(node);
+
+                        PositionNewNodeElementAtClick(node, context);
 
                         return true;
                     }
@@ -918,6 +959,16 @@ namespace CustomEditors.DialogueSystem
                 case "Get (Float)":
                     {
                         var node = new FloatGetterNode();
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
+
+                        return true;
+                    }
+                case "Get (Bool)":
+                    {
+                        var node = new BoolGetterNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
 
@@ -1014,9 +1065,12 @@ namespace CustomEditors.DialogueSystem
             startNode.titleButtonContainer.RemoveFromHierarchy();
             startNode.inputContainer.RemoveFromHierarchy();
             startNode.outputContainer.RemoveFromHierarchy();
+            startNode.Query("contents").First().RemoveFromHierarchy();
 
             var nextDialogueNodePort = startNode.AddPort("", typeof(DialogueGraphNode), startNode.titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
             startNode.styleSheets.Add(Resources.Load<StyleSheet>("DialogueNodeStyle"));
+            startNode.AddToClassList("startNode");
+
             nextDialogueNodePort.AddToClassList("dialogueProgressPort");
             nextDialogueNodePort.tooltip = "Connect to the first dialogue node";
 

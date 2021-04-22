@@ -10,6 +10,14 @@
 	background-color : rgba(132, 71, 161, 1);
 }
 
+.startNode #title {
+	background-color : rgba(255, 255, 255, 1);
+}
+
+.startNode #title-label {
+	color : rgba(25,25,25,1);
+}
+
 .dialogueProgressPort {
 	width : 50%;
 	align-items : center;

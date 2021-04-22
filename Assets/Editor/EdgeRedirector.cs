@@ -22,14 +22,14 @@ namespace CustomEditors
             styleSheets.Add(Resources.Load<StyleSheet>("EdgeRedirectorStyle"));
             AddToClassList("edgeRedirector");
 
-            VisualElement inputElement = new VisualElement() { name = "customInput" };
-            VisualElement outputElement = new VisualElement() { name = "customOutput" };
+            VisualElement inputElement = new VisualElement() { name = "edgeRedirectInput" };
+            VisualElement outputElement = new VisualElement() { name = "edgeRedirectOutput" };
 
             topContainer.Add(inputElement);
             topContainer.Add(outputElement);
 
-            _leftPort = AddPort("", leftPortType, inputElement, true, leftPortCapacity, "leftPort");
-            _rightPort = AddPort("", rightPortType, outputElement, false, rightPortCapacity, "rightPort");
+            _leftPort = AddPort("", leftPortType, inputElement, true, leftPortCapacity, "edge-redirect-input");
+            _rightPort = AddPort("", rightPortType, outputElement, false, rightPortCapacity, "edge-redirect-output");
 
             titleContainer.RemoveFromHierarchy();
             inputContainer.RemoveFromHierarchy();

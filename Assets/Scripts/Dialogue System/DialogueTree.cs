@@ -92,6 +92,9 @@ namespace CustomSystem.DialogueSystem
                     {
                         startNode = nodes[data._inputNodeGuid];
                     }
+
+                    // TODO: dissolve edge redirectors
+                    //if(data.)
                 }
             }
 
@@ -124,13 +127,16 @@ namespace CustomSystem.DialogueSystem
         }
 
         public List<DialogueNode> childNodes;
+        public List<NodeCondition> conditions;
         public Dictionary<uint, DialogueChoice> choices;
+
         public string speakerName { get; protected set; }
         public string dialogueText { get; protected set; }
         public uint guid { get; protected set; }
 
         public DialogueNode()
         {
+            conditions = new List<NodeCondition>();
             childNodes = new List<DialogueNode>();
             choices = new Dictionary<uint, DialogueChoice>();
         }

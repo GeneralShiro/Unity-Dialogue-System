@@ -9,12 +9,16 @@ namespace CustomSystem
     {
         public List<NodeLinkData> nodeLinkData;
         public List<NodeData> graphNodeData;
+
         public List<BooleanComparisonNodeData> booleanComparisonNodeData;
         public List<BooleanLogicNodeData> booleanLogicNodeData;
+
         public List<AccessorNodeData> accessorNodeData;
         public List<IntValNodeData> intValNodeData;
         public List<FloatValNodeData> floatValNodeData;
+
         public List<EdgeRedirectorData> edgeRedirectorData;
+        
 
         public virtual uint GetNewGUID()
         {
@@ -77,6 +81,78 @@ namespace CustomSystem
             }
 
             return ret;
+        }
+
+        public IEnumerable<NodeLinkData> GetNodeLinksWithoutRedirects()
+        {
+            Dictionary<int, int> redirectNodeLinks = new Dictionary<int, int>();
+
+            // find the indices of every edge associated with an edge redirector
+            for (int i = 0; i < edgeRedirectorData.Count; i++)
+            {
+                int indexInput, indexOutput;
+                indexInput = indexOutput = (-i - 1);
+
+                for (int j = 0; j < nodeLinkData.Count; j++)
+                {
+                    if (nodeLinkData[j]._outputNodeGuid == edgeRedirectorData[i]._nodeGuid)
+                    {
+                        indexOutput = j;
+
+                        if (indexInput >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    else if (nodeLinkData[j]._inputNodeGuid == edgeRedirectorData[i]._nodeGuid)
+                    {
+                        indexInput = j;
+
+                        if (indexOutput >= 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                // if at least one of the indices were found, add it to the dictionary; the negative values can be used to determine which edges to ignore
+                if (indexInput >= 0 || indexOutput >= 0)
+                {
+                    redirectNodeLinks.Add(indexInput, indexOutput);
+                }
+            }
+
+            // return the non-redirected edges via the IEnumerable
+            for (int i = 0; i < nodeLinkData.Count; i++)
+            {
+                if (redirectNodeLinks.ContainsKey(i) || redirectNodeLinks.ContainsValue(i))
+                {
+                    // only handle these edges using the keys; this avoids returning the same edge twice (via the index stored in the 'value' of the pair)
+                    if (redirectNodeLinks.ContainsKey(i))
+                    {
+                        // if the other index is valid, dissolve the two edges into one and return it
+                        if (redirectNodeLinks[i] >= 0)
+                        {
+                            int otherLinkIndex = redirectNodeLinks[i];
+                            NodeLinkData newLink = new NodeLinkData();
+
+                            newLink._inputElementName = nodeLinkData[i]._inputElementName;
+                            newLink._inputNodeGuid = nodeLinkData[i]._inputNodeGuid;
+                            newLink._inputPortName = nodeLinkData[i]._inputPortName;
+
+                            newLink._outputElementName = nodeLinkData[otherLinkIndex]._outputElementName;
+                            newLink._outputNodeGuid = nodeLinkData[otherLinkIndex]._outputNodeGuid;
+                            newLink._outputPortName = nodeLinkData[otherLinkIndex]._outputPortName;
+
+                            yield return newLink;
+                        }
+                    }
+                }
+                else
+                {
+                    yield return nodeLinkData[i];
+                }
+            }
         }
     }
 

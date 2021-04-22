@@ -1,0 +1,3 @@
+.dialogueBranch #title {
+	background-color : rgba(77, 34, 34, 1);
+}

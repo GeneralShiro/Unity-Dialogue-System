@@ -30,46 +30,6 @@ namespace CustomEditors
 
 			AddPort("Output Bool", typeof(bool), false, Port.Capacity.Multi);
 		}
-
-		// TODO: move this to a monobehaviour obj
-		protected bool EvaluateBoolean<T>(T value1, T value2) where T : IComparable<T>
-		{
-			/*
-			switch (booleanOp)
-			{
-				case BooleanOperation.EQUAL_TO:
-				{
-					return (value1.CompareTo(value2) == 0);
-				}
-
-				case BooleanOperation.NOT_EQUAL_TO:
-				{
-					return (value1.CompareTo(value2) != 0);
-				}
-
-				case BooleanOperation.LESS_THAN:
-				{
-					return (value1.CompareTo(value2) == -1);
-				}
-
-				case BooleanOperation.GREATER_THAN:
-				{
-					return (value1.CompareTo(value2) == 1);
-				}
-
-				case BooleanOperation.LESS_OR_EQUAL_TO:
-				{
-					return (value1.CompareTo(value2) <= 0);
-				}
-
-				case BooleanOperation.GREATER_OR_EQUAL_TO:
-				{
-					return (value1.CompareTo(value2) >= 0);
-				}
-			}
-*/
-			return false;
-		}
 	}
 
 	public class FloatComparisonNode : BooleanComparisonNode

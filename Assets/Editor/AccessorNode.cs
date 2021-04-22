@@ -129,4 +129,23 @@ namespace CustomEditors
             SetPopupList(_targetPropertyType);
         }
     }
+
+    public class BoolGetterNode : AccessorNode
+    {
+        public BoolGetterNode()
+        {
+            title = "Get (Bool)";
+            _targetPropertyType = SerializedPropertyType.Boolean;
+
+            // add output port
+            AddPort("", typeof(bool), false, Port.Capacity.Multi, "accessor-bool-output");
+
+            _objectField.RegisterValueChangedCallback(x =>
+            {
+                SetPopupList(_targetPropertyType);
+            });
+
+            SetPopupList(_targetPropertyType);
+        }
+    }
 }
