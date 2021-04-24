@@ -6,7 +6,7 @@ _Created with **Unity 2020.3.5**_
 * Cinemachine 2.6.4
 * TextMeshPro 3.0.6
 * Timeline 1.4.7
-* Input System 1.0.2 (Optional)
+* Input System 1.0.2 (Will be optional in the future)
 
 ## Features
 * Node-based graph editor for visually creating dialogue assets
