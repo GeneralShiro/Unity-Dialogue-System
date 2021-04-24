@@ -373,6 +373,7 @@ namespace CustomEditors.DialogueSystem
                     nodeData._rightPortType = castNode._rightPort.portType;
                     nodeData._leftPortCapacityVal = Convert.ToInt32(castNode._leftPort.capacity);
                     nodeData._rightPortCapacityVal = Convert.ToInt32(castNode._rightPort.capacity);
+                    nodeData._formerEdgeData = new NodeLinkData(castNode._formerEdgeData);
 
                     assetData.edgeRedirectorData.Add(nodeData);
                 }
@@ -518,6 +519,7 @@ namespace CustomEditors.DialogueSystem
                     data._rightPortType,
                     (Port.Capacity)data._rightPortCapacityVal
                     );
+                node._formerEdgeData = new NodeLinkData(data._formerEdgeData);
 
                 // transfer standard GraphNode data, add to graph
                 node.NodeGuid = data._nodeGuid;

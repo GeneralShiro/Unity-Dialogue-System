@@ -18,7 +18,7 @@ namespace CustomSystem
         public List<FloatValNodeData> floatValNodeData;
 
         public List<EdgeRedirectorData> edgeRedirectorData;
-        
+
 
         public virtual uint GetNewGUID()
         {
@@ -173,6 +173,18 @@ namespace CustomSystem
         public string _inputElementName;
         public string _outputPortName;
         public string _outputElementName;
+
+        public NodeLinkData() { }
+
+        public NodeLinkData(NodeLinkData data)
+        {
+            _inputNodeGuid = data._inputNodeGuid;
+            _outputNodeGuid = data._outputNodeGuid;
+            _inputPortName = data._inputPortName;
+            _inputElementName = data._inputElementName;
+            _outputPortName = data._outputPortName;
+            _outputElementName = data._outputElementName;
+        }
     }
 
     [System.Serializable]
@@ -220,5 +232,6 @@ namespace CustomSystem
         public System.Type _rightPortType;
         public int _leftPortCapacityVal;
         public int _rightPortCapacityVal;
+        public NodeLinkData _formerEdgeData;
     }
 }

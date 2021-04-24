@@ -56,8 +56,11 @@ namespace CustomSystem.DialogueSystem
                 }
             }
 
+            //  Before iterating through all edges, dissolve the redirector nodes first
+            IEnumerable<NodeLinkData> linkData = asset.GetNodeLinksWithoutRedirects();
+
             //  2. iterate through list of links/edges and connect the nodes
-            foreach (NodeLinkData data in asset.nodeLinkData)
+            foreach (NodeLinkData data in linkData)
             {
                 // check if both GUIDs belong to dialogue nodes first
                 if (nodes.ContainsKey(data._outputNodeGuid) && nodes.ContainsKey(data._inputNodeGuid))
@@ -92,9 +95,7 @@ namespace CustomSystem.DialogueSystem
                     {
                         startNode = nodes[data._inputNodeGuid];
                     }
-
-                    // TODO: dissolve edge redirectors
-                    //if(data.)
+                    
                 }
             }
 

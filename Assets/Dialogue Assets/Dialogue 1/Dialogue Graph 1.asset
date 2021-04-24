@@ -68,6 +68,9 @@ MonoBehaviour:
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   accessorNodeData: []
+  intValNodeData: []
+  floatValNodeData: []
+  edgeRedirectorData: []
   dialogueNodeData:
   - _nodeGuid: 5
     _nodeType: DialogueGraphNode

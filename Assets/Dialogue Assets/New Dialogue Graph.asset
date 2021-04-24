@@ -10,92 +10,62 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
-  m_Name: New Dialogue Graph
+  m_Name: 
   m_EditorClassIdentifier: 
   nodeLinkData:
   - _inputNodeGuid: 2
-    _outputNodeGuid: 3
-    _inputPortName: Boolean
-    _inputElementName: dialogue-condition-input-port-0
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
     _outputPortName: 
-    _outputElementName: logic-not-output
+    _outputElementName: next-dialogue-node-input
   - _inputNodeGuid: 3
-    _outputNodeGuid: 4
-    _inputPortName: 
-    _inputElementName: 
-    _outputPortName: Output Bool
-    _outputElementName: 
-  - _inputNodeGuid: 6
-    _outputNodeGuid: 4
-    _inputPortName: Boolean
-    _inputElementName: dialogue-condition-input-port-0
-    _outputPortName: Output Bool
-    _outputElementName: 
-  - _inputNodeGuid: 4
-    _outputNodeGuid: 5
-    _inputPortName: Int 1
-    _inputElementName: 
-    _outputPortName: 
-    _outputElementName: accessor-int-output
-  - _inputNodeGuid: 4
-    _outputNodeGuid: 7
-    _inputPortName: Int 2
-    _inputElementName: 
-    _outputPortName: 
-    _outputElementName: value-int-output
-  - _inputNodeGuid: 2
-    _outputNodeGuid: 1
+    _outputNodeGuid: 2
     _inputPortName: 
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
-    _outputElementName: next-dialogue-node-input
-  - _inputNodeGuid: 6
-    _outputNodeGuid: 1
+    _outputElementName: dialogue-choice-output-port-0
+  - _inputNodeGuid: 4
+    _outputNodeGuid: 2
     _inputPortName: 
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
-    _outputElementName: next-dialogue-node-input
+    _outputElementName: dialogue-choice-output-port-1
   graphNodeData:
-  - _nodeGuid: 3
-    _nodeType: BooleanNOTNode
-    _nodePosition: {x: 295, y: 317}
   - _nodeGuid: 1
     _nodeType: StartNode
-    _nodePosition: {x: 0, y: 101}
-  booleanComparisonNodeData:
-  - _nodeGuid: 4
-    _nodeType: IntBooleanNode
-    _nodePosition: {x: 46, y: 376}
-    _comparisonEnumVal: 0
+    _nodePosition: {x: -17, y: 143}
+  booleanComparisonNodeData: []
   booleanLogicNodeData: []
-  accessorNodeData:
-  - _nodeGuid: 5
-    _nodeType: AccessorNode
-    _nodePosition: {x: -234, y: 361}
-    _scriptableObj: {fileID: 11400000, guid: 18bb4d3295693ce4baddd551fc62e57a, type: 2}
-    _chosenPropertyString: _testInt
-    _typeEnumVal: 0
-  intValNodeData:
-  - _nodeGuid: 7
-    _nodeType: IntValueNode
-    _nodePosition: {x: -45, y: 467}
-    _intVal: 1
+  accessorNodeData: []
+  intValNodeData: []
   floatValNodeData: []
   edgeRedirectorData: []
   dialogueNodeData:
   - _nodeGuid: 2
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 549, y: -11}
-    _choicePorts: []
-    _conditionPortIds: 00000000
-    _speakerName: 
-    _dialogueText: Value was not equal.
-  - _nodeGuid: 6
+    _nodePosition: {x: 180, y: 85}
+    _choicePorts:
+    - _portId: 0
+      _choiceText: Choice A Text
+    - _portId: 1
+      _choiceText: Choice B Text
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: This is the first line of dialogue!
+  - _nodeGuid: 3
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 548, y: 286}
+    _nodePosition: {x: 636, y: 40}
     _choicePorts: []
-    _conditionPortIds: 00000000
-    _speakerName: 
-    _dialogueText: Value was equal.
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: You chose choice A!
+  - _nodeGuid: 4
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 638, y: 268}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: Speaker 1
+    _dialogueText: You chose choice B!
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

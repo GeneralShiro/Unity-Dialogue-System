@@ -6,12 +6,15 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+using CustomSystem;
+
 namespace CustomEditors
 {
     public class EdgeRedirector : GraphNode
     {
         public Port _leftPort;
         public Port _rightPort;
+        public NodeLinkData _formerEdgeData;
 
         public EdgeRedirector(
             System.Type leftPortType,
@@ -96,16 +99,28 @@ namespace CustomEditors
             Port inputPort = edge.input;
             Port outputPort = edge.output;
 
+            // create the redirector node at the specified position
+            EdgeRedirector newRedirect = new EdgeRedirector(inputPort, outputPort);
+            newRedirect._formerEdgeData = new NodeLinkData();
+            newRedirect.SetPosition(new Rect(pos, Vector2.zero));
+
+            // store data for the edge that's about to be replaced
+            GraphNode castNode = edge.output.node as GraphNode;
+            newRedirect._formerEdgeData._outputNodeGuid = castNode.NodeGuid;
+            newRedirect._formerEdgeData._outputPortName = edge.output.portName;
+            newRedirect._formerEdgeData._outputElementName = edge.output.name;
+
+            castNode = edge.input.node as GraphNode;
+            newRedirect._formerEdgeData._inputNodeGuid = castNode.NodeGuid;
+            newRedirect._formerEdgeData._inputPortName = edge.input.portName;
+            newRedirect._formerEdgeData._inputElementName = edge.input.name;
+
             GraphView graph = edge.GetFirstAncestorOfType<GraphView>();
 
             // get rid of edge; it'll be replaced two new ones
             inputPort.Disconnect(edge);
             outputPort.Disconnect(edge);
             graph.RemoveElement(edge);
-
-            // create the redirector node at the specified position
-            EdgeRedirector newRedirect = new EdgeRedirector(inputPort, outputPort);
-            newRedirect.SetPosition(new Rect(pos, Vector2.zero));
             graph.AddElement(newRedirect);
 
             // create new edges using port references
