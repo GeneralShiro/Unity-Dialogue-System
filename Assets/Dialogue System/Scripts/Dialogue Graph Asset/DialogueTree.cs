@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.Timeline;
@@ -60,46 +62,298 @@ namespace CustomSystem.DialogueSystem
             IEnumerable<NodeLinkData> linkData = asset.GetNodeLinksWithoutRedirects();
 
             //  2. iterate through list of links/edges and connect the nodes
-            foreach (NodeLinkData data in linkData)
+            foreach (NodeLinkData edge in linkData)
             {
-                // check if both GUIDs belong to dialogue nodes first
-                if (nodes.ContainsKey(data._outputNodeGuid) && nodes.ContainsKey(data._inputNodeGuid))
-                {
-                    DialogueNode outputNode = nodes[data._outputNodeGuid];
-                    DialogueNode inputNode = nodes[data._inputNodeGuid];
+                bool inputIsDialogueNode, outputIsDialogueNode;
+                inputIsDialogueNode = nodes.ContainsKey(edge._inputNodeGuid);
+                outputIsDialogueNode = nodes.ContainsKey(edge._outputNodeGuid);
 
-                    // if this a connection from a choice, connect to the choice obj instead
-                    if (data._outputElementName.Contains("dialogue-choice-output-port"))
+                // check if either GUIDs belong to dialogue nodes first
+                if (outputIsDialogueNode || inputIsDialogueNode)
+                {
+                    //  if both GUIDs belong to dialogue nodes, then connect the nodes together in the dialogue tree
+                    if (outputIsDialogueNode && inputIsDialogueNode)
                     {
-                        uint choiceId;
-                        if (uint.TryParse(data._outputElementName.Split('-')[4], out choiceId))
+                        DialogueNode outputNode = nodes[edge._outputNodeGuid];
+                        DialogueNode inputNode = nodes[edge._inputNodeGuid];
+
+                        // if this a connection from a choice, connect to the choice obj instead
+                        if (edge._outputElementName.Contains("dialogue-choice-output-port"))
                         {
-                            // this "connects" the input node to the dialogue choice
-                            outputNode.choices[choiceId].childNodes.Add(inputNode);
+                            uint choiceId;
+                            if (uint.TryParse(edge._outputElementName.Split('-')[4], out choiceId))
+                            {
+                                // this "connects" the input node to the dialogue choice
+                                outputNode.choices[choiceId].childNodes.Add(inputNode);
+                            }
+                            else
+                            {
+                                Debug.LogError("Choice id parse failed in tree construction. Port element name: " + edge._outputElementName);
+                            }
                         }
                         else
                         {
-                            Debug.LogError("Choice id parse failed in tree construction. Port element name: " + data._outputElementName);
+                            // "connects" the next node (input node) to the current node (output node)
+                            outputNode.childNodes.Add(inputNode);
                         }
                     }
-                    else
+                    else if (inputIsDialogueNode)
                     {
-                        // "connects" the next node (input node) to the current node (output node)
-                        outputNode.childNodes.Add(inputNode);
+                        // if edge inputs to a dialogue node, but doesn't come from another dialogue node,
+                        // then it HAS to be from a node that outputs a boolean
+                        NodeCondition condition = BuildNodeCondition(asset, edge, false);
+
+                        if (condition != null)
+                        {
+                            nodes[edge._inputNodeGuid].conditions.Add(condition);
+                        }
                     }
                 }
                 else    // handle edges involving non-dialogue nodes
                 {
                     // find the starting dialogue node
-                    if (data._outputNodeGuid == startNodeId && nodes.ContainsKey(data._inputNodeGuid))
+                    if (edge._outputNodeGuid == startNodeId && nodes.ContainsKey(edge._inputNodeGuid))
                     {
-                        startNode = nodes[data._inputNodeGuid];
+                        startNode = nodes[edge._inputNodeGuid];
                     }
-                    
                 }
             }
 
             //  TODO: figure out how to handle the 'conditions'
+        }
+
+        private NodeCondition BuildNodeCondition(in DialogueGraphAsset asset, in NodeLinkData tracedEdge, bool isOutputInversed)
+        {
+            NodeCondition condition = null;
+
+            switch (tracedEdge._outputElementName)
+            {
+                // check for Compare nodes
+                case "bool-compare-output":
+                    {
+                        BooleanComparisonNodeData data = asset.GetNodeDataByGuid(tracedEdge._outputNodeGuid) as BooleanComparisonNodeData;
+
+                        switch (data._nodeType)
+                        {
+                            case "IntComparisonNode":
+                                {
+                                    condition = BuildComparisonCondition<int>(asset, data);
+                                    break;
+                                }
+                            case "FloatComparisonNode":
+                                {
+                                    condition = BuildComparisonCondition<float>(asset, data);
+                                    break;
+                                }
+                        }
+
+                        return condition;
+                    }
+
+                // check for Logic gate nodes 
+                case "logic-output":
+                    {
+                        BooleanLogicNodeData data = asset.GetNodeDataByGuid(tracedEdge._outputNodeGuid) as BooleanLogicNodeData;
+
+                        condition = BuildLogicCondition(asset, data, isOutputInversed);
+
+                        break;
+                    }
+
+                // check for Bool Getter nodes    
+                case "accessor-bool-output":
+                    {
+                        AccessorNodeData nodeData = asset.GetNodeDataByGuid(tracedEdge._outputNodeGuid) as AccessorNodeData;
+
+                        return new AccessedBoolCondition(nodeData._scriptableObj, nodeData._chosenPropertyString);
+                    }
+
+                // check for NOT nodes    
+                case "logic-not-output":
+                    {
+                        IEnumerable<NodeLinkData> linkData = asset.GetNodeLinksWithoutRedirects();
+
+                        foreach (NodeLinkData edge in linkData)
+                        {
+                            if (edge._inputNodeGuid == tracedEdge._outputNodeGuid
+                            && edge._inputElementName == "logic-not-input")
+                            {
+                                return BuildNodeCondition(asset, edge, !isOutputInversed);
+                            }
+                        }
+
+                        break;
+                    }
+            }
+
+            return null;
+        }
+
+        private ComparisonCondition<T> BuildComparisonCondition<T>(in DialogueGraphAsset asset, in BooleanComparisonNodeData nodeData) where T : IComparable<T>
+        {
+            ScriptableObject leftObj = null;
+            ScriptableObject rightObj = null;
+            string leftPropertyName = "";
+            string rightPropertyName = "";
+            T leftOperand = default(T);
+            T rightOperand = default(T);
+
+            IEnumerable<NodeLinkData> linkData = asset.GetNodeLinksWithoutRedirects();
+            bool leftSearchFinished, rightSearchFinished;
+            leftSearchFinished = rightSearchFinished = false;
+
+            // iterate through the edges and 
+            // find edges where the comparison node is the input (receiving) node
+            foreach (NodeLinkData edge in linkData)
+            {
+                if (edge._inputNodeGuid == nodeData._nodeGuid)
+                {
+                    // determine which side of the comparison we're looking at here
+                    bool isLeftOperand = edge._inputElementName == "bool-compare-input-1";
+
+                    // determine if output (sending) node is either raw value node
+                    // or if it is a getter node with an obj ref
+                    NodeData otherNode = asset.GetNodeDataByGuid(edge._outputNodeGuid);
+
+                    switch (otherNode._nodeType)
+                    {
+                        case "IntValueNode":
+                            {
+                                IntValNodeData castData = otherNode as IntValNodeData;
+
+                                if (isLeftOperand)
+                                {
+                                    leftOperand = (T)(object)castData._intVal;
+                                    leftSearchFinished = true;
+                                }
+                                else
+                                {
+                                    rightOperand = (T)(object)castData._intVal;
+                                    rightSearchFinished = true;
+                                }
+
+                                break;
+                            }
+                        case "FloatValueNode":
+                            {
+                                FloatValNodeData castData = otherNode as FloatValNodeData;
+
+                                if (isLeftOperand)
+                                {
+                                    leftOperand = (T)(object)castData._floatVal;
+                                    leftSearchFinished = true;
+                                }
+                                else
+                                {
+                                    rightOperand = (T)(object)castData._floatVal;
+                                    rightSearchFinished = true;
+                                }
+
+                                break;
+                            }
+                        case "AccessorNode":
+                            {
+                                AccessorNodeData castData = otherNode as AccessorNodeData;
+
+                                if (isLeftOperand)
+                                {
+                                    leftObj = castData._scriptableObj;
+                                    leftPropertyName = castData._chosenPropertyString;
+                                    leftSearchFinished = true;
+                                }
+                                else
+                                {
+                                    rightObj = castData._scriptableObj;
+                                    rightPropertyName = castData._chosenPropertyString;
+                                    rightSearchFinished = true;
+                                }
+
+                                break;
+                            }
+                    }
+
+                    // if both operands have been found, break out of the loop through edges
+                    if (leftSearchFinished && rightSearchFinished)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            // create and return a comparison condition object
+            bool leftObjRefFound = leftObj != null;
+            bool rightObjRefFound = rightObj != null;
+
+            if (leftObjRefFound || rightObjRefFound)
+            {
+                if (leftObjRefFound && rightObjRefFound)
+                {
+                    return new ComparisonCondition<T>(
+                        (ComparisonCondition<T>.CompareOperator)nodeData._comparisonEnumVal,
+                        leftObj, leftPropertyName,
+                        rightObj, rightPropertyName);
+                }
+                else if (leftObjRefFound)
+                {
+                    return new ComparisonCondition<T>(
+                        (ComparisonCondition<T>.CompareOperator)nodeData._comparisonEnumVal,
+                        leftObj, leftPropertyName,
+                        rightOperand);
+                }
+                else
+                {
+                    return new ComparisonCondition<T>(
+                        (ComparisonCondition<T>.CompareOperator)nodeData._comparisonEnumVal,
+                        leftOperand,
+                        rightObj, rightPropertyName);
+                }
+            }
+            else
+            {
+                return new ComparisonCondition<T>(
+                        (ComparisonCondition<T>.CompareOperator)nodeData._comparisonEnumVal,
+                        leftOperand,
+                        rightOperand);
+            }
+        }
+
+        private LogicCondition BuildLogicCondition(in DialogueGraphAsset asset, in BooleanLogicNodeData nodeData, bool isOutputInversed)
+        {
+            // create condition obj using data's enum value
+            LogicCondition condition = new LogicCondition((LogicCondition.LogicOperator)nodeData._logicEnumVal);
+
+            // get all of the edges, without redirects
+            IEnumerable<NodeLinkData> linkData = asset.GetNodeLinksWithoutRedirects();
+
+            // find input node condition objects
+            foreach (NodeLinkData edge in linkData)
+            {
+                // if edge is connected to the logic node
+                if (edge._inputNodeGuid == nodeData._nodeGuid)
+                {
+                    // first two port IDs (0 & 1) are always there, but additional ports
+                    // could have been added, and their values are stored in the nodeData's list
+                    for (int i = 0; i < 2 + nodeData._additionalInputPortIds.Count; i++)
+                    {
+                        uint id = (i < 2) ? (uint)i : nodeData._additionalInputPortIds[i];
+                        string portElementId = "bool-input-port-" + id.ToString();
+
+                        if (edge._inputElementName == portElementId)
+                        {
+                            NodeCondition input = BuildNodeCondition(asset, edge, false);
+
+                            if (input != null)
+                            {
+                                condition.AddInput(input);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return condition;
         }
     }
 

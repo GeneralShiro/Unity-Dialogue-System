@@ -26,8 +26,8 @@ namespace CustomSystem
         }
         private CompareOperator _operator;
 
-        private UnityEngine.Object _leftObj;
-        private UnityEngine.Object _rightObj;
+        private ScriptableObject _leftObj;
+        private ScriptableObject _rightObj;
         private string _leftPropertyName;
         private string _rightPropertyName;
         private T _leftOperand;
@@ -40,7 +40,7 @@ namespace CustomSystem
             _operator = op;
         }
 
-        public ComparisonCondition(CompareOperator op, UnityEngine.Object leftObj, string leftPropertyName, T rightOperand)
+        public ComparisonCondition(CompareOperator op, ScriptableObject leftObj, string leftPropertyName, T rightOperand)
         {
             _leftObj = leftObj;
             _leftPropertyName = leftPropertyName;
@@ -48,7 +48,7 @@ namespace CustomSystem
             _operator = op;
         }
 
-        public ComparisonCondition(CompareOperator op, T leftOperand, UnityEngine.Object rightObj, string rightPropertyName)
+        public ComparisonCondition(CompareOperator op, T leftOperand, ScriptableObject rightObj, string rightPropertyName)
         {
             _rightObj = rightObj;
             _rightPropertyName = rightPropertyName;
@@ -56,7 +56,7 @@ namespace CustomSystem
             _operator = op;
         }
 
-        public ComparisonCondition(CompareOperator op, UnityEngine.Object leftObj, string leftPropertyName, UnityEngine.Object rightObj, string rightPropertyName)
+        public ComparisonCondition(CompareOperator op, ScriptableObject leftObj, string leftPropertyName, ScriptableObject rightObj, string rightPropertyName)
         {
             _rightObj = rightObj;
             _rightPropertyName = rightPropertyName;
@@ -189,6 +189,25 @@ namespace CustomSystem
         {
             get { return _operator; }
             protected set { _operator = value; }
+        }
+    }
+
+    public class AccessedBoolCondition : NodeCondition
+    {
+        private ScriptableObject _obj;
+        private string _propertyName;
+
+        public AccessedBoolCondition(ScriptableObject obj, string propertyName)
+        {
+            _obj = obj;
+            _propertyName = propertyName;
+        }
+
+        public override bool Evaluate()
+        {
+            bool output = (bool)_obj.GetType().GetProperty(_propertyName).GetValue(_obj);
+            
+            return IsOutputInversed ? !output : output;
         }
     }
 }

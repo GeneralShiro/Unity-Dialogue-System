@@ -43,9 +43,9 @@ namespace CustomEditors
 
             // create default input ports
             Port inputPort1 = AddPort("Boolean", typeof(bool));
-            inputPort1.name = "boolean-input-port-0";
+            inputPort1.name = "bool-input-port-0";
             Port inputPort2 = AddPort("Boolean", typeof(bool));
-            inputPort2.name = "boolean-input-port-1";
+            inputPort2.name = "bool-input-port-1";
             inputPort2.tooltip = inputPort1.tooltip = "Connect a boolean value";
         }
 
@@ -77,7 +77,7 @@ namespace CustomEditors
                 boolInputPortPanel,
                 true,
                 Port.Capacity.Single,
-                "boolean-input-port-" + id.ToString()
+                "bool-input-port-" + id.ToString()
                 );
             port.tooltip = "Connect a boolean value";
             port.AddToClassList("dialogueConditionInputPort");
@@ -112,7 +112,7 @@ namespace CustomEditors
             AddPort("", typeof(bool), false, Port.Capacity.Multi, "logic-not-output");
 
             // create input port
-            AddPort("", typeof(bool));
+            AddPort("", typeof(bool), true, Port.Capacity.Multi, "logic-not-input");
         }
     }
 }

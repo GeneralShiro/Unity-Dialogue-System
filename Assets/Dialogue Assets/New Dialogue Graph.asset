@@ -19,24 +19,17 @@ MonoBehaviour:
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: next-dialogue-node-input
-  - _inputNodeGuid: 3
-    _outputNodeGuid: 2
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: dialogue-choice-output-port-0
-  - _inputNodeGuid: 4
-    _outputNodeGuid: 2
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: dialogue-choice-output-port-1
   graphNodeData:
   - _nodeGuid: 1
     _nodeType: StartNode
-    _nodePosition: {x: -17, y: 143}
+    _nodePosition: {x: 4, y: 83}
   booleanComparisonNodeData: []
-  booleanLogicNodeData: []
+  booleanLogicNodeData:
+  - _nodeGuid: 3
+    _nodeType: BooleanLogicNode
+    _nodePosition: {x: -159, y: 310}
+    _logicEnumVal: 0
+    _additionalInputPortIds: 
   accessorNodeData: []
   intValNodeData: []
   floatValNodeData: []
@@ -44,28 +37,14 @@ MonoBehaviour:
   dialogueNodeData:
   - _nodeGuid: 2
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 180, y: 85}
+    _nodePosition: {x: 241, y: 29}
     _choicePorts:
     - _portId: 0
       _choiceText: Choice A Text
     - _portId: 1
       _choiceText: Choice B Text
-    _conditionPortIds: 
+    _conditionPortIds: 00000000
     _speakerName: Speaker 1
     _dialogueText: This is the first line of dialogue!
-  - _nodeGuid: 3
-    _nodeType: DialogueGraphNode
-    _nodePosition: {x: 636, y: 40}
-    _choicePorts: []
-    _conditionPortIds: 
-    _speakerName: Speaker 1
-    _dialogueText: You chose choice A!
-  - _nodeGuid: 4
-    _nodeType: DialogueGraphNode
-    _nodePosition: {x: 638, y: 268}
-    _choicePorts: []
-    _conditionPortIds: 
-    _speakerName: Speaker 1
-    _dialogueText: You chose choice B!
   advDialogueNodeData: []
   cinematicDialogueNodeData: []

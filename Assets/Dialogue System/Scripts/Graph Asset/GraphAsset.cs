@@ -83,6 +83,59 @@ namespace CustomSystem
             return ret;
         }
 
+        public virtual NodeData GetNodeDataByGuid(uint guid)
+        {
+            for (int i = 0; i < graphNodeData.Count; i++)
+            {
+                if (guid == graphNodeData[i]._nodeGuid)
+                {
+                    return graphNodeData[i];
+                }
+            }
+
+            for (int i = 0; i < booleanComparisonNodeData.Count; i++)
+            {
+                if (guid == booleanComparisonNodeData[i]._nodeGuid)
+                {
+                    return booleanComparisonNodeData[i];
+                }
+            }
+
+            for (int i = 0; i < booleanLogicNodeData.Count; i++)
+            {
+                if (guid == booleanLogicNodeData[i]._nodeGuid)
+                {
+                    return booleanLogicNodeData[i];
+                }
+            }
+
+            for (int i = 0; i < accessorNodeData.Count; i++)
+            {
+                if (guid == accessorNodeData[i]._nodeGuid)
+                {
+                    return accessorNodeData[i];
+                }
+            }
+
+            for (int i = 0; i < intValNodeData.Count; i++)
+            {
+                if (guid == intValNodeData[i]._nodeGuid)
+                {
+                    return intValNodeData[i];
+                }
+            }
+
+            for (int i = 0; i < floatValNodeData.Count; i++)
+            {
+                if (guid == floatValNodeData[i]._nodeGuid)
+                {
+                    return floatValNodeData[i];
+                }
+            }
+
+            return null;
+        }
+
         public IEnumerable<NodeLinkData> GetNodeLinksWithoutRedirects()
         {
             Dictionary<int, int> redirectNodeLinks = new Dictionary<int, int>();

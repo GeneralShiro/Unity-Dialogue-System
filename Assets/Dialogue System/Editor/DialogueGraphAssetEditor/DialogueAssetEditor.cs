@@ -256,7 +256,7 @@ namespace CustomEditors.DialogueSystem
                         // graph node data
                         nodeData._nodeGuid = castNode.NodeGuid;
                         nodeData._nodePosition = castNode.GetPosition().position;
-                        nodeData._nodeType = "IntBooleanNode";
+                        nodeData._nodeType = "IntComparisonNode";
 
                         // boolean node data
                         nodeData._comparisonEnumVal = Convert.ToInt32(castNode.operationEnumField.value);
@@ -271,7 +271,7 @@ namespace CustomEditors.DialogueSystem
                         // graph node data
                         nodeData._nodeGuid = castNode.NodeGuid;
                         nodeData._nodePosition = castNode.GetPosition().position;
-                        nodeData._nodeType = "FloatBooleanNode";
+                        nodeData._nodeType = "FloatComparisonNode";
 
                         // boolean node data
                         nodeData._comparisonEnumVal = Convert.ToInt32(castNode.operationEnumField.value);

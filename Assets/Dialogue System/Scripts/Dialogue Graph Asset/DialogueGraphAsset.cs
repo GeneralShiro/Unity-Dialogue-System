@@ -27,7 +27,7 @@ namespace CustomSystem.DialogueSystem
             accessorNodeData = new List<AccessorNodeData>();
             intValNodeData = new List<IntValNodeData>();
             floatValNodeData = new List<FloatValNodeData>();
-            
+
             dialogueNodeData = new List<DialogueNodeData>();
             advDialogueNodeData = new List<AdvDialogueNodeData>();
             cinematicDialogueNodeData = new List<CinematicDialogueNodeData>();
@@ -62,6 +62,44 @@ namespace CustomSystem.DialogueSystem
             }
 
             return ret;
+        }
+
+        public override NodeData GetNodeDataByGuid(uint guid)
+        {
+            NodeData data = base.GetNodeDataByGuid(guid);
+
+            if (data == null)
+            {
+                for (int i = 0; i < dialogueNodeData.Count; i++)
+                {
+                    if (guid == dialogueNodeData[i]._nodeGuid)
+                    {
+                        return dialogueNodeData[i];
+                    }
+                }
+
+                for (int i = 0; i < advDialogueNodeData.Count; i++)
+                {
+                    if (guid == advDialogueNodeData[i]._nodeGuid)
+                    {
+                        return advDialogueNodeData[i];
+                    }
+                }
+
+                for (int i = 0; i < cinematicDialogueNodeData.Count; i++)
+                {
+                    if (guid == cinematicDialogueNodeData[i]._nodeGuid)
+                    {
+                        return cinematicDialogueNodeData[i];
+                    }
+                }
+
+                return null;
+            }
+            else
+            {
+                return data;
+            }
         }
     }
 
