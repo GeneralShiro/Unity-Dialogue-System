@@ -68,38 +68,42 @@ namespace CustomSystem.DialogueSystem
                 inputIsDialogueNode = nodes.ContainsKey(edge._inputNodeGuid);
                 outputIsDialogueNode = nodes.ContainsKey(edge._outputNodeGuid);
 
-                // check if either GUIDs belong to dialogue nodes first
-                if (outputIsDialogueNode || inputIsDialogueNode)
+                //  if both GUIDs belong to dialogue nodes, then connect the nodes together in the dialogue tree
+                if (outputIsDialogueNode && inputIsDialogueNode)
                 {
-                    //  if both GUIDs belong to dialogue nodes, then connect the nodes together in the dialogue tree
-                    if (outputIsDialogueNode && inputIsDialogueNode)
-                    {
-                        DialogueNode outputNode = nodes[edge._outputNodeGuid];
-                        DialogueNode inputNode = nodes[edge._inputNodeGuid];
+                    DialogueNode outputNode = nodes[edge._outputNodeGuid];
+                    DialogueNode inputNode = nodes[edge._inputNodeGuid];
 
-                        // if this a connection from a choice, connect to the choice obj instead
-                        if (edge._outputElementName.Contains("dialogue-choice-output-port"))
+                    // if this a connection from a choice, connect to the choice obj instead
+                    if (edge._outputElementName.Contains("dialogue-choice-output-port"))
+                    {
+                        uint choiceId;
+                        if (uint.TryParse(edge._outputElementName.Split('-')[4], out choiceId))
                         {
-                            uint choiceId;
-                            if (uint.TryParse(edge._outputElementName.Split('-')[4], out choiceId))
-                            {
-                                // this "connects" the input node to the dialogue choice
-                                outputNode.choices[choiceId].childNodes.Add(inputNode);
-                            }
-                            else
-                            {
-                                Debug.LogError("Choice id parse failed in tree construction. Port element name: " + edge._outputElementName);
-                            }
+                            // this "connects" the input node to the dialogue choice
+                            outputNode.choices[choiceId].childNodes.Add(inputNode);
                         }
                         else
                         {
-                            // "connects" the next node (input node) to the current node (output node)
-                            outputNode.childNodes.Add(inputNode);
+                            Debug.LogError("Choice id parse failed in tree construction. Port element name: " + edge._outputElementName);
                         }
                     }
-                    else if (inputIsDialogueNode)
+                    else
                     {
-                        // if edge inputs to a dialogue node, but doesn't come from another dialogue node,
+                        // "connects" the next node (input node) to the current node (output node)
+                        outputNode.childNodes.Add(inputNode);
+                    }
+                }
+                else if (inputIsDialogueNode)
+                {
+                    // find the starting dialogue node
+                    if (edge._outputNodeGuid == startNodeId)
+                    {
+                        startNode = nodes[edge._inputNodeGuid];
+                    }
+                    else
+                    {
+                        // if edge inputs to a dialogue node, but doesn't come from the start node,
                         // then it HAS to be from a node that outputs a boolean
                         NodeCondition condition = BuildNodeCondition(asset, edge, false);
 
@@ -109,17 +113,7 @@ namespace CustomSystem.DialogueSystem
                         }
                     }
                 }
-                else    // handle edges involving non-dialogue nodes
-                {
-                    // find the starting dialogue node
-                    if (edge._outputNodeGuid == startNodeId && nodes.ContainsKey(edge._inputNodeGuid))
-                    {
-                        startNode = nodes[edge._inputNodeGuid];
-                    }
-                }
             }
-
-            //  TODO: figure out how to handle the 'conditions'
         }
 
         private NodeCondition BuildNodeCondition(in DialogueGraphAsset asset, in NodeLinkData tracedEdge, bool isOutputInversed)
@@ -147,15 +141,14 @@ namespace CustomSystem.DialogueSystem
                                 }
                         }
 
-                        return condition;
+                        break;
                     }
 
                 // check for Logic gate nodes 
                 case "logic-output":
                     {
                         BooleanLogicNodeData data = asset.GetNodeDataByGuid(tracedEdge._outputNodeGuid) as BooleanLogicNodeData;
-
-                        condition = BuildLogicCondition(asset, data, isOutputInversed);
+                        condition = BuildLogicCondition(asset, data);
 
                         break;
                     }
@@ -175,8 +168,7 @@ namespace CustomSystem.DialogueSystem
 
                         foreach (NodeLinkData edge in linkData)
                         {
-                            if (edge._inputNodeGuid == tracedEdge._outputNodeGuid
-                            && edge._inputElementName == "logic-not-input")
+                            if (edge._inputNodeGuid == tracedEdge._outputNodeGuid)
                             {
                                 return BuildNodeCondition(asset, edge, !isOutputInversed);
                             }
@@ -186,7 +178,12 @@ namespace CustomSystem.DialogueSystem
                     }
             }
 
-            return null;
+            if (condition != null)
+            {
+                condition.IsOutputInversed = isOutputInversed;
+            }
+
+            return condition;
         }
 
         private ComparisonCondition<T> BuildComparisonCondition<T>(in DialogueGraphAsset asset, in BooleanComparisonNodeData nodeData) where T : IComparable<T>
@@ -317,7 +314,7 @@ namespace CustomSystem.DialogueSystem
             }
         }
 
-        private LogicCondition BuildLogicCondition(in DialogueGraphAsset asset, in BooleanLogicNodeData nodeData, bool isOutputInversed)
+        private LogicCondition BuildLogicCondition(in DialogueGraphAsset asset, in BooleanLogicNodeData nodeData)
         {
             // create condition obj using data's enum value
             LogicCondition condition = new LogicCondition((LogicCondition.LogicOperator)nodeData._logicEnumVal);
@@ -379,6 +376,22 @@ namespace CustomSystem.DialogueSystem
                 choiceText = data._choiceText;
                 choiceId = data._portId;
             }
+
+            public DialogueNode FirstAvailableChildNode
+            {
+                get
+                {
+                    for (int i = 0; i < childNodes.Count; i++)
+                    {
+                        if (childNodes[i].IsAvailableForUse)
+                        {
+                            return childNodes[i];
+                        }
+                    }
+
+                    return null;
+                }
+            }
         }
 
         public List<DialogueNode> childNodes;
@@ -398,6 +411,7 @@ namespace CustomSystem.DialogueSystem
 
         public DialogueNode(DialogueNodeData data)
         {
+            conditions = new List<NodeCondition>();
             childNodes = new List<DialogueNode>();
 
             speakerName = data._speakerName;
@@ -409,6 +423,44 @@ namespace CustomSystem.DialogueSystem
             for (int i = 0; i < choiceData.Count; i++)
             {
                 choices.Add(choiceData[i]._portId, new DialogueChoice(choiceData[i]));
+            }
+        }
+
+        /// <summary>
+        /// Whether or not this dialogue node can be used in the current player interaction. 
+        /// </summary>
+        public bool IsAvailableForUse
+        {
+            get
+            {
+                bool isAvailable = true;
+
+                foreach (NodeCondition condition in conditions)
+                {
+                    if (!condition.Evaluate())
+                    {
+                        isAvailable = false;
+                        break;
+                    }
+                }
+
+                return isAvailable;
+            }
+        }
+
+        public DialogueNode FirstAvailableChildNode
+        {
+            get
+            {
+                for (int i = 0; i < childNodes.Count; i++)
+                {
+                    if (childNodes[i].IsAvailableForUse)
+                    {
+                        return childNodes[i];
+                    }
+                }
+
+                return null;
             }
         }
     }

@@ -69,8 +69,9 @@ namespace CustomSystem
         {
             T value1, value2;
 
-            value1 = (_leftObj != null) ? (T)_leftObj.GetType().GetProperty(_leftPropertyName).GetValue(_leftObj) : _leftOperand;
-            value2 = (_rightObj != null) ? (T)_rightObj.GetType().GetProperty(_rightPropertyName).GetValue(_rightObj) : _rightOperand;
+            value1 = (_leftObj != null) ? (T)(_leftObj.GetType().GetField(_leftPropertyName).GetValue(_leftObj)) : _leftOperand;
+
+            value2 = (_rightObj != null) ? (T)(_rightObj.GetType().GetField(_rightPropertyName).GetValue(_rightObj)) : _rightOperand;
 
             bool output = false;
 
@@ -206,7 +207,7 @@ namespace CustomSystem
         public override bool Evaluate()
         {
             bool output = (bool)_obj.GetType().GetProperty(_propertyName).GetValue(_obj);
-            
+
             return IsOutputInversed ? !output : output;
         }
     }

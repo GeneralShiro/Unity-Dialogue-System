@@ -602,7 +602,7 @@ namespace CustomEditors.DialogueSystem
             {
                 switch (data._nodeType)
                 {
-                    case "FloatBooleanNode":
+                    case "FloatComparisonNode":
                         {
                             FloatComparisonNode node = new FloatComparisonNode();
 
@@ -619,7 +619,7 @@ namespace CustomEditors.DialogueSystem
                             break;
                         }
 
-                    case "IntBooleanNode":
+                    case "IntComparisonNode":
                         {
                             IntComparisonNode node = new IntComparisonNode();
 

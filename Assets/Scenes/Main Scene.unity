@@ -628,7 +628,7 @@ LightingSettings:
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
   serializedVersion: 3
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_EnableBakedLightmaps: 1
   m_EnableRealtimeLightmaps: 0
   m_RealtimeEnvironmentLighting: 1
@@ -994,6 +994,10 @@ PrefabInstance:
       propertyPath: _cmBrain
       value: 
       objectReference: {fileID: 963194229}
+    - target: {fileID: 2253077666651224598, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
+      propertyPath: _testAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: e61abc4ca1229474d829b0944f3bbe66, type: 2}
     - target: {fileID: 2253077666651224598, guid: 599e3bd6c15b124468636182ccf78624, type: 3}
       propertyPath: _dialogueUI
       value: 

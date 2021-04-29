@@ -10,6 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a606c9534d5615f488972b97d8d7c2a8, type: 3}
-  m_Name: Test asset
+  m_Name: Test Player Data Asset
   m_EditorClassIdentifier: 
-  _testInt1: 0
+  _testInt: 1
+  _testFloat: 0
+  _testBool: 0

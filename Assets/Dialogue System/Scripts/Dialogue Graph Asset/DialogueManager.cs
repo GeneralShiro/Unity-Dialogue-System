@@ -157,16 +157,28 @@ namespace CustomSystem.DialogueSystem
 
         public void ContinueDialogue(uint choiceId = 0)
         {
+            //  Try to find another node to jump to; if we can't, end the dialogue
             if (CurrentNode.choices.Count > 0 || CurrentNode.childNodes.Count > 0)
             {
+                //  If there are choice nodes present, check if the chosen choice node
+                //  has any child nodes available
                 if (CurrentNode.choices.Count > 0)
                 {
                     DialogueNode.DialogueChoice choice = CurrentNode.choices[choiceId];
 
                     if (choice.childNodes.Count > 0)
                     {
-                        //  TODO: handle moving to multiple nodes based on conditions
-                        SetCurrentDialogue(choice.childNodes[0]);
+                        DialogueNode nextNode = choice.FirstAvailableChildNode;
+
+                        // if the chosen choice node has an available child, jump to it
+                        if (nextNode != null)
+                        {
+                            SetCurrentDialogue(nextNode);
+                        }
+                        else
+                        {
+                            EndDialogue();
+                        }
                     }
                     else
                     {
@@ -175,8 +187,18 @@ namespace CustomSystem.DialogueSystem
                 }
                 else
                 {
-                    //  TODO: handle moving to multiple nodes based on conditions
-                    SetCurrentDialogue(CurrentNode.childNodes[0]);
+                    //  If no choices are present, see if any of the child nodes
+                    //  are valid based on their conditions
+                    DialogueNode nextNode = CurrentNode.FirstAvailableChildNode;
+
+                    if (nextNode != null)
+                    {
+                        SetCurrentDialogue(nextNode);
+                    }
+                    else
+                    {
+                        EndDialogue();
+                    }
                 }
             }
             else    // end dialogue
