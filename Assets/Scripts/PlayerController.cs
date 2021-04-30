@@ -12,11 +12,6 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _prevMousePosition;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
@@ -64,11 +59,12 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateRotation()
     {
-        gameObject.transform.Rotate(new Vector3(
-            0f, 
-            (_prevMousePosition.x - Input.mousePosition.x * _rotationSpeed), 
-            0f), 
-            Space.Self);
+        Vector3 deltaPos = _prevMousePosition - Input.mousePosition;
+
+        if (Mathf.Abs(deltaPos.x) >= 1f)
+        {
+            gameObject.transform.Rotate(new Vector3(0f, (deltaPos.x * _rotationSpeed * -.2f), 0f), Space.Self);
+        }
     }
 
     public bool IsReceivingInput
