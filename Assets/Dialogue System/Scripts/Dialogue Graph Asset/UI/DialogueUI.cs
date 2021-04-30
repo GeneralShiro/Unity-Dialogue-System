@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using TMPro;
 
 namespace CustomSystem.DialogueSystem
@@ -60,11 +58,6 @@ namespace CustomSystem.DialogueSystem
                 {
                     _elapsedWritingTime += Time.deltaTime;
                 }
-            }
-
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                OnDialogueClick();
             }
         }
 
@@ -149,7 +142,7 @@ namespace CustomSystem.DialogueSystem
             return isCompleted;
         }
 
-        public void OnDialogueClick()
+        public void ContinueDialogue()
         {
             if (DialogueManager.GetCurrentManager().CurrentNode is CinematicDialogueNode)
             {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 using CustomSystem.DialogueSystem;
 
@@ -10,6 +9,8 @@ public class PlayerController : MonoBehaviour
 {
     public float _moveSpeed = 1f;
     public float _rotationSpeed = 1f;
+
+    private Vector3 _prevMousePosition;
 
     // Start is called before the first frame update
     void Start()
@@ -22,8 +23,15 @@ public class PlayerController : MonoBehaviour
     {
         if (IsReceivingInput)
         {
+            if (_prevMousePosition == null)
+            {
+                _prevMousePosition = Input.mousePosition;
+            }
+
             UpdatePosition();
             UpdateRotation();
+
+            _prevMousePosition = Input.mousePosition;
         }
     }
 
@@ -31,20 +39,20 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 movement = new Vector3();
 
-        if (Keyboard.current.wKey.isPressed)
+        if (Input.GetKey(KeyCode.W))
         {
             movement.z = 1f;
         }
-        else if (Keyboard.current.sKey.isPressed)
+        else if (Input.GetKey(KeyCode.S))
         {
             movement.z = -1f;
         }
 
-        if (Keyboard.current.dKey.isPressed)
+        if (Input.GetKey(KeyCode.D))
         {
             movement.x = 1f;
         }
-        else if (Keyboard.current.aKey.isPressed)
+        else if (Input.GetKey(KeyCode.A))
         {
             movement.x = -1f;
         }
@@ -56,7 +64,11 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateRotation()
     {
-        gameObject.transform.Rotate(new Vector3(0f, Mouse.current.delta.x.ReadValue() * _rotationSpeed, 0f), Space.Self);
+        gameObject.transform.Rotate(new Vector3(
+            0f, 
+            (_prevMousePosition.x - Input.mousePosition.x * _rotationSpeed), 
+            0f), 
+            Space.Self);
     }
 
     public bool IsReceivingInput

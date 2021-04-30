@@ -11,13 +11,11 @@ namespace CustomSystem.DialogueSystem
     public class DialogueTree
     {
         public Dictionary<uint, DialogueNode> nodes { get; protected set; }
-        public DialogueNode startNode { get; protected set; }
         public DialogueNode currentNode;
 
-        public DialogueTree()
-        {
-            nodes = new Dictionary<uint, DialogueNode>();
-        }
+        private uint startNodeId;
+        private List<uint> startNodeChildren;
+
 
         public DialogueTree(DialogueGraphAsset asset)
         {
@@ -26,7 +24,8 @@ namespace CustomSystem.DialogueSystem
                 Debug.LogError("Dialogue asset sent to tree constructor was null!");
             }
 
-            uint startNodeId = 0;
+            startNodeId = 0;
+            startNodeChildren = new List<uint>();
 
             //  1. get all dialogue node data first; dump into dictionary of constructed dialogue node objects
             nodes = new Dictionary<uint, DialogueNode>();
@@ -99,7 +98,8 @@ namespace CustomSystem.DialogueSystem
                     // find the starting dialogue node
                     if (edge._outputNodeGuid == startNodeId)
                     {
-                        startNode = nodes[edge._inputNodeGuid];
+                        startNodeChildren.Add(edge._inputNodeGuid);
+                        //startNode = nodes[edge._inputNodeGuid];
                     }
                     else
                     {
@@ -332,7 +332,7 @@ namespace CustomSystem.DialogueSystem
                     // could have been added, and their values are stored in the nodeData's list
                     for (int i = 0; i < 2 + nodeData._additionalInputPortIds.Count; i++)
                     {
-                        uint id = (i < 2) ? (uint)i : nodeData._additionalInputPortIds[i];
+                        uint id = (i < 2) ? (uint)i : nodeData._additionalInputPortIds[i - 2];
                         string portElementId = "bool-input-port-" + id.ToString();
 
                         if (edge._inputElementName == portElementId)
@@ -351,6 +351,22 @@ namespace CustomSystem.DialogueSystem
             }
 
             return condition;
+        }
+
+        public DialogueNode StartNode
+        {
+            get
+            {
+                for (int i = 0; i < startNodeChildren.Count; i++)
+                {
+                    if (nodes[startNodeChildren[i]].IsAvailableForUse)
+                    {
+                        return nodes[startNodeChildren[i]];
+                    }
+                }
+
+                return null;
+            }
         }
     }
 

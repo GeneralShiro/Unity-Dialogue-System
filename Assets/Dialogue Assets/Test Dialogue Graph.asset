@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeLinkData:
+  - _inputNodeGuid: 3
+    _outputNodeGuid: 7
+    _inputPortName: Boolean
+    _inputElementName: dialogue-condition-input-port-0
+    _outputPortName: 
+    _outputElementName: logic-not-output
+  - _inputNodeGuid: 2
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 3
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-input
+  - _inputNodeGuid: 7
+    _outputNodeGuid: 22
+    _inputPortName: 
+    _inputElementName: logic-not-input
+    _outputPortName: 
+    _outputElementName: logic-not-output
+  - _inputNodeGuid: 22
+    _outputNodeGuid: 23
+    _inputPortName: 
+    _inputElementName: logic-not-input
+    _outputPortName: 
+    _outputElementName: logic-not-output
+  - _inputNodeGuid: 25
+    _outputNodeGuid: 24
+    _inputPortName: 
+    _inputElementName: logic-not-input
+    _outputPortName: 
+    _outputElementName: logic-not-output
+  - _inputNodeGuid: 2
+    _outputNodeGuid: 25
+    _inputPortName: Boolean
+    _inputElementName: dialogue-condition-input-port-0
+    _outputPortName: 
+    _outputElementName: logic-not-output
+  - _inputNodeGuid: 24
+    _outputNodeGuid: 17
+    _inputPortName: 
+    _inputElementName: logic-not-input
+    _outputPortName: 
+    _outputElementName: accessor-bool-output
+  - _inputNodeGuid: 23
+    _outputNodeGuid: 17
+    _inputPortName: 
+    _inputElementName: logic-not-input
+    _outputPortName: 
+    _outputElementName: accessor-bool-output
+  graphNodeData:
+  - _nodeGuid: 1
+    _nodeType: StartNode
+    _nodePosition: {x: 476, y: 81}
+  - _nodeGuid: 25
+    _nodeType: BooleanNOTNode
+    _nodePosition: {x: 538, y: 205}
+  - _nodeGuid: 23
+    _nodeType: BooleanNOTNode
+    _nodePosition: {x: 405, y: 345}
+  - _nodeGuid: 22
+    _nodeType: BooleanNOTNode
+    _nodePosition: {x: 511, y: 348}
+  - _nodeGuid: 7
+    _nodeType: BooleanNOTNode
+    _nodePosition: {x: 608, y: 349}
+  - _nodeGuid: 24
+    _nodeType: BooleanNOTNode
+    _nodePosition: {x: 440, y: 208}
+  booleanComparisonNodeData: []
+  booleanLogicNodeData: []
+  accessorNodeData:
+  - _nodeGuid: 17
+    _nodeType: AccessorNode
+    _nodePosition: {x: 15, y: 280}
+    _scriptableObj: {fileID: 11400000, guid: 18bb4d3295693ce4baddd551fc62e57a, type: 2}
+    _chosenPropertyString: _testBool
+    _typeEnumVal: 1
+  intValNodeData: []
+  floatValNodeData: []
+  edgeRedirectorData: []
+  dialogueNodeData:
+  - _nodeGuid: 2
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 769, y: -37}
+    _choicePorts: []
+    _conditionPortIds: 00000000
+    _speakerName: 
+    _dialogueText: Comparison was true.
+  - _nodeGuid: 3
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 771, y: 236}
+    _choicePorts: []
+    _conditionPortIds: 00000000
+    _speakerName: 
+    _dialogueText: Comparison was false.
+  advDialogueNodeData: []
+  cinematicDialogueNodeData: []

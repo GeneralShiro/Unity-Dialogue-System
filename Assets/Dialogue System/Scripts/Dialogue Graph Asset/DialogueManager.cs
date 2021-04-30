@@ -1,12 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Timeline;
+﻿using UnityEngine;
 using UnityEngine.Playables;
 using Cinemachine;
-using TMPro;
 
 namespace CustomSystem.DialogueSystem
 {
@@ -21,7 +15,6 @@ namespace CustomSystem.DialogueSystem
         public PlayableDirector _timelineDirector;
         public DialogueUI _dialogueUI;
 
-        public DialogueGraphAsset _testAsset;
         private Camera _prevCamera;
         private DialogueTree _dialogueTree;
         private bool _isRunningDialogue;
@@ -38,10 +31,7 @@ namespace CustomSystem.DialogueSystem
             {
                 Destroy(gameObject);
             }
-        }
 
-        private void OnValidate()
-        {
             if (_timelineDirector == null)
             {
                 TryGetComponent<PlayableDirector>(out _timelineDirector);
@@ -51,8 +41,6 @@ namespace CustomSystem.DialogueSystem
         // Start is called before the first frame update
         void Start()
         {
-            LoadAsset(_testAsset);      // use this for testing; remove later
-
             _isRunningDialogue = _enableCam2NextFrame = false;
 
             _timelineDirector.stopped += (director) => { ContinueDialogue(); };
@@ -61,14 +49,7 @@ namespace CustomSystem.DialogueSystem
         // Update is called once per frame
         void Update()
         {
-            if (!_isRunningDialogue)
-            {
-                if (Keyboard.current.spaceKey.IsPressed())
-                {
-                    StartDialogue();
-                }
-            }
-            else
+            if (_isRunningDialogue)
             {
                 if (_enableCam2NextFrame && !_dialogueCamera2.enabled && CurrentNode is AdvDialogueNode)
                 {
@@ -86,7 +67,7 @@ namespace CustomSystem.DialogueSystem
 
         public void StartDialogue()
         {
-            SetCurrentDialogue(_dialogueTree.startNode);
+            SetCurrentDialogue(_dialogueTree.StartNode);
 
             _dialogueUI.SetDialoguePanelVisibility(true);
 

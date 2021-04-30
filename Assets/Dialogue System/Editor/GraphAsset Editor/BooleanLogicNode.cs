@@ -112,7 +112,7 @@ namespace CustomEditors
             AddPort("", typeof(bool), false, Port.Capacity.Multi, "logic-not-output");
 
             // create input port
-            AddPort("", typeof(bool), true, Port.Capacity.Multi, "logic-not-input");
+            AddPort("", typeof(bool), true, Port.Capacity.Single, "logic-not-input");
         }
     }
 }

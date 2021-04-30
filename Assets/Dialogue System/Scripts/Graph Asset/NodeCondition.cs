@@ -206,7 +206,7 @@ namespace CustomSystem
 
         public override bool Evaluate()
         {
-            bool output = (bool)_obj.GetType().GetProperty(_propertyName).GetValue(_obj);
+            bool output = (bool)_obj.GetType().GetField(_propertyName).GetValue(_obj);
 
             return IsOutputInversed ? !output : output;
         }
