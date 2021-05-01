@@ -69,14 +69,14 @@ namespace CustomSystem.DialogueSystem
             }
 
             _speakerNameText.text = node.speakerName;
-            _hasChoices = (node.choices.Count != 0);
+            _hasChoices = node.HasAvailableChoices;
             TextDisplay.text = "";
 
             TextSizer.text = node.dialogueText;
 
             if (!_hasChoices)
             {
-                _isFinalNode = (node.childNodes.Count < 1);
+                _isFinalNode = (node.FirstAvailableChildNode != null);
             }
             else
             {
@@ -97,14 +97,17 @@ namespace CustomSystem.DialogueSystem
 
                 foreach (KeyValuePair<uint, DialogueNode.DialogueChoice> choiceEntry in node.choices)
                 {
-                    GameObject newChoicePanel = Instantiate(_dialogueChoicePrefab, _choicesScrollRect.content.transform);
-                    DialogueChoiceUI choiceUI = newChoicePanel.GetComponent<DialogueChoiceUI>();
+                    if (choiceEntry.Value.FirstAvailableChildNode != null)
+                    {
+                        GameObject newChoicePanel = Instantiate(_dialogueChoicePrefab, _choicesScrollRect.content.transform);
+                        DialogueChoiceUI choiceUI = newChoicePanel.GetComponent<DialogueChoiceUI>();
 
-                    DialogueNode.DialogueChoice choice = choiceEntry.Value;
-                    choiceUI.ChoiceText = choice.choiceText;
-                    choiceUI.ChoiceId = choice.choiceId;
+                        DialogueNode.DialogueChoice choice = choiceEntry.Value;
+                        choiceUI.ChoiceText = choice.choiceText;
+                        choiceUI.ChoiceId = choice.choiceId;
 
-                    _choices.Add(choiceUI);
+                        _choices.Add(choiceUI);
+                    }
                 }
             }
 

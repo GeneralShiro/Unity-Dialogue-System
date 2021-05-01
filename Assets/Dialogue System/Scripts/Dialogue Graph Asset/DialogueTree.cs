@@ -158,7 +158,9 @@ namespace CustomSystem.DialogueSystem
                     {
                         AccessorNodeData nodeData = asset.GetNodeDataByGuid(tracedEdge._outputNodeGuid) as AccessorNodeData;
 
-                        return new AccessedBoolCondition(nodeData._scriptableObj, nodeData._chosenPropertyString);
+                        condition = new AccessedBoolCondition(nodeData._scriptableObj, nodeData._chosenPropertyString);
+
+                        break;
                     }
 
                 // check for NOT nodes    
@@ -477,6 +479,22 @@ namespace CustomSystem.DialogueSystem
                 }
 
                 return null;
+            }
+        }
+
+        public bool HasAvailableChoices
+        {
+            get
+            {
+                foreach (KeyValuePair<uint, DialogueNode.DialogueChoice> choiceEntry in choices)
+                {
+                    if (choiceEntry.Value.FirstAvailableChildNode != null)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
     }

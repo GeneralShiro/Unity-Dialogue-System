@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _testInt: 0
   _testFloat: 0.102
-  _testBool: 0
+  _testBool: 1

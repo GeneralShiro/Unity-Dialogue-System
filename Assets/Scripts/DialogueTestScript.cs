@@ -27,7 +27,7 @@ public class DialogueTestScript : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                DialogueManager.GetCurrentManager().ContinueDialogue();
+                DialogueManager.GetCurrentManager()._dialogueUI.ContinueDialogue();
             }
         }
     }

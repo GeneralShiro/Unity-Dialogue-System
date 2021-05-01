@@ -390,10 +390,6 @@ namespace CustomEditors.DialogueSystem
                     {
                         nodeData._nodeType = "StartNode";
                     }
-                    else if (node is DialogueBranchNode)
-                    {
-                        nodeData._nodeType = "DialogueBranch";
-                    }
 
                     assetData.graphNodeData.Add(nodeData);
                 }
@@ -483,20 +479,6 @@ namespace CustomEditors.DialogueSystem
                     case "BooleanNOTNode":
                         {
                             BooleanNOTNode node = new BooleanNOTNode();
-
-                            // transfer standard GraphNode data, add to graph
-                            node.NodeGuid = data._nodeGuid;
-                            node.SetPosition(new Rect(data._nodePosition, Vector2.zero));
-                            graphView.AddElement(node);
-
-                            nodes.Add(node);
-
-                            break;
-                        }
-
-                    case "DialogueBranch":
-                        {
-                            DialogueBranchNode node = new DialogueBranchNode();
 
                             // transfer standard GraphNode data, add to graph
                             node.NodeGuid = data._nodeGuid;
@@ -814,7 +796,6 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeEntry(new GUIContent("Basic Dialogue Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Advanced Dialogue Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Cinematic Dialogue Node", icon)) { level = 2 });
-            tree.Add(new SearchTreeEntry(new GUIContent("Dialogue Branch", icon)) { level = 2 });
 
             tree.Add(new SearchTreeGroupEntry(new GUIContent("Boolean", icon)) { level = 1 });
             tree.Add(new SearchTreeEntry(new GUIContent("Logic NOT Node", icon)) { level = 2 });
@@ -877,18 +858,6 @@ namespace CustomEditors.DialogueSystem
 
                         return true;
                     }
-
-                case "Dialogue Branch":
-                    {
-                        var node = new DialogueBranchNode();
-                        node.NodeGuid = graphAsset.GetNewGUID();
-                        graphView.AddElement(node);
-
-                        PositionNewNodeElementAtClick(node, context);
-
-                        return true;
-                    }
-
                 case "Logic NOT Node":
                     {
                         var node = new BooleanNOTNode();
