@@ -75,7 +75,7 @@ namespace CustomEditors.DialogueSystem
             prevDialogueNodePort.AddToClassList("dialogueProgressPort");
             prevDialogueNodePort.tooltip = "Connect previous dialogue node here";
 
-            titleNextNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
+            titleNextNodePort = AddPort("", typeof(DialogueGraphNode), titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-output");
             titleNextNodePort.AddToClassList("dialogueProgressPort");
             titleNextNodePort.tooltip = "Connect to next dialogue node (if not using dialogue choices)";
 

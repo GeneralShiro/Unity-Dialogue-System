@@ -371,9 +371,7 @@ namespace CustomEditors.DialogueSystem
                     // edge redirector data
                     nodeData._leftPortType = castNode._leftPort.portType;
                     nodeData._rightPortType = castNode._rightPort.portType;
-                    nodeData._leftPortCapacityVal = Convert.ToInt32(castNode._leftPort.capacity);
                     nodeData._rightPortCapacityVal = Convert.ToInt32(castNode._rightPort.capacity);
-                    nodeData._formerEdgeData = new NodeLinkData(castNode._formerEdgeData);
 
                     assetData.edgeRedirectorData.Add(nodeData);
                 }
@@ -497,11 +495,9 @@ namespace CustomEditors.DialogueSystem
             {
                 EdgeRedirector node = new EdgeRedirector(
                     data._leftPortType,
-                    (Port.Capacity)data._leftPortCapacityVal,
                     data._rightPortType,
                     (Port.Capacity)data._rightPortCapacityVal
                     );
-                node._formerEdgeData = new NodeLinkData(data._formerEdgeData);
 
                 // transfer standard GraphNode data, add to graph
                 node.NodeGuid = data._nodeGuid;
@@ -1038,7 +1034,7 @@ namespace CustomEditors.DialogueSystem
             startNode.outputContainer.RemoveFromHierarchy();
             startNode.Query("contents").First().RemoveFromHierarchy();
 
-            var nextDialogueNodePort = startNode.AddPort("", typeof(DialogueGraphNode), startNode.titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-input");
+            var nextDialogueNodePort = startNode.AddPort("", typeof(DialogueGraphNode), startNode.titleContainer, false, Port.Capacity.Multi, "next-dialogue-node-output");
             startNode.styleSheets.Add(Resources.Load<StyleSheet>("DialogueNodeStyle"));
             startNode.AddToClassList("startNode");
 

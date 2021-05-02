@@ -14,11 +14,9 @@ namespace CustomEditors
     {
         public Port _leftPort;
         public Port _rightPort;
-        public NodeLinkData _formerEdgeData;
 
         public EdgeRedirector(
             System.Type leftPortType,
-            Port.Capacity leftPortCapacity,
             System.Type rightPortType,
             Port.Capacity rightPortCapacity)
         {
@@ -31,7 +29,7 @@ namespace CustomEditors
             topContainer.Add(inputElement);
             topContainer.Add(outputElement);
 
-            _leftPort = AddPort("", leftPortType, inputElement, true, leftPortCapacity, "edge-redirect-input");
+            _leftPort = AddPort("", leftPortType, inputElement, true, Port.Capacity.Single, "edge-redirect-input");
             _rightPort = AddPort("", rightPortType, outputElement, false, rightPortCapacity, "edge-redirect-output");
 
             titleContainer.RemoveFromHierarchy();
@@ -42,7 +40,6 @@ namespace CustomEditors
         public EdgeRedirector(Port sourcePort, Port targetPort)
         : this(
             sourcePort.portType,
-            sourcePort.capacity,
             targetPort.portType,
             targetPort.capacity)
         { }
@@ -101,19 +98,7 @@ namespace CustomEditors
 
             // create the redirector node at the specified position
             EdgeRedirector newRedirect = new EdgeRedirector(inputPort, outputPort);
-            newRedirect._formerEdgeData = new NodeLinkData();
             newRedirect.SetPosition(new Rect(pos, Vector2.zero));
-
-            // store data for the edge that's about to be replaced
-            GraphNode castNode = edge.output.node as GraphNode;
-            newRedirect._formerEdgeData._outputNodeGuid = castNode.NodeGuid;
-            newRedirect._formerEdgeData._outputPortName = edge.output.portName;
-            newRedirect._formerEdgeData._outputElementName = edge.output.name;
-
-            castNode = edge.input.node as GraphNode;
-            newRedirect._formerEdgeData._inputNodeGuid = castNode.NodeGuid;
-            newRedirect._formerEdgeData._inputPortName = edge.input.portName;
-            newRedirect._formerEdgeData._inputElementName = edge.input.name;
 
             GraphView graph = edge.GetFirstAncestorOfType<GraphView>();
 

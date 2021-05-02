@@ -133,79 +133,112 @@ namespace CustomSystem
                 }
             }
 
+            for (int i = 0; i < edgeRedirectorData.Count; i++)
+            {
+                if (guid == edgeRedirectorData[i]._nodeGuid)
+                {
+                    return edgeRedirectorData[i];
+                }
+            }
+
             return null;
         }
 
         public IEnumerable<NodeLinkData> GetNodeLinksWithoutRedirects()
         {
-            Dictionary<int, int> redirectNodeLinks = new Dictionary<int, int>();
-
             // find the indices of every edge associated with an edge redirector
             for (int i = 0; i < edgeRedirectorData.Count; i++)
             {
-                int indexInput, indexOutput;
-                indexInput = indexOutput = (-i - 1);
+                int leftEdgeIndex = -1;
 
+                // find the left edge index first, since there's only one allowed
                 for (int j = 0; j < nodeLinkData.Count; j++)
                 {
-                    if (nodeLinkData[j]._outputNodeGuid == edgeRedirectorData[i]._nodeGuid)
-                    {
-                        indexOutput = j;
+                    NodeData leftNode = GetNodeDataByGuid(nodeLinkData[j]._outputNodeGuid);
 
-                        if (indexInput >= 0)
-                        {
-                            break;
-                        }
-                    }
-                    else if (nodeLinkData[j]._inputNodeGuid == edgeRedirectorData[i]._nodeGuid)
+                    if (leftNode != null)
                     {
-                        indexInput = j;
-
-                        if (indexOutput >= 0)
+                        // if right node is a redirect and left node is NOT a redirect, store the edge as the 'left edge'
+                        if (nodeLinkData[j]._inputNodeGuid == edgeRedirectorData[i]._nodeGuid && leftNode._nodeType != "EdgeRedirector")
                         {
+                            leftEdgeIndex = j;
                             break;
                         }
                     }
                 }
 
-                // if at least one of the indices were found, add it to the dictionary; the negative values can be used to determine which edges to ignore
-                if (indexInput >= 0 || indexOutput >= 0)
+                // return redirected edges, dissolved into one edge
+                if (leftEdgeIndex >= 0)
                 {
-                    redirectNodeLinks.Add(indexInput, indexOutput);
+                    List<int> endEdgeIndices = FindEndsOfRedirectNode(edgeRedirectorData[i]._nodeGuid);
+
+                    foreach (int rightEdgeIndex in endEdgeIndices)
+                    {
+                        NodeLinkData newLink = new NodeLinkData();
+
+                        newLink._inputElementName = nodeLinkData[rightEdgeIndex]._inputElementName;
+                        newLink._inputNodeGuid = nodeLinkData[rightEdgeIndex]._inputNodeGuid;
+                        newLink._inputPortName = nodeLinkData[rightEdgeIndex]._inputPortName;
+
+                        newLink._outputElementName = nodeLinkData[leftEdgeIndex]._outputElementName;
+                        newLink._outputNodeGuid = nodeLinkData[leftEdgeIndex]._outputNodeGuid;
+                        newLink._outputPortName = nodeLinkData[leftEdgeIndex]._outputPortName;
+
+                        yield return newLink;
+                    }
                 }
             }
 
-            // return the non-redirected edges via the IEnumerable
+            // now return non-redirected edges
             for (int i = 0; i < nodeLinkData.Count; i++)
             {
-                if (redirectNodeLinks.ContainsKey(i) || redirectNodeLinks.ContainsValue(i))
+                NodeData leftNode = GetNodeDataByGuid(nodeLinkData[i]._outputNodeGuid);
+                NodeData rightNode = GetNodeDataByGuid(nodeLinkData[i]._inputNodeGuid);
+
+                if (leftNode != null && rightNode != null)
                 {
-                    // only handle these edges using the keys; this avoids returning the same edge twice (via the index stored in the 'value' of the pair)
-                    if (redirectNodeLinks.ContainsKey(i))
+                    if (leftNode._nodeType != "EdgeRedirector" && rightNode._nodeType != "EdgeRedirector")
                     {
-                        // if the other index is valid, dissolve the two edges into one and return it
-                        if (redirectNodeLinks[i] >= 0)
+                        yield return nodeLinkData[i];
+                    }
+                }
+            }
+        }
+
+        private List<int> FindEndsOfRedirectNode(uint redirectorID)
+        {
+            // prepare to collect multiple edge indices since redirector nodes can possibly connect to multiple nodes
+            List<int> edgeIndices = new List<int>();
+
+            for (int i = 0; i < nodeLinkData.Count; i++)
+            {
+                if (nodeLinkData[i]._outputNodeGuid == redirectorID)
+                {
+                    NodeData rightNode = GetNodeDataByGuid(nodeLinkData[i]._inputNodeGuid);
+
+                    // if the right node is valid and the left node is the current redirector we're looking at...
+                    if (rightNode != null)
+                    {
+                        // check for redirector on right side; call this func recursively
+                        if (rightNode._nodeType == "EdgeRedirector")
                         {
-                            int otherLinkIndex = redirectNodeLinks[i];
-                            NodeLinkData newLink = new NodeLinkData();
+                            List<int> foundEndEdges = FindEndsOfRedirectNode(rightNode._nodeGuid);
 
-                            newLink._inputElementName = nodeLinkData[i]._inputElementName;
-                            newLink._inputNodeGuid = nodeLinkData[i]._inputNodeGuid;
-                            newLink._inputPortName = nodeLinkData[i]._inputPortName;
-
-                            newLink._outputElementName = nodeLinkData[otherLinkIndex]._outputElementName;
-                            newLink._outputNodeGuid = nodeLinkData[otherLinkIndex]._outputNodeGuid;
-                            newLink._outputPortName = nodeLinkData[otherLinkIndex]._outputPortName;
-
-                            yield return newLink;
+                            foreach (int edgeIndex in foundEndEdges)
+                            {
+                                edgeIndices.Add(edgeIndex);
+                            }
+                        }
+                        // otherwise, non-redirector on right side 
+                        else
+                        {
+                            edgeIndices.Add(i);
                         }
                     }
                 }
-                else
-                {
-                    yield return nodeLinkData[i];
-                }
             }
+
+            return edgeIndices;
         }
     }
 
@@ -283,8 +316,6 @@ namespace CustomSystem
     {
         public System.Type _leftPortType;
         public System.Type _rightPortType;
-        public int _leftPortCapacityVal;
         public int _rightPortCapacityVal;
-        public NodeLinkData _formerEdgeData;
     }
 }
