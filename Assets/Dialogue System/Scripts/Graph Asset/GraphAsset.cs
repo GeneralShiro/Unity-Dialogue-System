@@ -14,11 +14,27 @@ namespace CustomSystem
         public List<BooleanLogicNodeData> booleanLogicNodeData;
 
         public List<AccessorNodeData> accessorNodeData;
+        public List<EnumComparisonNodeData> enumComparisonNodeData;
         public List<IntValNodeData> intValNodeData;
         public List<FloatValNodeData> floatValNodeData;
 
         public List<EdgeRedirectorData> edgeRedirectorData;
 
+        public GraphAsset()
+        {
+            graphNodeData = new List<NodeData>();
+            nodeLinkData = new List<NodeLinkData>();
+
+            edgeRedirectorData = new List<EdgeRedirectorData>();
+
+            booleanLogicNodeData = new List<BooleanLogicNodeData>();
+            booleanComparisonNodeData = new List<BooleanComparisonNodeData>();
+
+            accessorNodeData = new List<AccessorNodeData>();
+            enumComparisonNodeData = new List<EnumComparisonNodeData>();
+            intValNodeData = new List<IntValNodeData>();
+            floatValNodeData = new List<FloatValNodeData>();
+        }
 
         public virtual uint GetNewGUID()
         {
@@ -72,6 +88,14 @@ namespace CustomSystem
                 }
             }
 
+            for (int i = 0; i < enumComparisonNodeData.Count; i++)
+            {
+                if (ret <= enumComparisonNodeData[i]._nodeGuid)
+                {
+                    ret = enumComparisonNodeData[i]._nodeGuid + 1;
+                }
+            }
+
             for (int i = 0; i < edgeRedirectorData.Count; i++)
             {
                 if (ret <= edgeRedirectorData[i]._nodeGuid)
@@ -114,6 +138,14 @@ namespace CustomSystem
                 if (guid == accessorNodeData[i]._nodeGuid)
                 {
                     return accessorNodeData[i];
+                }
+            }
+
+            for (int i = 0; i < enumComparisonNodeData.Count; i++)
+            {
+                if (guid == enumComparisonNodeData[i]._nodeGuid)
+                {
+                    return enumComparisonNodeData[i];
                 }
             }
 
@@ -297,6 +329,12 @@ namespace CustomSystem
         public ScriptableObject _scriptableObj;
         public string _chosenPropertyString;        // name of the property chosen from the scriptableobj
         public int _typeEnumVal;                    // correlates to 'UnityEditor.SerializedPropertyType' enum value
+    }
+
+    [System.Serializable]
+    public class EnumComparisonNodeData : AccessorNodeData
+    {
+        public string _chosenEnumValue;
     }
 
     [System.Serializable]

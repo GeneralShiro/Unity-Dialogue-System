@@ -16,18 +16,6 @@ namespace CustomSystem.DialogueSystem
 
         public DialogueGraphAsset()
         {
-            graphNodeData = new List<NodeData>();
-            nodeLinkData = new List<NodeLinkData>();
-
-            edgeRedirectorData = new List<EdgeRedirectorData>();
-
-            booleanLogicNodeData = new List<BooleanLogicNodeData>();
-            booleanComparisonNodeData = new List<BooleanComparisonNodeData>();
-
-            accessorNodeData = new List<AccessorNodeData>();
-            intValNodeData = new List<IntValNodeData>();
-            floatValNodeData = new List<FloatValNodeData>();
-
             dialogueNodeData = new List<DialogueNodeData>();
             advDialogueNodeData = new List<AdvDialogueNodeData>();
             cinematicDialogueNodeData = new List<CinematicDialogueNodeData>();
@@ -132,10 +120,7 @@ namespace CustomSystem.DialogueSystem
         public Vector3 _cameraRot;
         public float _lerpTime;
 
-        public AdvDialogueNodeData()
-        {
-
-        }
+        public AdvDialogueNodeData() { }
     }
 
     [System.Serializable]
@@ -143,9 +128,6 @@ namespace CustomSystem.DialogueSystem
     {
         public TimelineAsset _timelineAsset;
 
-        public CinematicDialogueNodeData()
-        {
-
-        }
+        public CinematicDialogueNodeData() { }
     }
 }

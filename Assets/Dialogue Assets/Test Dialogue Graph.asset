@@ -20,6 +20,14 @@ MonoBehaviour:
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   accessorNodeData: []
+  enumComparisonNodeData:
+  - _nodeGuid: 2
+    _nodeType: EnumComparisonNode
+    _nodePosition: {x: 679, y: 150}
+    _scriptableObj: {fileID: 11400000, guid: 18bb4d3295693ce4baddd551fc62e57a, type: 2}
+    _chosenPropertyString: _testEnumVar2
+    _typeEnumVal: 7
+    _chosenEnumValue: State3
   intValNodeData: []
   floatValNodeData: []
   edgeRedirectorData: []

@@ -313,20 +313,43 @@ namespace CustomEditors.DialogueSystem
                 }
                 else if (node is AccessorNode)
                 {
-                    AccessorNode castNode = node as AccessorNode;
-                    AccessorNodeData nodeData = new AccessorNodeData();
+                    if (node is EnumComparisonNode)
+                    {
+                        EnumComparisonNode castNode = node as EnumComparisonNode;
+                        EnumComparisonNodeData nodeData = new EnumComparisonNodeData();
 
-                    // graph node data
-                    nodeData._nodeGuid = castNode.NodeGuid;
-                    nodeData._nodePosition = castNode.GetPosition().position;
-                    nodeData._nodeType = "AccessorNode";
+                        // graph node data
+                        nodeData._nodeGuid = castNode.NodeGuid;
+                        nodeData._nodePosition = castNode.GetPosition().position;
+                        nodeData._nodeType = "EnumComparisonNode";
 
-                    // accessor node data
-                    nodeData._scriptableObj = castNode._objectField.value as ScriptableObject;
-                    nodeData._typeEnumVal = (int)castNode._targetPropertyType;
-                    nodeData._chosenPropertyString = castNode._popupField.value;
+                        // accessor node data
+                        nodeData._scriptableObj = castNode._objectField.value as ScriptableObject;
+                        nodeData._typeEnumVal = (int)castNode._targetPropertyType;
+                        nodeData._chosenPropertyString = castNode._popupField.value;
 
-                    assetData.accessorNodeData.Add(nodeData);
+                        // enum comparison node data
+                        nodeData._chosenEnumValue = castNode._enumValField.value;
+
+                        assetData.enumComparisonNodeData.Add(nodeData);
+                    }
+                    else
+                    {
+                        AccessorNode castNode = node as AccessorNode;
+                        AccessorNodeData nodeData = new AccessorNodeData();
+
+                        // graph node data
+                        nodeData._nodeGuid = castNode.NodeGuid;
+                        nodeData._nodePosition = castNode.GetPosition().position;
+                        nodeData._nodeType = "AccessorNode";
+
+                        // accessor node data
+                        nodeData._scriptableObj = castNode._objectField.value as ScriptableObject;
+                        nodeData._typeEnumVal = (int)castNode._targetPropertyType;
+                        nodeData._chosenPropertyString = castNode._popupField.value;
+
+                        assetData.accessorNodeData.Add(nodeData);
+                    }
                 }
                 else if (node is IntValueNode)
                 {
@@ -545,6 +568,16 @@ namespace CustomEditors.DialogueSystem
                             break;
                         }
                 }
+            }
+
+            // create enum comparison nodes
+            foreach (EnumComparisonNodeData data in graphAsset.enumComparisonNodeData)
+            {
+                EnumComparisonNode node = new EnumComparisonNode();
+                node.InitializeFromData(data);
+
+                graphView.AddElement(node);
+                nodes.Add(node);
             }
 
             // create int value nodes
@@ -799,6 +832,7 @@ namespace CustomEditors.DialogueSystem
             tree.Add(new SearchTreeEntry(new GUIContent("Logic OR Node", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Compare (Int)", icon)) { level = 2 });
             tree.Add(new SearchTreeEntry(new GUIContent("Compare (Float)", icon)) { level = 2 });
+            tree.Add(new SearchTreeEntry(new GUIContent("Compare (Enum)", icon)) { level = 2 });
 
             tree.Add(new SearchTreeGroupEntry(new GUIContent("Getters", icon)) { level = 1 });
             tree.Add(new SearchTreeEntry(new GUIContent("Get (Int)", icon)) { level = 2 });
@@ -909,6 +943,16 @@ namespace CustomEditors.DialogueSystem
                         PositionNewNodeElementAtClick(node, context);
 
                         node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset());
+
+                        return true;
+                    }
+                case "Compare (Enum)":
+                    {
+                        var node = new EnumComparisonNode();
+                        graphView.AddElement(node);
+                        node.NodeGuid = graphAsset.GetNewGUID();
+
+                        PositionNewNodeElementAtClick(node, context);
 
                         return true;
                     }

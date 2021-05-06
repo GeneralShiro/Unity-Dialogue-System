@@ -15,3 +15,4 @@ MonoBehaviour:
   _testInt: 0
   _testFloat: 0.102
   _testBool: 1
+  _testEnumVar: 100

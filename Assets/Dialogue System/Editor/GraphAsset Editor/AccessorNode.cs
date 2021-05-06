@@ -22,7 +22,6 @@ namespace CustomEditors
         public SerializedPropertyType _targetPropertyType;
         public List<string> _popupList;
 
-
         public AccessorNode()
         {
             styleSheets.Add(Resources.Load<StyleSheet>("AccessorNodeStyle"));
@@ -38,7 +37,7 @@ namespace CustomEditors
             inputContainer.Add(_objectField);
 
             _popupList = new List<string>();
-            _popupList.Add("");
+            _popupList.Add("None");
 
             _popupField = new PopupField<string>(_popupList, 0);
             inputContainer.Add(_popupField);
@@ -51,6 +50,7 @@ namespace CustomEditors
             if (_objectField.value == null)
             {
                 _popupList.Add("None");
+                _popupField.value = "None";
             }
             else
             {
@@ -72,6 +72,7 @@ namespace CustomEditors
                 if (_popupList.Count == 0)
                 {
                     _popupList.Add("None");
+                    _popupField.value = "None";
                 }
 
             }
@@ -82,7 +83,7 @@ namespace CustomEditors
             _objectField.value = data._scriptableObj;
             SetPopupList(_targetPropertyType);
 
-            if (data._chosenPropertyString != "")
+            if (data._chosenPropertyString != "None")
             {
                 _popupField.value = data._chosenPropertyString;
             }

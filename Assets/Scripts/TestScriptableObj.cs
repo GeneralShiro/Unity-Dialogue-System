@@ -9,8 +9,22 @@ public class TestScriptableObj : ScriptableObject
     public float _testFloat;
     public bool _testBool;
 
+    public enum TestEnum1
+    {
+        State1 = 100,
+        State2 = 50
+    }
+    public TestEnum1 _testEnumVar;
+
+    public enum TestEnum2
+    {
+        State3,
+        State4
+    }
+    public TestEnum2 _testEnumVar2;
+
     public TestScriptableObj()
     {
-        
+
     }
 }
