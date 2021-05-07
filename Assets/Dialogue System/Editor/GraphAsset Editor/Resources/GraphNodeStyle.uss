@@ -24,6 +24,12 @@
 	padding-bottom : 10px;
 }
 
+.graphNode #variable-container:disabled {
+	height : 0px;
+	padding-top : 0px;
+	padding-bottom : 0px;
+}
+
 .graphNode #variable-container Label {
 	align-self : center;
 }

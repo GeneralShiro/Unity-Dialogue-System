@@ -1,3 +1,11 @@
 .accessorNode #title {
 	background-color : rgba(2, 101, 134, 1);
 }
+
+.accessorNode #input {
+	max-width : 170px;
+}
+
+.enumComparisonNode #enum-val-field-label {
+	min-width : auto;
+}

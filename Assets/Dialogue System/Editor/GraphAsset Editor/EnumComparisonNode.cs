@@ -19,13 +19,20 @@ namespace CustomEditors
         public EnumComparisonNode()
         {
             title = "Enum Compare";
+            AddToClassList("enumComparisonNode");
 
             _targetPropertyType = SerializedPropertyType.Enum;
 
             _enumValList = new List<string>();
             _enumValList.Add("None");
 
+            // add new popupfield for the list of possible values for the selected enum
             _enumValField = new PopupField<string>("Is Equal To:", _enumValList, "None");
+            Label label = _enumValField.Query<Label>().First();
+            if (label != null)
+            {
+                label.name = "enum-val-field-label";
+            }
             inputContainer.Add(_enumValField);
 
             // add output port

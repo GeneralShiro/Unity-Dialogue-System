@@ -47,6 +47,10 @@ namespace CustomEditors.DialogueSystem
             variableContainer = new VisualElement();
             variableContainer.name = "variable-container";
             mainContainer.Insert(1, variableContainer);
+            titleContainer.RegisterCallback<MouseDownEvent>(x => {
+                variableContainer.SetEnabled(!variableContainer.enabledInHierarchy);
+            });
+            
 
             // field for speaker
             var speakerFieldLabel = new Label("Speaker Name");

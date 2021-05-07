@@ -31,8 +31,7 @@ namespace CustomEditors.DialogueSystem
 
             if (obj is DialogueGraphAsset)
             {
-                DialogueAssetEditor window = GetWindow<DialogueAssetEditor>();
-                window.titleContent = new GUIContent("Dialogue Asset Editor");
+                DialogueAssetEditor window = GetWindow<DialogueAssetEditor>("Dialogue Asset Editor", true, typeof(SceneView));
                 window.graphAsset = obj as DialogueGraphAsset;
                 window.minSize = new Vector2(500f, 300f);
                 window.LoadGraphAsset();
@@ -1063,6 +1062,7 @@ namespace CustomEditors.DialogueSystem
 
             var grid = new GridBackground { name = "GridBackground" };
             Insert(0, grid);
+            
         }
 
         public GraphNode CreateStartNode(uint guid)
