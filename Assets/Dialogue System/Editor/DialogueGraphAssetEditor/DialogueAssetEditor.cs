@@ -66,11 +66,11 @@ namespace CustomEditors.DialogueSystem
             graphView.graphViewChanged += OnGraphViewChanged;
 
             // create warning message for user if they haven't selected a dialogue asset first
-            noAssetSelectedLabel = new Label("Select a Dialogue Asset to see its graph!");
+            /* noAssetSelectedLabel = new Label("Select a Dialogue Asset to see its graph!");
             noAssetSelectedLabel.name = "NoAssetSelectLabel";
             noAssetSelectedLabel.StretchToParentSize();
             rootVisualElement.Add(noAssetSelectedLabel);
-            noAssetSelectedLabel.visible = false;
+            noAssetSelectedLabel.visible = false; */
 
             isLoadingAsset = false;
 
@@ -95,7 +95,8 @@ namespace CustomEditors.DialogueSystem
 
             // create auto-save toggle
             var autoSaveToggle = new ToolbarToggle() { name = "ToolbarAutoSaveToggle" };
-            autoSaveToggle.RegisterValueChangedCallback<bool>(evt => { 
+            autoSaveToggle.RegisterValueChangedCallback<bool>(evt =>
+            {
                 shouldAutoSave = evt.newValue;
                 autoSaveToggle.label = shouldAutoSave ? "Auto-Save: Enabled" : "Auto-Save: Disabled";
             });
@@ -124,8 +125,6 @@ namespace CustomEditors.DialogueSystem
 
             if (selectedAssets.Length != 1)
             {
-                ClearGraph();
-                graphAsset = null;
                 return;
             }
 
@@ -149,7 +148,7 @@ namespace CustomEditors.DialogueSystem
         {
             // hide the graph view so it can't be interacted with
             graphView.visible = false;
-            noAssetSelectedLabel.visible = true;
+            //noAssetSelectedLabel.visible = true;
 
             graphView.ClearGraphNodes();
         }
@@ -552,7 +551,7 @@ namespace CustomEditors.DialogueSystem
             isLoadingAsset = true;
 
             graphView.visible = true;
-            noAssetSelectedLabel.visible = false;
+            //noAssetSelectedLabel.visible = false;
 
             List<GraphNode> nodes = new List<GraphNode>();
 
@@ -925,6 +924,8 @@ namespace CustomEditors.DialogueSystem
 
         public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
         {
+            bool successful = false;
+
             switch (entry.name)
             {
                 case "Basic Dialogue Node":
@@ -937,7 +938,8 @@ namespace CustomEditors.DialogueSystem
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
 
                 case "Advanced Dialogue Node":
@@ -950,7 +952,8 @@ namespace CustomEditors.DialogueSystem
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
 
                 case "Cinematic Dialogue Node":
@@ -963,7 +966,8 @@ namespace CustomEditors.DialogueSystem
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
                 case "Logic NOT Node":
                     {
@@ -973,7 +977,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
 
                 case "Logic AND Node":
@@ -984,7 +989,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
 
                 case "Logic OR Node":
@@ -995,7 +1001,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
 
                 case "Compare (Int)":
@@ -1008,7 +1015,8 @@ namespace CustomEditors.DialogueSystem
 
                         node.operationEnumField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
 
-                        return true;
+                        successful = true;
+                        break;
                     }
 
                 case "Compare (Float)":
@@ -1021,7 +1029,8 @@ namespace CustomEditors.DialogueSystem
 
                         node.operationEnumField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
 
-                        return true;
+                        successful = true;
+                        break;
                     }
                 case "Compare (Enum)":
                     {
@@ -1031,7 +1040,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
                 case "Get (Int)":
                     {
@@ -1041,7 +1051,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
 
                 case "Get (Float)":
@@ -1052,7 +1063,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
                 case "Get (Bool)":
                     {
@@ -1062,7 +1074,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
                 case "New Int":
                     {
@@ -1072,7 +1085,8 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
                 case "New Float":
                     {
@@ -1082,11 +1096,17 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        return true;
+                        successful = true;
+                        break;
                     }
             }
 
-            return false;
+            if (successful)
+            {
+                Undo.RegisterCompleteObjectUndo(graphAsset, "test undo");
+            }
+
+            return successful;
         }
 
         protected void PositionNewNodeElementAtClick(Node node, SearchWindowContext context)
@@ -1141,6 +1161,11 @@ namespace CustomEditors.DialogueSystem
 
             var grid = new GridBackground { name = "GridBackground" };
             Insert(0, grid);
+
+            // copy / paste callbacks
+            //serializeGraphElements += OnCopy;
+            //canPasteSerializedData += CanPaste;
+            //unserializeAndPaste += OnPaste;
 
             /* miniMap = new MiniMap() { name = "MiniMap" };
             Insert(1, miniMap); */
@@ -1211,6 +1236,21 @@ namespace CustomEditors.DialogueSystem
                     RemoveElement(e);
                 }
             }
+        }
+
+        private bool CanPaste(string data)
+        {
+            return true;
+        }
+
+        private string OnCopy(IEnumerable<GraphElement> elements)
+        {
+            return "";
+        }
+
+        private void OnPaste(string operationName, string serializedData)
+        {
+
         }
     }
 }
