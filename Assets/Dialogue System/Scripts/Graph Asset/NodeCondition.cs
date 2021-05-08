@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 using UnityEngine;
 
@@ -209,6 +210,32 @@ namespace CustomSystem
             bool output = (bool)_obj.GetType().GetField(_propertyName).GetValue(_obj);
 
             return IsOutputInversed ? !output : output;
+        }
+    }
+
+    public class EnumCompareCondition : NodeCondition
+    {
+        private ScriptableObject _objRef;
+        private string _enumFieldName;
+        private string _enumValue;
+
+        public EnumCompareCondition(ScriptableObject objRef, string enumFieldName, string enumValue)
+        {
+            _objRef = objRef;
+            _enumFieldName = enumFieldName;
+            _enumValue = enumValue;
+        }
+
+        public override bool Evaluate()
+        {
+            if (_objRef != null)
+            {
+                FieldInfo info = _objRef.GetType().GetField(_enumFieldName);
+                bool output = _enumValue == info.FieldType.GetEnumName(info.GetValue(_objRef));
+                return IsOutputInversed ? !output : output;
+            }
+
+            return false;
         }
     }
 }

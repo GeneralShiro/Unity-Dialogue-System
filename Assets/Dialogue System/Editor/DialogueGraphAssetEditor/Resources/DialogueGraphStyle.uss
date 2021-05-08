@@ -12,3 +12,20 @@
 	-unity-font-style : Bold;
 	-unity-text-align : middle-center;
 }
+
+#DialogueGraph {
+	width : 100%;
+	height : 100%;
+	position : relative;
+}
+
+#ToolbarAssetLabel {
+	padding-top : 1px;
+	padding-left : 15px;
+	padding-right : 15px;
+	-unity-font-style : Bold;
+}
+
+#ToolbarAutoSaveToggle Label {
+	min-width : auto;
+}

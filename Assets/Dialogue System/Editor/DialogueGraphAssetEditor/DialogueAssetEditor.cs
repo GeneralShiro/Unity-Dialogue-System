@@ -8,6 +8,7 @@ using UnityEngine.Timeline;
 using UnityEngine.UIElements;
 
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.Callbacks;
 
@@ -19,9 +20,11 @@ namespace CustomEditors.DialogueSystem
     public class DialogueAssetEditor : GraphViewEditorWindow, ISearchWindowProvider
     {
         public DialogueGraphAsset graphAsset { get; set; }
+        private Toolbar toolbar;
         private DialogueGraphView graphView;
         private Label noAssetSelectedLabel;
         private bool isLoadingAsset;
+        private bool shouldAutoSave = true;
 
 
         [OnOpenAsset(1)]
@@ -53,9 +56,11 @@ namespace CustomEditors.DialogueSystem
         {
             rootVisualElement.styleSheets.Add(Resources.Load<StyleSheet>("DialogueGraphStyle"));
 
-            // create graph view
+            // create toolbar
+            CreateToolbar();
+
+            // create graphview
             graphView = new DialogueGraphView { name = "DialogueGraph" };
-            graphView.StretchToParentSize();
             rootVisualElement.Add(graphView);
             graphView.nodeCreationRequest += OnRequestNodeCreation;
             graphView.graphViewChanged += OnGraphViewChanged;
@@ -73,6 +78,32 @@ namespace CustomEditors.DialogueSystem
             Selection.selectionChanged += OnSelectionChange;
         }
 
+        private void CreateToolbar()
+        {
+            toolbar = new Toolbar();
+            rootVisualElement.Add(toolbar);
+
+            // show name of asset
+            if (graphAsset != null)
+            {
+                toolbar.Add(new Label("Asset Name: " + graphAsset.name) { name = "ToolbarAssetLabel" });
+            }
+
+            // create buttons
+            toolbar.Add(new ToolbarButton(() => { SaveGraphAsset(); }) { text = "Save" });
+            toolbar.Add(new ToolbarButton(() => { SaveNewGraphAsset(); }) { text = "Save As" });
+
+            // create auto-save toggle
+            var autoSaveToggle = new ToolbarToggle() { name = "ToolbarAutoSaveToggle" };
+            autoSaveToggle.RegisterValueChangedCallback<bool>(evt => { 
+                shouldAutoSave = evt.newValue;
+                autoSaveToggle.label = shouldAutoSave ? "Auto-Save: Enabled" : "Auto-Save: Disabled";
+            });
+            autoSaveToggle.value = shouldAutoSave;
+            autoSaveToggle.label = shouldAutoSave ? "Auto-Save: Enabled" : "Auto-Save: Disabled";
+            toolbar.Add(autoSaveToggle);
+        }
+
         // called when the object leaves scope
         private void OnDisable()
         {
@@ -81,7 +112,10 @@ namespace CustomEditors.DialogueSystem
 
         private void OnLostFocus()
         {
-            SaveGraphAsset();
+            if (shouldAutoSave)
+            {
+                SaveGraphAsset();
+            }
         }
 
         private void OnSelectionChange()
@@ -95,7 +129,15 @@ namespace CustomEditors.DialogueSystem
                 return;
             }
 
+            // store asset ref
             graphAsset = selectedAssets[0];
+
+            // update toolbar label
+            var toolbarLabel = toolbar.Query<Label>("ToolbarAssetLabel").First();
+            if (toolbarLabel != null)
+            {
+                toolbarLabel.text = "Asset Name: " + graphAsset.name;
+            }
 
             if (!isLoadingAsset)
             {
@@ -115,8 +157,35 @@ namespace CustomEditors.DialogueSystem
         public void SaveGraphAsset()
         {
             if (graphAsset == null || isLoadingAsset)
+            {
                 return;
+            }
 
+            EditorUtility.CopySerialized(CreateAssetSaveData(), graphAsset);
+            AssetDatabase.SaveAssets();
+        }
+
+        public void SaveNewGraphAsset()
+        {
+            if (graphAsset == null || isLoadingAsset)
+            {
+                return;
+            }
+
+            string newPath = EditorUtility.SaveFilePanelInProject(
+                "Save as Graph Asset",
+                graphAsset.name + " (Copy)",
+                "asset",
+                "Please enter a file name to save the graph asset to.");
+
+            if (newPath.Length != 0)
+            {
+                AssetDatabase.CreateAsset(CreateAssetSaveData(), newPath);
+            }
+        }
+
+        private DialogueGraphAsset CreateAssetSaveData()
+        {
             // get rid of edges with missing nodes before saving
             graphView.ClearDanglingEdges();
 
@@ -156,6 +225,7 @@ namespace CustomEditors.DialogueSystem
                         // basic dialogue node data
                         nodeData._speakerName = castNode.speakerTextField.value;
                         nodeData._dialogueText = castNode.dialogueTextField.value;
+                        nodeData._isCollapsed = castNode.IsCollapsed;
 
                         // store IDs for condition input ports; needed to reconnect ports on load
                         for (int j = 0; j < castNode.conditionIds.Count; j++)
@@ -192,6 +262,7 @@ namespace CustomEditors.DialogueSystem
                         // basic dialogue node data
                         nodeData._speakerName = castNode.speakerTextField.value;
                         nodeData._dialogueText = castNode.dialogueTextField.value;
+                        nodeData._isCollapsed = castNode.IsCollapsed;
 
                         // store IDs for condition input ports; needed to reconnect ports on load
                         for (int j = 0; j < castNode.conditionIds.Count; j++)
@@ -226,6 +297,7 @@ namespace CustomEditors.DialogueSystem
                         // basic dialogue node data
                         nodeData._speakerName = castNode.speakerTextField.value;
                         nodeData._dialogueText = castNode.dialogueTextField.value;
+                        nodeData._isCollapsed = castNode.IsCollapsed;
 
                         // store IDs for condition input ports; needed to reconnect ports on load
                         for (int j = 0; j < castNode.conditionIds.Count; j++)
@@ -440,8 +512,7 @@ namespace CustomEditors.DialogueSystem
                 }
             }
 
-            EditorUtility.CopySerialized(assetData, graphAsset);
-            AssetDatabase.SaveAssets();
+            return assetData;
         }
 
         public GraphViewChange OnGraphViewChanged(GraphViewChange gvc)
@@ -462,7 +533,11 @@ namespace CustomEditors.DialogueSystem
         private void SaveDelayedGraphAsset()
         {
             EditorApplication.update -= SaveDelayedGraphAsset;
-            SaveGraphAsset();
+
+            if (shouldAutoSave)
+            {
+                SaveGraphAsset();
+            }
         }
 
         public bool LoadGraphAsset()
@@ -675,6 +750,7 @@ namespace CustomEditors.DialogueSystem
             {
                 DialogueGraphNode node = new DialogueGraphNode();
                 node.InitializeFromData(data);
+                node.IsCollapsed = data._isCollapsed;
                 graphView.AddElement(node);
                 nodes.Add(node);
             }
@@ -684,6 +760,7 @@ namespace CustomEditors.DialogueSystem
             {
                 AdvDialogueNode node = new AdvDialogueNode();
                 node.InitializeFromData(data);
+                node.IsCollapsed = data._isCollapsed;
                 graphView.AddElement(node);
                 nodes.Add(node);
             }
@@ -693,6 +770,7 @@ namespace CustomEditors.DialogueSystem
             {
                 CinematicDialogueNode node = new CinematicDialogueNode();
                 node.InitializeFromData(data);
+                node.IsCollapsed = data._isCollapsed;
                 graphView.AddElement(node);
                 nodes.Add(node);
             }
@@ -854,7 +932,7 @@ namespace CustomEditors.DialogueSystem
                         var node = new DialogueGraphNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
-                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(SaveGraphAsset);
+                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(() => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
@@ -867,7 +945,7 @@ namespace CustomEditors.DialogueSystem
                         var node = new AdvDialogueNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
-                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(SaveGraphAsset);
+                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(() => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
@@ -880,7 +958,7 @@ namespace CustomEditors.DialogueSystem
                         var node = new CinematicDialogueNode();
                         graphView.AddElement(node);
                         node.NodeGuid = graphAsset.GetNewGUID();
-                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(SaveGraphAsset);
+                        node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(() => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         PositionNewNodeElementAtClick(node, context);
                         RegisterDialogueNodesValueChangedCallbacks(node);
@@ -928,7 +1006,7 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset());
+                        node.operationEnumField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         return true;
                     }
@@ -941,7 +1019,7 @@ namespace CustomEditors.DialogueSystem
 
                         PositionNewNodeElementAtClick(node, context);
 
-                        node.operationEnumField.RegisterValueChangedCallback(val => SaveGraphAsset());
+                        node.operationEnumField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         return true;
                     }
@@ -1026,23 +1104,23 @@ namespace CustomEditors.DialogueSystem
         {
             if (node is DialogueGraphNode)
             {
-                node.speakerTextField.RegisterValueChangedCallback(val => SaveGraphAsset());
-                node.dialogueTextField.RegisterValueChangedCallback(val => SaveGraphAsset());
+                node.speakerTextField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
+                node.dialogueTextField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
             }
 
             if (node is AdvDialogueNode)
             {
                 AdvDialogueNode advNode = node as AdvDialogueNode;
 
-                advNode.cameraPosField.RegisterValueChangedCallback(val => SaveGraphAsset());
-                advNode.cameraRotField.RegisterValueChangedCallback(val => SaveGraphAsset());
+                advNode.cameraPosField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
+                advNode.cameraRotField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
             }
 
             if (node is CinematicDialogueNode)
             {
                 CinematicDialogueNode advNode = node as CinematicDialogueNode;
 
-                advNode.timelineField.RegisterValueChangedCallback(val => SaveGraphAsset());
+                advNode.timelineField.RegisterValueChangedCallback(val => { if (shouldAutoSave) SaveGraphAsset(); });
             }
         }
     }
@@ -1050,6 +1128,7 @@ namespace CustomEditors.DialogueSystem
     public class DialogueGraphView : GraphView
     {
         public GraphNode startNode;
+        public MiniMap miniMap;
 
         public DialogueGraphView()
         {
@@ -1062,7 +1141,9 @@ namespace CustomEditors.DialogueSystem
 
             var grid = new GridBackground { name = "GridBackground" };
             Insert(0, grid);
-            
+
+            /* miniMap = new MiniMap() { name = "MiniMap" };
+            Insert(1, miniMap); */
         }
 
         public GraphNode CreateStartNode(uint guid)

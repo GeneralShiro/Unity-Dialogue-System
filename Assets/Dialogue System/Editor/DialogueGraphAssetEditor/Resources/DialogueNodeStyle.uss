@@ -30,6 +30,10 @@ Label {
 	color : rgb(78, 226, 242);
 }
 
+.cinematicDialogueNode {
+	max-width : 207px;
+}
+
 .dialogueProgressPort {
 	width : 50%;
 	align-items : center;

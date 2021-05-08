@@ -18,7 +18,10 @@ namespace CustomEditors
             AddToClassList("rawValNode");
             AddToClassList("rawIntNode");
 
+            tooltip = "Raw integer value";
+
             title = "Int";
+            titleContainer.RemoveFromHierarchy();
 
             _intField = new IntegerField();
             inputContainer.Add(_intField);
@@ -37,7 +40,10 @@ namespace CustomEditors
             AddToClassList("rawValNode");
             AddToClassList("rawFloatNode");
 
+            tooltip = "Raw floating-point value";
+
             title = "Float";
+            titleContainer.RemoveFromHierarchy();
 
             _floatField = new FloatField();
             inputContainer.Add(_floatField);

@@ -34,11 +34,12 @@ namespace CustomEditors.DialogueSystem
         public delegate void NodeChangeEventHandler();
         public event NodeChangeEventHandler OnNodeChange;
         protected bool changed;
+        private bool isCollapsed;
 
 
         public DialogueGraphNode()
         {
-            title = "Basic Dialogue Node";
+            title = "Basic Dialogue";
             styleSheets.Add(Resources.Load<StyleSheet>("DialogueNodeStyle"));
             AddToClassList("dialogueGraphNode");    // USS style
 
@@ -47,10 +48,11 @@ namespace CustomEditors.DialogueSystem
             variableContainer = new VisualElement();
             variableContainer.name = "variable-container";
             mainContainer.Insert(1, variableContainer);
-            titleContainer.RegisterCallback<MouseDownEvent>(x => {
-                variableContainer.SetEnabled(!variableContainer.enabledInHierarchy);
+            titleContainer.RegisterCallback<MouseDownEvent>(x =>
+            {
+                IsCollapsed = !isCollapsed;
             });
-            
+
 
             // field for speaker
             var speakerFieldLabel = new Label("Speaker Name");
@@ -250,6 +252,19 @@ namespace CustomEditors.DialogueSystem
             NodeGuid = data._nodeGuid;
             SetPosition(new Rect(data._nodePosition, new Vector2(1, 1)));
         }
+
+        public bool IsCollapsed
+        {
+            get
+            {
+                return isCollapsed;
+            }
+            set
+            {
+                variableContainer.SetEnabled(!value);
+                isCollapsed = value;
+            }
+        }
     }
 
     public class AdvDialogueNode : DialogueGraphNode
@@ -260,7 +275,7 @@ namespace CustomEditors.DialogueSystem
 
         public AdvDialogueNode()
         {
-            title = "Advanced Dialogue Node";
+            title = "Adv. Dialogue";
             AddToClassList("advDialogueNode");
 
             // field for camera position
@@ -324,7 +339,7 @@ namespace CustomEditors.DialogueSystem
 
         public CinematicDialogueNode()
         {
-            title = "Cinematic Dialogue Node";
+            title = "Cinematic";
             AddToClassList("cinematicDialogueNode");
 
             // we don't need the speaker and dialogue text fields; remove them and their labels
@@ -340,7 +355,7 @@ namespace CustomEditors.DialogueSystem
                 allowSceneObjects = false
             };
             variableContainer.Add(timelineField);
-            
+
             outputContainer.visible = false;
         }
 

@@ -99,7 +99,6 @@ namespace CustomSystem.DialogueSystem
                     if (edge._outputNodeGuid == startNodeId)
                     {
                         startNodeChildren.Add(edge._inputNodeGuid);
-                        //startNode = nodes[edge._inputNodeGuid];
                     }
                     else
                     {
@@ -140,6 +139,14 @@ namespace CustomSystem.DialogueSystem
                                     break;
                                 }
                         }
+
+                        break;
+                    }
+
+                case "enum-compare-output":
+                    {
+                        EnumComparisonNodeData data = asset.GetNodeDataByGuid(tracedEdge._outputNodeGuid) as EnumComparisonNodeData;
+                        condition = new EnumCompareCondition(data._scriptableObj, data._chosenPropertyString, data._chosenEnumValue);
 
                         break;
                     }

@@ -16,3 +16,4 @@ MonoBehaviour:
   _testFloat: 0.102
   _testBool: 1
   _testEnumVar: 100
+  _testEnumVar2: 0

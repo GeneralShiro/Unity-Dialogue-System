@@ -10,45 +10,76 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8af39a4dd2b4b6489dad5c319c35d48, type: 3}
-  m_Name: 
+  m_Name: Test Dialogue Graph
   m_EditorClassIdentifier: 
-  nodeLinkData: []
+  nodeLinkData:
+  - _inputNodeGuid: 2
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-output
+  - _inputNodeGuid: 2
+    _outputNodeGuid: 3
+    _inputPortName: Boolean
+    _inputElementName: dialogue-condition-input-port-0
+    _outputPortName: 
+    _outputElementName: enum-compare-output
+  - _inputNodeGuid: 4
+    _outputNodeGuid: 3
+    _inputPortName: 
+    _inputElementName: logic-not-input
+    _outputPortName: 
+    _outputElementName: enum-compare-output
+  - _inputNodeGuid: 5
+    _outputNodeGuid: 1
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-output
+  - _inputNodeGuid: 5
+    _outputNodeGuid: 4
+    _inputPortName: Boolean
+    _inputElementName: dialogue-condition-input-port-0
+    _outputPortName: 
+    _outputElementName: logic-not-output
   graphNodeData:
   - _nodeGuid: 1
     _nodeType: StartNode
     _nodePosition: {x: 0, y: 0}
+  - _nodeGuid: 4
+    _nodeType: BooleanNOTNode
+    _nodePosition: {x: 311, y: 257}
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   accessorNodeData: []
-  enumComparisonNodeData: []
+  enumComparisonNodeData:
+  - _nodeGuid: 3
+    _nodeType: EnumComparisonNode
+    _nodePosition: {x: 17, y: 158}
+    _scriptableObj: {fileID: 11400000, guid: 18bb4d3295693ce4baddd551fc62e57a, type: 2}
+    _chosenPropertyString: _testEnumVar
+    _typeEnumVal: 7
+    _chosenEnumValue: State1
   intValNodeData: []
   floatValNodeData: []
   edgeRedirectorData: []
   dialogueNodeData:
   - _nodeGuid: 2
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 163, y: -130}
+    _nodePosition: {x: 442, y: -92}
     _choicePorts: []
-    _conditionPortIds: 
+    _conditionPortIds: 00000000
     _speakerName: 
-    _dialogueText: 
-  advDialogueNodeData:
-  - _nodeGuid: 3
-    _nodeType: AdvDialogueNode
-    _nodePosition: {x: 157, y: 91}
+    _dialogueText: 1
+    _isCollapsed: 0
+  - _nodeGuid: 5
+    _nodeType: DialogueGraphNode
+    _nodePosition: {x: 477, y: 201}
     _choicePorts: []
-    _conditionPortIds: 
+    _conditionPortIds: 00000000
     _speakerName: 
-    _dialogueText: 
-    _cameraPos: {x: 0, y: 0, z: 0}
-    _cameraRot: {x: 0, y: 0, z: 0}
-    _lerpTime: 0
-  cinematicDialogueNodeData:
-  - _nodeGuid: 4
-    _nodeType: CinematicDialogueNode
-    _nodePosition: {x: 544, y: -78}
-    _choicePorts: []
-    _conditionPortIds: 
-    _speakerName: 
-    _dialogueText: 
-    _timelineAsset: {fileID: 0}
+    _dialogueText: 2
+    _isCollapsed: 0
+  advDialogueNodeData: []
+  cinematicDialogueNodeData: []

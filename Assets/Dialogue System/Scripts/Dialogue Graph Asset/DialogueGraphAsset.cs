@@ -106,6 +106,8 @@ namespace CustomSystem.DialogueSystem
         public string _speakerName;
         public string _dialogueText;
 
+        public bool _isCollapsed;
+
         public DialogueNodeData()
         {
             _choicePorts = new List<ChoicePortData>();
