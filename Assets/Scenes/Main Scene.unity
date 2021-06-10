@@ -1013,7 +1013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220a4fa90f3af7f4c9563deaf62dc363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _testDialogueGraph: {fileID: 11400000, guid: bf541898e6f048c4195ccd104921bdad, type: 2}
+  _testDialogueGraph: {fileID: 11400000, guid: e61abc4ca1229474d829b0944f3bbe66, type: 2}
 --- !u!4 &2028910143
 Transform:
   m_ObjectHideFlags: 0

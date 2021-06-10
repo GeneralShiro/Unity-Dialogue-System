@@ -76,7 +76,7 @@ namespace CustomSystem.DialogueSystem
 
             if (!_hasChoices)
             {
-                _isFinalNode = (node.FirstAvailableChildNode != null);
+                _isFinalNode = (node.FirstAvailableChildNode == null);
             }
             else
             {

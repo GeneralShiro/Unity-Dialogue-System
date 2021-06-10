@@ -19,65 +19,37 @@ MonoBehaviour:
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: next-dialogue-node-output
-  - _inputNodeGuid: 2
-    _outputNodeGuid: 3
-    _inputPortName: Boolean
-    _inputElementName: dialogue-condition-input-port-0
-    _outputPortName: 
-    _outputElementName: enum-compare-output
-  - _inputNodeGuid: 4
-    _outputNodeGuid: 3
-    _inputPortName: 
-    _inputElementName: logic-not-input
-    _outputPortName: 
-    _outputElementName: enum-compare-output
-  - _inputNodeGuid: 5
-    _outputNodeGuid: 1
+  - _inputNodeGuid: 3
+    _outputNodeGuid: 2
     _inputPortName: 
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: next-dialogue-node-output
-  - _inputNodeGuid: 5
-    _outputNodeGuid: 4
-    _inputPortName: Boolean
-    _inputElementName: dialogue-condition-input-port-0
-    _outputPortName: 
-    _outputElementName: logic-not-output
   graphNodeData:
   - _nodeGuid: 1
     _nodeType: StartNode
     _nodePosition: {x: 0, y: 0}
-  - _nodeGuid: 4
-    _nodeType: BooleanNOTNode
-    _nodePosition: {x: 311, y: 257}
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   accessorNodeData: []
-  enumComparisonNodeData:
-  - _nodeGuid: 3
-    _nodeType: EnumComparisonNode
-    _nodePosition: {x: 17, y: 158}
-    _scriptableObj: {fileID: 11400000, guid: 18bb4d3295693ce4baddd551fc62e57a, type: 2}
-    _chosenPropertyString: _testEnumVar
-    _typeEnumVal: 7
-    _chosenEnumValue: State1
+  enumComparisonNodeData: []
   intValNodeData: []
   floatValNodeData: []
   edgeRedirectorData: []
   dialogueNodeData:
   - _nodeGuid: 2
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 442, y: -92}
+    _nodePosition: {x: 273, y: -55}
     _choicePorts: []
-    _conditionPortIds: 00000000
+    _conditionPortIds: 01000000
     _speakerName: 
     _dialogueText: 1
     _isCollapsed: 0
-  - _nodeGuid: 5
+  - _nodeGuid: 3
     _nodeType: DialogueGraphNode
-    _nodePosition: {x: 477, y: 201}
+    _nodePosition: {x: 631, y: 43}
     _choicePorts: []
-    _conditionPortIds: 00000000
+    _conditionPortIds: 
     _speakerName: 
     _dialogueText: 2
     _isCollapsed: 0
