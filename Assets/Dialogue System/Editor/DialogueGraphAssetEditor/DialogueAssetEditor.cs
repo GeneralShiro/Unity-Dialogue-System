@@ -65,13 +65,6 @@ namespace CustomEditors.DialogueSystem
             graphView.nodeCreationRequest += OnRequestNodeCreation;
             graphView.graphViewChanged += OnGraphViewChanged;
 
-            // create warning message for user if they haven't selected a dialogue asset first
-            /* noAssetSelectedLabel = new Label("Select a Dialogue Asset to see its graph!");
-            noAssetSelectedLabel.name = "NoAssetSelectLabel";
-            noAssetSelectedLabel.StretchToParentSize();
-            rootVisualElement.Add(noAssetSelectedLabel);
-            noAssetSelectedLabel.visible = false; */
-
             isLoadingAsset = false;
 
             OnSelectionChange();
@@ -119,6 +112,7 @@ namespace CustomEditors.DialogueSystem
             }
         }
 
+        // called whenever the user selects something different in the Unity editor
         private void OnSelectionChange()
         {
             DialogueGraphAsset[] selectedAssets = Selection.GetFiltered<DialogueGraphAsset>(SelectionMode.Assets);
@@ -204,7 +198,7 @@ namespace CustomEditors.DialogueSystem
 
                     if (castNode.NodeGuid == 0)
                     {
-                        castNode.NodeGuid = graphAsset.GetNewGUID();
+                        castNode.NodeGuid = graphView.GetNewGUID();
                     }
                 }
 
@@ -877,7 +871,7 @@ namespace CustomEditors.DialogueSystem
 
             if (graphView.startNode == null)
             {
-                graphView.startNode = graphView.CreateStartNode(graphAsset.GetNewGUID());
+                graphView.startNode = graphView.CreateStartNode(graphView.GetNewGUID());
             }
 
             isLoadingAsset = false;
@@ -932,7 +926,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new DialogueGraphNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
                         node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(() => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         PositionNewNodeElementAtClick(node, context);
@@ -946,7 +940,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new AdvDialogueNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
                         node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(() => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         PositionNewNodeElementAtClick(node, context);
@@ -960,7 +954,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new CinematicDialogueNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
                         node.OnNodeChange += new DialogueGraphNode.NodeChangeEventHandler(() => { if (shouldAutoSave) SaveGraphAsset(); });
 
                         PositionNewNodeElementAtClick(node, context);
@@ -973,7 +967,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new BooleanNOTNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -985,7 +979,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new BooleanLogicNode(BooleanLogicNode.LogicOperator.AND);
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -997,7 +991,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new BooleanLogicNode(BooleanLogicNode.LogicOperator.OR);
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1009,7 +1003,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new IntComparisonNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1023,7 +1017,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new FloatComparisonNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1036,7 +1030,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new EnumComparisonNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1047,7 +1041,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new IntGetterNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1059,7 +1053,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new FloatGetterNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1070,7 +1064,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new BoolGetterNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1081,7 +1075,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new IntValueNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1092,7 +1086,7 @@ namespace CustomEditors.DialogueSystem
                     {
                         var node = new FloatValueNode();
                         graphView.AddElement(node);
-                        node.NodeGuid = graphAsset.GetNewGUID();
+                        node.NodeGuid = graphView.GetNewGUID();
 
                         PositionNewNodeElementAtClick(node, context);
 
@@ -1251,6 +1245,28 @@ namespace CustomEditors.DialogueSystem
         private void OnPaste(string operationName, string serializedData)
         {
 
+        }
+
+        public uint GetNewGUID()
+        {
+            uint ret = 1;
+
+            List<Node> nodesList = nodes.ToList();
+
+            for (int i = 0; i < nodesList.Count; i++)
+            {
+                if (nodesList[i] is GraphNode)
+                {
+                    GraphNode castNode = nodesList[i] as GraphNode;
+                    Debug.Log(castNode.name + " - " + castNode.NodeGuid.ToString());
+                    if (ret <= castNode.NodeGuid)
+                    {
+                        ret = castNode.NodeGuid + 1;
+                    }
+                }
+            }
+
+            return ret;
         }
     }
 }

@@ -21,37 +21,6 @@ namespace CustomSystem.DialogueSystem
             cinematicDialogueNodeData = new List<CinematicDialogueNodeData>();
         }
 
-        public override uint GetNewGUID()
-        {
-            uint ret = base.GetNewGUID();
-
-            for (int i = 0; i < dialogueNodeData.Count; i++)
-            {
-                if (ret <= dialogueNodeData[i]._nodeGuid)
-                {
-                    ret = dialogueNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < advDialogueNodeData.Count; i++)
-            {
-                if (ret <= advDialogueNodeData[i]._nodeGuid)
-                {
-                    ret = advDialogueNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < cinematicDialogueNodeData.Count; i++)
-            {
-                if (ret <= cinematicDialogueNodeData[i]._nodeGuid)
-                {
-                    ret = cinematicDialogueNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            return ret;
-        }
-
         public override NodeData GetNodeDataByGuid(uint guid)
         {
             NodeData data = base.GetNodeDataByGuid(guid);

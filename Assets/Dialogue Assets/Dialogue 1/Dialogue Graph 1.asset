@@ -55,6 +55,12 @@ MonoBehaviour:
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: next-dialogue-node-output
+  - _inputNodeGuid: 11
+    _outputNodeGuid: 10
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-output
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
@@ -144,3 +150,12 @@ MonoBehaviour:
     _dialogueText: 
     _isCollapsed: 0
     _timelineAsset: {fileID: 11400000, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
+  - _nodeGuid: 11
+    _nodeType: CinematicDialogueNode
+    _nodePosition: {x: 1247, y: 724}
+    _choicePorts: []
+    _conditionPortIds: 
+    _speakerName: 
+    _dialogueText: 
+    _isCollapsed: 0
+    _timelineAsset: {fileID: 11400000, guid: eb155e26a2dbbc045af0bb5fdf7311f4, type: 2}

@@ -35,78 +35,7 @@ namespace CustomSystem
             intValNodeData = new List<IntValNodeData>();
             floatValNodeData = new List<FloatValNodeData>();
         }
-
-        public virtual uint GetNewGUID()
-        {
-            uint ret = 1;
-
-            for (int i = 0; i < graphNodeData.Count; i++)
-            {
-                if (ret <= graphNodeData[i]._nodeGuid)
-                {
-                    ret = graphNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < booleanComparisonNodeData.Count; i++)
-            {
-                if (ret <= booleanComparisonNodeData[i]._nodeGuid)
-                {
-                    ret = booleanComparisonNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < booleanLogicNodeData.Count; i++)
-            {
-                if (ret <= booleanLogicNodeData[i]._nodeGuid)
-                {
-                    ret = booleanLogicNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < intValNodeData.Count; i++)
-            {
-                if (ret <= intValNodeData[i]._nodeGuid)
-                {
-                    ret = intValNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < floatValNodeData.Count; i++)
-            {
-                if (ret <= floatValNodeData[i]._nodeGuid)
-                {
-                    ret = floatValNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < accessorNodeData.Count; i++)
-            {
-                if (ret <= accessorNodeData[i]._nodeGuid)
-                {
-                    ret = accessorNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < enumComparisonNodeData.Count; i++)
-            {
-                if (ret <= enumComparisonNodeData[i]._nodeGuid)
-                {
-                    ret = enumComparisonNodeData[i]._nodeGuid + 1;
-                }
-            }
-
-            for (int i = 0; i < edgeRedirectorData.Count; i++)
-            {
-                if (ret <= edgeRedirectorData[i]._nodeGuid)
-                {
-                    ret = edgeRedirectorData[i]._nodeGuid + 1;
-                }
-            }
-
-            return ret;
-        }
-
+        
         public virtual NodeData GetNodeDataByGuid(uint guid)
         {
             for (int i = 0; i < graphNodeData.Count; i++)
