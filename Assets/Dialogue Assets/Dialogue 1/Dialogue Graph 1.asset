@@ -13,12 +13,6 @@ MonoBehaviour:
   m_Name: Dialogue Graph 1
   m_EditorClassIdentifier: 
   nodeLinkData:
-  - _inputNodeGuid: 4
-    _outputNodeGuid: 3
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
   - _inputNodeGuid: 5
     _outputNodeGuid: 4
     _inputPortName: 
@@ -49,18 +43,18 @@ MonoBehaviour:
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: dialogue-choice-output-port-2
-  - _inputNodeGuid: 9
-    _outputNodeGuid: 8
-    _inputPortName: 
-    _inputElementName: prev-dialogue-node-input
-    _outputPortName: 
-    _outputElementName: next-dialogue-node-input
   - _inputNodeGuid: 10
     _outputNodeGuid: 4
     _inputPortName: 
     _inputElementName: prev-dialogue-node-input
     _outputPortName: 
     _outputElementName: dialogue-choice-output-port-3
+  - _inputNodeGuid: 4
+    _outputNodeGuid: 3
+    _inputPortName: 
+    _inputElementName: prev-dialogue-node-input
+    _outputPortName: 
+    _outputElementName: next-dialogue-node-output
   graphNodeData:
   - _nodeGuid: 3
     _nodeType: StartNode
@@ -68,6 +62,7 @@ MonoBehaviour:
   booleanComparisonNodeData: []
   booleanLogicNodeData: []
   accessorNodeData: []
+  enumComparisonNodeData: []
   intValNodeData: []
   floatValNodeData: []
   edgeRedirectorData: []
@@ -79,6 +74,7 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: You chose choice #1! Nice!
+    _isCollapsed: 0
   - _nodeGuid: 6
     _nodeType: DialogueGraphNode
     _nodePosition: {x: 971, y: 130}
@@ -90,6 +86,7 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: You chose choice #2! You fool!
+    _isCollapsed: 0
   - _nodeGuid: 7
     _nodeType: DialogueGraphNode
     _nodePosition: {x: 1354, y: 156}
@@ -97,6 +94,7 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 2
     _dialogueText: I'm leaving, see ya.
+    _isCollapsed: 0
   - _nodeGuid: 4
     _nodeType: DialogueGraphNode
     _nodePosition: {x: 437, y: 173}
@@ -112,6 +110,7 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: This is dialogue text 1.
+    _isCollapsed: 0
   advDialogueNodeData:
   - _nodeGuid: 8
     _nodeType: AdvDialogueNode
@@ -120,6 +119,7 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 1
     _dialogueText: This is -advanced- dialogue!
+    _isCollapsed: 0
     _cameraPos: {x: -9.383185, y: 6.842808, z: 13.31388}
     _cameraRot: {x: 21.178, y: 145.932, z: 0}
     _lerpTime: 1
@@ -130,6 +130,7 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: Speaker 2
     _dialogueText: Nice~ Wish it was easier to set up though.
+    _isCollapsed: 0
     _cameraPos: {x: 6.507501, y: 3.042581, z: 5.137024}
     _cameraRot: {x: 19.459, y: -134.828, z: 0}
     _lerpTime: 2
@@ -141,4 +142,5 @@ MonoBehaviour:
     _conditionPortIds: 
     _speakerName: 
     _dialogueText: 
+    _isCollapsed: 0
     _timelineAsset: {fileID: 11400000, guid: 9348b67f97a7c7f4c9d8f3985615e063, type: 2}
